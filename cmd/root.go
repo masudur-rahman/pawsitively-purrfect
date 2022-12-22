@@ -20,7 +20,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/masudur-rahman/pawsitively-purrfect/libs"
+	"github.com/masudur-rahman/pawsitively-purrfect/pkg"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -73,7 +73,7 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	} else {
 		// Search config in project directory with name "config/.pawsitively-purrfect" (without extension).
-		viper.AddConfigPath(filepath.Join(libs.ProjectDirectory, "configs"))
+		viper.AddConfigPath(filepath.Join(pkg.ProjectDirectory, "configs"))
 		viper.SetConfigType("yaml")
 		viper.SetConfigName(".pawsitively-purrfect")
 
