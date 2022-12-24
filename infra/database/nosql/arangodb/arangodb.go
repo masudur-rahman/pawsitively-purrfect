@@ -2,17 +2,19 @@ package arangodb
 
 import (
 	"context"
+	"errors"
+	"reflect"
+
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/nosql"
-)
-import (
+
 	arango "github.com/arangodb/go-driver"
 )
 
 type ArangoDB struct {
-	db         arango.Database
-	ctx        context.Context
-	id         string
-	collection string
+	ctx            context.Context
+	db             arango.Database
+	id             string
+	collectionName string
 }
 
 func NewArangoDB(db arango.Database, ctx context.Context) *ArangoDB {
@@ -28,39 +30,121 @@ func (a *ArangoDB) ID(id string) nosql.Database {
 }
 
 func (a *ArangoDB) Collection(collection string) nosql.Database {
-	a.collection = collection
+	a.collectionName = collection
 	return a
 }
 
-func (a *ArangoDB) FindOne(document interface{}, filter interface{}) (bool, error) {
+func (a *ArangoDB) FindOne(document interface{}, filter ...interface{}) (bool, error) {
+	if a.id == "" && filter == nil {
+		return false, errors.New("must provide id and/or filter")
+	}
+
+	collection, err := a.db.Collection(a.ctx, a.collectionName)
+	if err != nil {
+		return false, err
+	}
+
+	if filter == nil {
+		meta, err := collection.ReadDocument(a.ctx, a.id, document)
+		return meta.ID != "", err
+	}
+
+	query := generateArangoQuery(a.collectionName, filter, false)
+	results, err := executeArangoQuery(a.ctx, a.db, query, 1)
+	if err != nil {
+		return false, err
+	}
+	if len(results) != 1 {
+		return false, nil
+	}
+
+	reflect.ValueOf(document).Elem().Set(reflect.ValueOf(results[0]))
 	return true, nil
 }
 
 func (a *ArangoDB) FindMany(documents interface{}, filter interface{}) error {
+	query := generateArangoQuery(a.collectionName, filter, false)
+	results, err := executeArangoQuery(a.ctx, a.db, query, -1)
+	if err != nil {
+		return err
+	}
 
+	reflect.ValueOf(documents).Elem().Set(reflect.ValueOf(results))
 	return nil
 }
 
 func (a *ArangoDB) InsertOne(document interface{}) (id string, err error) {
-	return "", nil
+	collection, err := a.db.Collection(a.ctx, a.collectionName)
+	if err != nil {
+		return "", err
+	}
+
+	meta, err := collection.CreateDocument(a.ctx, document)
+	if err != nil {
+		return "", err
+	}
+
+	return meta.Key, nil
 }
 
 func (a *ArangoDB) InsertMany(documents []interface{}) ([]string, error) {
-	return nil, nil
+	collection, err := a.db.Collection(a.ctx, a.collectionName)
+	if err != nil {
+		return nil, err
+	}
+
+	metas, _, err := collection.CreateDocuments(a.ctx, documents)
+	if err != nil {
+		return nil, err
+	}
+
+	// Extract IDs of inserted documents
+	ids := make([]string, len(metas))
+	for i, result := range metas {
+		ids[i] = string(result.ID)
+	}
+
+	return ids, nil
 }
 
 func (a *ArangoDB) UpdateOne(document interface{}) error {
-	//coll := a.db.Collection(a.collection)
+	if a.id == "" {
+		return errors.New("id must be provided")
+	}
+
+	collection, err := a.db.Collection(a.ctx, a.collectionName)
+	if err != nil {
+		return err
+	}
+
+	_, err = collection.UpdateDocument(a.ctx, a.id, document)
+	return err
+}
+
+func (a *ArangoDB) DeleteOne(filter ...interface{}) error {
+	if a.id == "" && filter == nil {
+		return errors.New("must provide id and/or filter")
+	}
+
+	collection, err := a.db.Collection(a.ctx, a.collectionName)
+	if err != nil {
+		return err
+	}
+
+	if filter == nil {
+		_, err = collection.RemoveDocument(a.ctx, a.id)
+		return err
+	}
+
+	query := generateArangoQuery(a.collectionName, filter, true)
+	_, err = executeArangoQuery(a.ctx, a.db, query, 1)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
 
-func (a *ArangoDB) DeleteOne() error {
-	//TODO implement me
-	panic("implement me")
-}
-
 func (a *ArangoDB) Query(query string, bindParams map[string]interface{}) (interface{}, error) {
-	//TODO implement me
-	panic("implement me")
+	return executeArangoQuery(a.ctx, a.db, &Query{queryString: query, bindVars: bindParams}, -1)
 }

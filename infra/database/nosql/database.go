@@ -4,7 +4,7 @@ type Database interface {
 	ID(id string) Database
 	Collection(name string) Database
 
-	FindOne(document interface{}, filter interface{}) (bool, error)
+	FindOne(document interface{}, filter ...interface{}) (bool, error)
 	FindMany(documents interface{}, filter interface{}) error
 
 	InsertOne(document interface{}) (id string, err error)
@@ -12,7 +12,7 @@ type Database interface {
 
 	UpdateOne(document interface{}) error
 
-	DeleteOne() error
+	DeleteOne(filter ...interface{}) error
 
 	Query(query string, bindParams map[string]interface{}) (interface{}, error)
 }
