@@ -7,9 +7,9 @@ type PetRepository interface {
 	FindByBreed(breed string) ([]*models.Pet, error)
 	FindByGender(gender string) ([]*models.Pet, error)
 	FindByAdoptionStatus(status string) ([]*models.Pet, error)
-	FindByShelterID(id int64) ([]*models.Pet, error)
-	FindByCurrentOwnerID(id int64) ([]*models.Pet, error)
-	FindByOriginShelterID(id int64) ([]*models.Pet, error)
+	FindByShelterID(id string) ([]*models.Pet, error)
+	FindByCurrentOwnerID(id string) ([]*models.Pet, error)
+	FindByOriginShelterID(id string) ([]*models.Pet, error)
 	Save(pet *models.Pet) error
 	Update(pet *models.Pet) error
 	Delete(id string) error
