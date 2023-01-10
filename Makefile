@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # The binaries to build (just the basenames).
-BINS := repo-management-svc
+BINS := pawsitively-purrfect
 
 # Where to push the docker image.
 REGISTRY ?= masudjuly02

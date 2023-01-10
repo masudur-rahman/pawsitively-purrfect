@@ -54,7 +54,7 @@ func (u *NoSQLUserRepository) FindByName(username string) (*models.User, error) 
 func (u *NoSQLUserRepository) FindByEmail(email string) (*models.User, error) {
 	u.logger.Info("finding user by email", "email", email)
 	filter := models.User{
-		Username: email,
+		Email: email,
 	}
 	var user models.User
 	found, err := u.db.FindOne(&user, filter)
@@ -65,6 +65,13 @@ func (u *NoSQLUserRepository) FindByEmail(email string) (*models.User, error) {
 		return nil, fmt.Errorf("user with email %q not found", email)
 	}
 	return &user, nil
+}
+
+func (u *NoSQLUserRepository) FindUsers(filter models.User) ([]*models.User, error) {
+	u.logger.Info("finding users by filter", "filter", fmt.Sprintf("%+v", filter))
+	users := make([]*models.User, 0)
+	err := u.db.FindMany(&users, filter)
+	return users, err
 }
 
 func (u *NoSQLUserRepository) Create(user *models.User) error {

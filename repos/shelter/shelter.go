@@ -66,6 +66,13 @@ func (s *NoSQLShelterRepository) FindByOwnerID(id int64) ([]*models.Shelter, err
 	return shelter, err
 }
 
+func (s *NoSQLShelterRepository) FindShelters(filter models.Shelter) ([]*models.Shelter, error) {
+	s.logger.Info("finding shelters by filter", "filter", fmt.Sprintf("%+v", filter))
+	shelters := make([]*models.Shelter, 0)
+	err := s.db.FindMany(&shelters, filter)
+	return shelters, err
+}
+
 func (s *NoSQLShelterRepository) Save(shelter *models.Shelter) error {
 	_, err := s.db.InsertOne(shelter)
 	return err

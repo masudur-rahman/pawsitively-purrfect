@@ -109,6 +109,13 @@ func (p *NoSQLPetRepository) FindByOriginShelterID(id string) ([]*models.Pet, er
 	return pets, nil
 }
 
+func (p *NoSQLPetRepository) FindPets(filter models.Pet) ([]*models.Pet, error) {
+	p.logger.Info("finding pets by filter", "filter", fmt.Sprintf("%+v", filter))
+	pets := make([]*models.Pet, 0)
+	err := p.db.FindMany(&pets, filter)
+	return pets, err
+}
+
 func (p *NoSQLPetRepository) Save(pet *models.Pet) error {
 	_, err := p.db.InsertOne(pet)
 	return err

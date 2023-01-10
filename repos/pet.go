@@ -10,6 +10,7 @@ type PetRepository interface {
 	FindByShelterID(id string) ([]*models.Pet, error)
 	FindByCurrentOwnerID(id string) ([]*models.Pet, error)
 	FindByOriginShelterID(id string) ([]*models.Pet, error)
+	FindPets(filter models.Pet) ([]*models.Pet, error)
 	Save(pet *models.Pet) error
 	Update(pet *models.Pet) error
 	Delete(id string) error
