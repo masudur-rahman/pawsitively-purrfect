@@ -5,32 +5,42 @@ Pawsitively Purrfect
 Project Structures:
 ```
 - .github/
+- api/
+    - graphql/
+    - http/
+        - handlers/
+        - middlewares/
+        - routes.go
 - cmd/
 - configs/
     - .pawsitively-purrfect.yaml
-- controller/
-    # handler functions implementations
 - infra/
-    # nosql implementations
-    - mongo/
-    - arango/
-
-    # sql implementations
-    - postgres/
-
-    # DB interfaces
-    - sql/
-        - DB interface
-    - nosql
-        - DB interface
-- routers
-    - middlewares/
-- repo
-    # contains all the repositories for all the entities
-- service
-    # graphql schemas
-- libs/
-
+    - database/
+        - nosql/
+            - arangodb/
+            - mongodb/
+            - database.go
+        - sql/
+            - postgres/
+            - database.go
+    - logger/
+- models/
+    - errors.go
+    - pet.go
+    - shelter.go
+    - user.go
+- pkg/
+- repos/
+    - pet/
+    - shelter/
+    - user/
+    - pet.go
+    - shelter.go
+    - user.go
+- services/
+    - pet.go
+    - shelter.go
+    - user.go
 - templates/
 
 - Dockerfile

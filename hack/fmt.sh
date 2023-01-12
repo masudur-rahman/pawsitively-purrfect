@@ -12,7 +12,8 @@ IMPORTS_ORDER="std,project,company,general"
 if [ -n "$TARGETS" ]; then
     echo "Running goimports:"
     set cmd
-    cmd="goimports-reviser -recursive -imports-order=${IMPORTS_ORDER} -format ${TARGETS}"
+#    cmd="goimports-reviser -recursive -imports-order=${IMPORTS_ORDER} -format ${TARGETS}"
+    cmd="goimports-reviser -recursive -imports-order=${IMPORTS_ORDER} -format ./..."
     echo "$cmd"
     $cmd
     echo

@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/go-logr/logr"
-
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/nosql"
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
+
+	"github.com/go-logr/logr"
 )
 
 type NoSQLUserRepository struct {

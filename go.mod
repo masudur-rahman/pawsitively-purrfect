@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/arangodb/go-driver v1.4.1
 	github.com/go-logr/logr v1.2.3
+	github.com/graphql-go/graphql v0.8.0
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.14.0
 )
