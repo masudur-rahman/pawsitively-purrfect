@@ -1,125 +1,86 @@
 package schema
 
-import "github.com/graphql-go/graphql"
+import (
+	"github.com/masudur-rahman/pawsitively-purrfect/api/graphql/resolvers"
+
+	"github.com/graphql-go/graphql"
+)
 
 var userType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "User",
 	Fields: graphql.Fields{
-		"id": &graphql.Field{
-			Type:        graphql.ID,
-			Description: "The ID of the user.",
-		},
-		"username": &graphql.Field{
-			Type:        graphql.String,
-			Description: "The username of the user.",
-		},
-		"email": &graphql.Field{
-			Type:        graphql.String,
-			Description: "The email of the user.",
-		},
-		"fullName": &graphql.Field{
-			Type:        graphql.String,
-			Description: "Full name of the user",
-		},
-		"bio": &graphql.Field{
-			Type:        graphql.String,
-			Description: "The bio of the user.",
-		},
-		"location": &graphql.Field{
-			Type:        graphql.String,
-			Description: "The location of the user.",
-		},
-		"avatar": &graphql.Field{
-			Type:        graphql.String,
-			Description: "The avatar of the user.",
-		},
-		"isActive": &graphql.Field{
-			Type:        graphql.Boolean,
-			Description: "Whether the user is active or not.",
-		},
-		"isAdmin": &graphql.Field{
-			Type:        graphql.Boolean,
-			Description: "Whether the user is admin or not.",
-		},
+		"id":       &graphql.Field{Type: graphql.ID},
+		"username": &graphql.Field{Type: graphql.String},
+		"email":    &graphql.Field{Type: graphql.String},
+		"fullName": &graphql.Field{Type: graphql.String},
+		"bio":      &graphql.Field{Type: graphql.String},
+		"location": &graphql.Field{Type: graphql.String},
+		"avatar":   &graphql.Field{Type: graphql.String},
+		"isActive": &graphql.Field{Type: graphql.Boolean},
+		"isAdmin":  &graphql.Field{Type: graphql.Boolean},
 	},
 })
 
 var petType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Pet",
 	Fields: graphql.Fields{
-		"id": &graphql.Field{
-			Type:        graphql.ID,
-			Description: "The ID of the pet.",
-		},
-		"name": &graphql.Field{
-			Type:        graphql.String,
-			Description: "The name of the pet.",
-		},
-		"breed": &graphql.Field{
-			Type:        graphql.String,
-			Description: "The breed of the pet.",
-		},
-		"gender": &graphql.Field{
-			Type:        graphql.String,
-			Description: "The gender of the pet.",
-		},
-		"photo": &graphql.Field{
-			Type:        graphql.String,
-			Description: "URL of the pet's photo.",
-		},
-		"adoptionStatus": &graphql.Field{
-			Type:        graphql.String,
-			Description: "The adoption status of the pet.",
-		},
-		"shelterID": &graphql.Field{
-			Type:        graphql.String,
-			Description: "The shelter ID of the pet.",
-		},
-		"currentOwnerID": &graphql.Field{
-			Type:        graphql.String,
-			Description: "The current owner ID of the pet.",
-		},
+		"id":             &graphql.Field{Type: graphql.ID},
+		"name":           &graphql.Field{Type: graphql.String},
+		"breed":          &graphql.Field{Type: graphql.String},
+		"gender":         &graphql.Field{Type: graphql.String},
+		"photo":          &graphql.Field{Type: graphql.String},
+		"adoptionStatus": &graphql.Field{Type: graphql.String},
+		"shelterID":      &graphql.Field{Type: graphql.String},
+		"currentOwnerID": &graphql.Field{Type: graphql.String},
 	},
 })
 
 var shelterType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Shelter",
 	Fields: graphql.Fields{
-		"id": &graphql.Field{
-			Type:        graphql.ID,
-			Description: "The ID of the shelter.",
-		},
-		"name": &graphql.Field{
-			Type:        graphql.String,
-			Description: "The name of the shelter.",
-		},
-		"website": &graphql.Field{
-			Type:        graphql.String,
-			Description: "Website for the shelter",
-		},
-		"location": &graphql.Field{
-			Type:        graphql.String,
-			Description: "The location of the shelter.",
-		},
-		"contactInformation": &graphql.Field{
-			Type:        graphql.String,
-			Description: "The contact information of the shelter.",
-		},
-		"description": &graphql.Field{
-			Type:        graphql.String,
-			Description: "The description of the shelter.",
-		},
-		"logo": &graphql.Field{
-			Type:        graphql.String,
-			Description: "The logo url of the shelter.",
-		},
-		"numberOfPets": &graphql.Field{
-			Type:        graphql.Int,
-			Description: "The number of pets of the shelter.",
-		},
-		"ownerID": &graphql.Field{
-			Type:        graphql.Int,
-			Description: "The owner ID of the shelter.",
-		},
+		"id":                 &graphql.Field{Type: graphql.ID},
+		"name":               &graphql.Field{Type: graphql.String},
+		"website":            &graphql.Field{Type: graphql.String},
+		"location":           &graphql.Field{Type: graphql.String},
+		"contactInformation": &graphql.Field{Type: graphql.String},
+		"description":        &graphql.Field{Type: graphql.String},
+		"logo":               &graphql.Field{Type: graphql.String},
+		"numberOfPets":       &graphql.Field{Type: graphql.Int},
+		"ownerID":            &graphql.Field{Type: graphql.Int},
 	},
 })
+
+func rootQuery(resolver resolvers.Resolver) *graphql.Object {
+	query := graphql.NewObject(graphql.ObjectConfig{
+		Name: "RootQuery",
+		Fields: graphql.Fields{
+			"user": &graphql.Field{
+				Type:        userType,
+				Description: "Get a user by ID.",
+				Args: graphql.FieldConfigArgument{
+					"id":   &graphql.ArgumentConfig{Type: graphql.ID},
+					"name": &graphql.ArgumentConfig{Type: graphql.String},
+				},
+				Resolve: resolver.GetUser,
+			},
+			"shelter": &graphql.Field{
+				Type:        shelterType,
+				Description: "Get a shelter by ID.",
+				Args: graphql.FieldConfigArgument{
+					"id": &graphql.ArgumentConfig{Type: graphql.ID},
+				},
+				Resolve: resolver.GetShelter,
+			},
+			"pet": &graphql.Field{
+				Type:        petType,
+				Description: "Get a pet by ID.",
+				Args: graphql.FieldConfigArgument{
+					"id": &graphql.ArgumentConfig{Type: graphql.ID},
+				},
+				Resolve: resolver.GetPet,
+			},
+		},
+	})
+
+	return query
+}
