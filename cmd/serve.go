@@ -16,24 +16,22 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
+	"github.com/masudur-rahman/pawsitively-purrfect/api/graphql/schema"
 
 	"github.com/spf13/cobra"
 )
 
 // serveCmd represents the serve command
 var serveCmd = &cobra.Command{
-	Use:   "serve",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Use:     "serve",
+	Short:   "Start the Pawsitively Purrfect GraphQL Server",
+	Example: "pawsitively-purrfect serve",
+	Run:     runServe,
+}
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("serve called")
-	},
+func runServe(cmd *cobra.Command, args []string) {
+	resolver := initialize(cmd.Context())
+	schema.PurrfectSchema(resolver)
 }
 
 func init() {

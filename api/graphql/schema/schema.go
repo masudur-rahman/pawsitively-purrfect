@@ -50,7 +50,7 @@ var shelterType = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
-func rootQuery(resolver resolvers.Resolver) *graphql.Object {
+func rootQuery(resolver *resolvers.Resolver) *graphql.Object {
 	query := graphql.NewObject(graphql.ObjectConfig{
 		Name: "RootQuery",
 		Fields: graphql.Fields{
@@ -83,4 +83,10 @@ func rootQuery(resolver resolvers.Resolver) *graphql.Object {
 	})
 
 	return query
+}
+
+func PurrfectSchema(resolver *resolvers.Resolver) (graphql.Schema, error) {
+	return graphql.NewSchema(graphql.SchemaConfig{
+		Query: rootQuery(resolver),
+	})
 }

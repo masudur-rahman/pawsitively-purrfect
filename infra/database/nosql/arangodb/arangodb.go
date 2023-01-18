@@ -2,12 +2,16 @@ package arangodb
 
 import (
 	"context"
+	"crypto/tls"
 	"errors"
+	"fmt"
 	"reflect"
 
+	"github.com/masudur-rahman/pawsitively-purrfect/configs"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/nosql"
 
 	arango "github.com/arangodb/go-driver"
+	"github.com/arangodb/go-driver/http"
 )
 
 type ArangoDB struct {
@@ -17,11 +21,36 @@ type ArangoDB struct {
 	collectionName string
 }
 
-func NewArangoDB(db arango.Database, ctx context.Context) *ArangoDB {
+func NewArangoDB(ctx context.Context, db arango.Database) *ArangoDB {
 	return &ArangoDB{
 		db:  db,
 		ctx: ctx,
 	}
+}
+
+func InitializeArangoDB(ctx context.Context) (arango.Database, error) {
+	cfg := configs.PurrfectConfig.Database.ArangoDB
+	conn, err := http.NewConnection(http.ConnectionConfig{
+		Endpoints: []string{fmt.Sprintf("http://%s:%s", cfg.Host, cfg.Port)},
+		TLSConfig: &tls.Config{ /*...*/ },
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	c, err := arango.NewClient(arango.ClientConfig{
+		Connection:     conn,
+		Authentication: arango.BasicAuthentication(cfg.User, cfg.Password),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	db, err := c.Database(ctx, cfg.Name)
+	if err != nil {
+		return nil, err
+	}
+	return db, nil
 }
 
 func (a *ArangoDB) ID(id string) nosql.Database {
