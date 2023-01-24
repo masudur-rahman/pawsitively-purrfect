@@ -16,6 +16,7 @@ import (
 	"github.com/masudur-rahman/pawsitively-purrfect/repos/shelter"
 	"github.com/masudur-rahman/pawsitively-purrfect/repos/user"
 	"github.com/masudur-rahman/pawsitively-purrfect/services"
+	usersvc "github.com/masudur-rahman/pawsitively-purrfect/services/user"
 
 	"github.com/go-logr/logr"
 	"github.com/the-redback/go-oneliners"
@@ -34,9 +35,9 @@ func initialize(ctx context.Context) *resolvers.Resolver {
 	shelterRepo := shelter.NewNoSQLShelterRepository(db, logr.New(nil))
 	petRepo := pet.NewNoSQLPetRepository(db, logr.New(nil))
 
-	fmt.Println(userRepo, shelterRepo, petRepo)
+	fmt.Println(shelterRepo, petRepo)
 
-	var userSvc services.UserService
+	userSvc := usersvc.NewUserService(userRepo)
 	var shelterSvc services.ShelterService
 	var petSvc services.PetService
 
