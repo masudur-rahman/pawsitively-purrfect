@@ -4,16 +4,22 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
+	"path/filepath"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/api/graphql/resolvers"
+	"github.com/masudur-rahman/pawsitively-purrfect/configs"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/nosql"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/nosql/arangodb"
+	"github.com/masudur-rahman/pawsitively-purrfect/pkg"
 	"github.com/masudur-rahman/pawsitively-purrfect/repos/pet"
 	"github.com/masudur-rahman/pawsitively-purrfect/repos/shelter"
 	"github.com/masudur-rahman/pawsitively-purrfect/repos/user"
 	"github.com/masudur-rahman/pawsitively-purrfect/services"
 
 	"github.com/go-logr/logr"
+	"github.com/the-redback/go-oneliners"
+	"gopkg.in/yaml.v3"
 )
 
 func initialize(ctx context.Context) *resolvers.Resolver {
@@ -35,4 +41,22 @@ func initialize(ctx context.Context) *resolvers.Resolver {
 	var petSvc services.PetService
 
 	return resolvers.NewResolver(userSvc, shelterSvc, petSvc)
+}
+
+// initConfig reads in config file and ENV variables if set.
+func initConfig() {
+	if cfgFile == "" {
+		cfgFile = filepath.Join(pkg.ProjectDirectory, "configs", ".pawsitively-purrfect.yaml")
+	}
+
+	data, err := os.ReadFile(cfgFile)
+	if err != nil {
+		log.Fatalf("Reading config file %v, %v", cfgFile, err)
+	}
+
+	if err = yaml.Unmarshal(data, &configs.PurrfectConfig); err != nil {
+		log.Fatalf("Unmarshaling PurrfectConfig, %v", err)
+	}
+
+	oneliners.PrettyJson(configs.PurrfectConfig, "Purrfect Config")
 }

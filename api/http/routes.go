@@ -8,7 +8,7 @@ import (
 	"github.com/flamego/flamego"
 )
 
-func Routes(resolver *resolvers.Resolver) {
+func Routes(resolver *resolvers.Resolver) *flamego.Flame {
 	f := flamego.Classic()
 	f.Get("/", func() string {
 		return "Hello, Flamego!"
@@ -16,5 +16,6 @@ func Routes(resolver *resolvers.Resolver) {
 
 	f.Map(resolver)
 	f.Any("/graphql", binding.JSON(handlers.RequestOptions{}), handlers.ServeGraphQL)
-	f.Run()
+
+	return f
 }

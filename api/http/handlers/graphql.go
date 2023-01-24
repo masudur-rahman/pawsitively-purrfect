@@ -26,9 +26,11 @@ func ServeGraphQL(ctx flamego.Context, opts RequestOptions, resolver *resolvers.
 	}
 
 	result := graphql.Do(graphql.Params{
-		Context:       ctx.Request().Context(),
-		Schema:        schemas,
-		RequestString: opts.Query,
+		Schema:         schemas,
+		RequestString:  opts.Query,
+		VariableValues: opts.Variables,
+		OperationName:  opts.OperationName,
+		Context:        ctx.Request().Context(),
 	})
 
 	if result.HasErrors() {
