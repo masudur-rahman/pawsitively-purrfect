@@ -10,5 +10,5 @@ type Shelter struct {
 	Logo               string
 	NumberOfPets       int64
 	// Assuming a shelter can have only one owner
-	OwnerID int64
+	OwnerID string
 }

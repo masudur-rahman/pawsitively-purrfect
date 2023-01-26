@@ -40,7 +40,7 @@ func (p *NoSQLPetRepository) FindByGender(gender string) ([]*models.Pet, error) 
 	return pets, err
 }
 
-func (p *NoSQLPetRepository) FindByAdoptionStatus(status string) ([]*models.Pet, error) {
+func (p *NoSQLPetRepository) FindByAdoptionStatus(status models.PetAdoptionStatus) ([]*models.Pet, error) {
 	filter := models.Pet{
 		AdoptionStatus: status,
 	}

@@ -57,7 +57,7 @@ func (s *NoSQLShelterRepository) FindByLocation(location string) ([]*models.Shel
 	return shelter, err
 }
 
-func (s *NoSQLShelterRepository) FindByOwnerID(id int64) ([]*models.Shelter, error) {
+func (s *NoSQLShelterRepository) FindByOwnerID(id string) ([]*models.Shelter, error) {
 	filter := models.Shelter{
 		OwnerID: id,
 	}

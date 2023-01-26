@@ -15,7 +15,8 @@ import (
 	"github.com/masudur-rahman/pawsitively-purrfect/repos/pet"
 	"github.com/masudur-rahman/pawsitively-purrfect/repos/shelter"
 	"github.com/masudur-rahman/pawsitively-purrfect/repos/user"
-	"github.com/masudur-rahman/pawsitively-purrfect/services"
+	petsvc "github.com/masudur-rahman/pawsitively-purrfect/services/pet"
+	sheltersvc "github.com/masudur-rahman/pawsitively-purrfect/services/shelter"
 	usersvc "github.com/masudur-rahman/pawsitively-purrfect/services/user"
 
 	"github.com/go-logr/logr"
@@ -38,8 +39,8 @@ func initialize(ctx context.Context) *resolvers.Resolver {
 	fmt.Println(shelterRepo, petRepo)
 
 	userSvc := usersvc.NewUserService(userRepo)
-	var shelterSvc services.ShelterService
-	var petSvc services.PetService
+	shelterSvc := sheltersvc.NewShelterService(shelterRepo)
+	petSvc := petsvc.NewPetService(petRepo, userRepo)
 
 	return resolvers.NewResolver(userSvc, shelterSvc, petSvc)
 }
