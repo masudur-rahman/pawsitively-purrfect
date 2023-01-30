@@ -18,6 +18,10 @@ func NewUserService(userRepo repos.UserRepository) *userService {
 	}
 }
 
+func (u *userService) ValidateUser(user *models.User) error {
+	return nil
+}
+
 func (u *userService) GetUser(id string) (*models.User, error) {
 	user, err := u.userRepo.FindByID(id)
 	if err != nil {

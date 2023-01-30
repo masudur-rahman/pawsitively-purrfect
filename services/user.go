@@ -5,6 +5,7 @@ import (
 )
 
 type UserService interface {
+	ValidateUser(user *models.User) error
 	GetUser(id string) (*models.User, error)                           // any logged-in user
 	GetUserByName(username string) (*models.User, error)               // any logged-in user
 	ListUsers(filter models.User, limit int64) ([]*models.User, error) // mainly for internal uses

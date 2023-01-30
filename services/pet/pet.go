@@ -26,12 +26,12 @@ func (p *petService) AdoptPet(userID string, petID string) error {
 	}
 
 	if pet.AdoptionStatus == models.PetAdopted {
-		return fmt.Errorf("pet already adopted")
+		return fmt.Errorf("pet with ID %s already adopted", petID)
 	}
 
 	_, err = p.userRepo.FindByID(userID)
 	if err != nil {
-		return fmt.Errorf("pet with ID %s already adopted", petID)
+		return fmt.Errorf("error while fetching user with ID %s: %v", userID, err)
 	}
 
 	pet.AdoptionStatus = models.PetAdopted

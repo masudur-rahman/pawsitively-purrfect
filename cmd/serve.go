@@ -32,7 +32,7 @@ var serveCmd = &cobra.Command{
 func runServe(cmd *cobra.Command, args []string) {
 	resolver := initialize(cmd.Context())
 	f := http.Routes(resolver)
-	f.Run()
+	f.Run(62783)
 }
 
 func init() {

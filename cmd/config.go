@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -32,11 +31,10 @@ func initialize(ctx context.Context) *resolvers.Resolver {
 
 	var db nosql.Database
 	db = arangodb.NewArangoDB(ctx, arangoDB)
-	userRepo := user.NewNoSQLUserRepository(db, logr.New(nil))
-	shelterRepo := shelter.NewNoSQLShelterRepository(db, logr.New(nil))
-	petRepo := pet.NewNoSQLPetRepository(db, logr.New(nil))
-
-	fmt.Println(shelterRepo, petRepo)
+	logger := logr.New(logr.Discard().GetSink())
+	userRepo := user.NewNoSQLUserRepository(db, logger)
+	shelterRepo := shelter.NewNoSQLShelterRepository(db, logger)
+	petRepo := pet.NewNoSQLPetRepository(db, logger)
 
 	userSvc := usersvc.NewUserService(userRepo)
 	shelterSvc := sheltersvc.NewShelterService(shelterRepo)
