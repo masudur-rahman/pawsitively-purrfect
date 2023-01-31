@@ -25,5 +25,20 @@ func (r *Resolver) GetUser(p graphql.ResolveParams) (interface{}, error) {
 }
 
 func (r *Resolver) RegisterUser(p graphql.ResolveParams) (interface{}, error) {
-	return nil, nil
+	user := new(models.User)
+	if username, ok := p.Args["username"].(string); ok {
+		user.Username = username
+	}
+	if email, ok := p.Args["email"].(string); ok {
+		user.Email = email
+	}
+	if password, ok := p.Args["password"].(string); ok {
+		user.PasswordHash = password
+	}
+
+	user, err := r.us.CreateUser(user)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }

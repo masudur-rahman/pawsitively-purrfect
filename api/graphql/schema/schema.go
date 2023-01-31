@@ -85,8 +85,31 @@ func rootQuery(resolver *resolvers.Resolver) *graphql.Object {
 	return query
 }
 
+func rootMutation(resolver *resolvers.Resolver) *graphql.Object {
+	mutation := graphql.NewObject(graphql.ObjectConfig{
+		Name: "RootMutation",
+		Fields: graphql.Fields{
+			"register": &graphql.Field{
+				Type:        userType,
+				Description: "Register a new user to the system",
+				Args: graphql.FieldConfigArgument{
+					"username": &graphql.ArgumentConfig{Type: graphql.String},
+					"email":    &graphql.ArgumentConfig{Type: graphql.String},
+					"password": &graphql.ArgumentConfig{Type: graphql.String},
+				},
+				Resolve: resolver.RegisterUser,
+			},
+		},
+	})
+
+	return mutation
+}
+
 func PurrfectSchema(resolver *resolvers.Resolver) (graphql.Schema, error) {
+	query := rootQuery(resolver)
+	mutation := rootMutation(resolver)
 	return graphql.NewSchema(graphql.SchemaConfig{
-		Query: rootQuery(resolver),
+		Query:    query,
+		Mutation: mutation,
 	})
 }

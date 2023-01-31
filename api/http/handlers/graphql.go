@@ -18,6 +18,7 @@ type RequestOptions struct {
 }
 
 func ServeGraphQL(ctx flamego.Context, opts RequestOptions, resolver *resolvers.Resolver) {
+	// TODO: Do we always need to fetch the PurrfectSchema, or pass the schema as the method params ???
 	schemas, err := schema.PurrfectSchema(resolver)
 	if err != nil {
 		ctx.ResponseWriter().WriteHeader(http.StatusInternalServerError)
