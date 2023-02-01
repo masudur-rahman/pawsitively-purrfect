@@ -4,6 +4,8 @@ import (
 	"errors"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
+	"github.com/masudur-rahman/pawsitively-purrfect/models/types"
+	"github.com/masudur-rahman/pawsitively-purrfect/pkg"
 
 	"github.com/graphql-go/graphql"
 )
@@ -25,15 +27,9 @@ func (r *Resolver) GetUser(p graphql.ResolveParams) (interface{}, error) {
 }
 
 func (r *Resolver) RegisterUser(p graphql.ResolveParams) (interface{}, error) {
-	user := new(models.User)
-	if username, ok := p.Args["username"].(string); ok {
-		user.Username = username
-	}
-	if email, ok := p.Args["email"].(string); ok {
-		user.Email = email
-	}
-	if password, ok := p.Args["password"].(string); ok {
-		user.PasswordHash = password
+	user := types.RegisterParams{}
+	if err := pkg.ParseInto(p.Args, &user); err != nil {
+		return nil, err
 	}
 
 	user, err := r.us.CreateUser(user)

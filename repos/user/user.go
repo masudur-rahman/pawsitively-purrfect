@@ -46,7 +46,7 @@ func (u *NoSQLUserRepository) FindByName(username string) (*models.User, error) 
 		return nil, err
 	}
 	if !found {
-		return nil, fmt.Errorf("user with username %q not found", username)
+		return nil, models.ErrUserNotFound{Username: username}
 	}
 	return &user, nil
 }
@@ -62,7 +62,7 @@ func (u *NoSQLUserRepository) FindByEmail(email string) (*models.User, error) {
 		return nil, err
 	}
 	if !found {
-		return nil, fmt.Errorf("user with email %q not found", email)
+		return nil, models.ErrUserNotFound{Email: email}
 	}
 	return &user, nil
 }

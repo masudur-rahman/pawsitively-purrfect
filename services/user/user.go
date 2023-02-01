@@ -1,7 +1,11 @@
 package user
 
 import (
+	"time"
+
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
+	"github.com/masudur-rahman/pawsitively-purrfect/models/types"
+	"github.com/masudur-rahman/pawsitively-purrfect/pkg"
 	"github.com/masudur-rahman/pawsitively-purrfect/repos"
 	"github.com/masudur-rahman/pawsitively-purrfect/services"
 )
@@ -18,28 +22,42 @@ func NewUserService(userRepo repos.UserRepository) *userService {
 	}
 }
 
-func (u *userService) ValidateUser(user *models.User) error {
+func (us *userService) ValidateUser(params types.RegisterParams) error {
+	_, err := us.userRepo.FindByName(params.Username)
+	if err != nil && !models.IsErrNotFound(err) {
+		return err
+	} else if err == nil {
+		return models.ErrUserAlreadyExist{Username: params.Username}
+	}
+
+	_, err = us.userRepo.FindByEmail(params.Email)
+	if err != nil && !models.IsErrNotFound(err) {
+		return err
+	} else if err == nil {
+		return models.ErrUserAlreadyExist{Username: params.Username}
+	}
+
 	return nil
 }
 
-func (u *userService) GetUser(id string) (*models.User, error) {
-	user, err := u.userRepo.FindByID(id)
+func (us *userService) GetUser(id string) (*models.User, error) {
+	user, err := us.userRepo.FindByID(id)
 	if err != nil {
 		return nil, err
 	}
 	return user, nil
 }
 
-func (u *userService) GetUserByName(username string) (*models.User, error) {
-	user, err := u.userRepo.FindByName(username)
+func (us *userService) GetUserByName(username string) (*models.User, error) {
+	user, err := us.userRepo.FindByName(username)
 	if err != nil {
 		return nil, err
 	}
 	return user, nil
 }
 
-func (u *userService) ListUsers(filter models.User, limit int64) ([]*models.User, error) {
-	users, err := u.userRepo.FindUsers(filter)
+func (us *userService) ListUsers(filter models.User, limit int64) ([]*models.User, error) {
+	users, err := us.userRepo.FindUsers(filter)
 	if err != nil {
 		return nil, err
 	}
@@ -47,16 +65,30 @@ func (u *userService) ListUsers(filter models.User, limit int64) ([]*models.User
 	return users, nil
 }
 
-func (u *userService) CreateUser(user *models.User) (*models.User, error) {
-	if err := u.userRepo.Create(user); err != nil {
+func (us *userService) CreateUser(params types.RegisterParams) (*models.User, error) {
+	if err := us.ValidateUser(params); err != nil {
+		return nil, err
+	}
+
+	user := &models.User{
+		FirstName:    params.FirstName,
+		LastName:     params.LastName,
+		Username:     params.Username,
+		Email:        params.Email,
+		PasswordHash: pkg.MustHashPassword(params.Password),
+		IsActive:     false,
+		IsAdmin:      false,
+		CreatedUnix:  time.Now().Unix(),
+	}
+	if err := us.userRepo.Create(user); err != nil {
 		return nil, err
 	}
 
 	return user, nil
 }
 
-func (u *userService) UpdateUser(opts *models.User) (*models.User, error) {
-	user, err := u.userRepo.FindByName(opts.Username)
+func (us *userService) UpdateUser(opts *models.User) (*models.User, error) {
+	user, err := us.userRepo.FindByName(opts.Username)
 	if err != nil {
 		return nil, err
 	}
@@ -64,18 +96,18 @@ func (u *userService) UpdateUser(opts *models.User) (*models.User, error) {
 	user.LastName = opts.LastName
 	user.Location = opts.Location
 
-	if err = u.userRepo.Update(user); err != nil {
+	if err = us.userRepo.Update(user); err != nil {
 		return nil, err
 	}
 
 	return user, nil
 }
 
-func (u *userService) DeleteUser(id string) error {
-	_, err := u.userRepo.FindByID(id)
+func (us *userService) DeleteUser(id string) error {
+	_, err := us.userRepo.FindByID(id)
 	if err != nil {
 		return err
 	}
 
-	return u.userRepo.Delete(id)
+	return us.userRepo.Delete(id)
 }

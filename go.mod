@@ -11,6 +11,7 @@ require (
 	github.com/graphql-go/graphql v0.8.0
 	github.com/spf13/cobra v1.6.1
 	github.com/the-redback/go-oneliners v0.0.0-20190417084731-74f7694e6dae
+	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -27,7 +28,6 @@ require (
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
 	golang.org/x/sys v0.0.0-20220908164124-27713097b956 // indirect
 	golang.org/x/text v0.4.0 // indirect
 )
