@@ -53,13 +53,13 @@ func InitializeArangoDB(ctx context.Context) (arango.Database, error) {
 	return db, nil
 }
 
-func (a *ArangoDB) ID(id string) nosql.Database {
-	a.id = id
+func (a *ArangoDB) Collection(collection string) nosql.Database {
+	a.collectionName = collection
 	return a
 }
 
-func (a *ArangoDB) Collection(collection string) nosql.Database {
-	a.collectionName = collection
+func (a *ArangoDB) ID(id string) nosql.Database {
+	a.id = id
 	return a
 }
 

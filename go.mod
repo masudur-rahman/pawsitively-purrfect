@@ -9,6 +9,7 @@ require (
 	github.com/flamego/flamego v1.7.0
 	github.com/go-logr/logr v1.2.3
 	github.com/graphql-go/graphql v0.8.0
+	github.com/rs/xid v1.4.0
 	github.com/spf13/cobra v1.6.1
 	github.com/the-redback/go-oneliners v0.0.0-20190417084731-74f7694e6dae
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e

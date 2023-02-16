@@ -30,7 +30,7 @@ func (u *NoSQLUserRepository) FindByID(id string) (*models.User, error) {
 		return nil, err
 	}
 	if !found {
-		return nil, fmt.Errorf("user with ID %q not found", id)
+		return nil, models.ErrUserNotFound{ID: id}
 	}
 	return &user, nil
 }

@@ -1,7 +1,7 @@
-package nosql
+package mock
 
 type Database interface {
-	Collection(name string) Database
+	Entity(name string) Database
 
 	ID(id string) Database
 
@@ -14,6 +14,4 @@ type Database interface {
 	UpdateOne(document interface{}) error
 
 	DeleteOne(filter ...interface{}) error
-
-	Query(query string, bindParams map[string]interface{}) (interface{}, error)
 }
