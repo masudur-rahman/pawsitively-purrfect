@@ -30,10 +30,17 @@ func IsErrNotFound(err error) bool {
 	}
 }
 
-func IsErrAlreadyExist(err error) bool {
+func IsErrConflict(err error) bool {
 	switch err.(type) {
 	case ErrUserAlreadyExist:
 		return true
+	default:
+		return false
+	}
+}
+
+func IsErrBadRequest(err error) bool {
+	switch err.(type) {
 	default:
 		return false
 	}

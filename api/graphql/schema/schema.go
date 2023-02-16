@@ -99,6 +99,16 @@ func rootMutation(resolver *resolvers.Resolver) *graphql.Object {
 				},
 				Resolve: resolver.RegisterUser,
 			},
+
+			"login": &graphql.Field{
+				Type:        userType,
+				Description: "Login user to the system",
+				Args: graphql.FieldConfigArgument{
+					"username": &graphql.ArgumentConfig{Type: graphql.String},
+					"password": &graphql.ArgumentConfig{Type: graphql.String},
+				},
+				Resolve: resolver.Login,
+			},
 		},
 	})
 

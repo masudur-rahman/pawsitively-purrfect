@@ -2,6 +2,7 @@ package resolvers
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
 	"github.com/masudur-rahman/pawsitively-purrfect/models/types"
@@ -27,14 +28,43 @@ func (r *Resolver) GetUser(p graphql.ResolveParams) (interface{}, error) {
 }
 
 func (r *Resolver) RegisterUser(p graphql.ResolveParams) (interface{}, error) {
-	user := types.RegisterParams{}
-	if err := pkg.ParseInto(p.Args, &user); err != nil {
+	params := types.RegisterParams{}
+	if err := pkg.ParseInto(p.Args, &params); err != nil {
 		return nil, err
 	}
 
-	user, err := r.us.CreateUser(user)
+	user, err := r.us.CreateUser(params)
 	if err != nil {
 		return nil, err
 	}
 	return user, nil
+}
+
+func (r *Resolver) Login(p graphql.ResolveParams) (interface{}, error) {
+	params := types.LoginParams{}
+	err := pkg.ParseInto(p.Args, &params)
+	if err != nil {
+		return nil, err
+	}
+
+	var user *models.User
+	if strings.Contains(params.Username, "@") {
+		user, err = r.us.GetUserByEmail(params.Username)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		user, err = r.us.GetUserByName(params.Username)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if !pkg.CheckPasswordHash(params.Password, user.PasswordHash) {
+		return nil, errors.New("username or password is invalid")
+	}
+
+	//TODO: Token generation, set to cookie
+
+	return nil, err
 }

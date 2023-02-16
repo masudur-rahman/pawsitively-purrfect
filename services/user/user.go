@@ -56,6 +56,14 @@ func (us *userService) GetUserByName(username string) (*models.User, error) {
 	return user, nil
 }
 
+func (us *userService) GetUserByEmail(email string) (*models.User, error) {
+	user, err := us.userRepo.FindByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
 func (us *userService) ListUsers(filter models.User, limit int64) ([]*models.User, error) {
 	users, err := us.userRepo.FindUsers(filter)
 	if err != nil {
