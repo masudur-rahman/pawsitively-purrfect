@@ -5,9 +5,8 @@ import (
 	"fmt"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/mock"
+	"github.com/masudur-rahman/pawsitively-purrfect/infra/logr"
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
-
-	"github.com/go-logr/logr"
 )
 
 type MapUserRepository struct {
@@ -23,7 +22,7 @@ func NewMapUserRepository(db mock.Database, logger logr.Logger) *MapUserReposito
 }
 
 func (u *MapUserRepository) FindByID(id string) (*models.User, error) {
-	u.logger.Info("finding user by id", "id", id)
+	u.logger.Infow("finding user by id", "id", id)
 	var user models.User
 	found, err := u.db.FindOne(&user)
 	if err != nil {
@@ -36,7 +35,7 @@ func (u *MapUserRepository) FindByID(id string) (*models.User, error) {
 }
 
 func (u *MapUserRepository) FindByEmail(email string) (*models.User, error) {
-	u.logger.Info("finding user by email", "email", email)
+	u.logger.Infow("finding user by email", "email", email)
 	filter := models.User{
 		Email: email,
 	}
@@ -52,20 +51,20 @@ func (u *MapUserRepository) FindByEmail(email string) (*models.User, error) {
 }
 
 func (u *MapUserRepository) FindUsers(filter models.User) ([]*models.User, error) {
-	u.logger.Info("finding users by filter", "filter", fmt.Sprintf("%+v", filter))
+	u.logger.Infow("finding users by filter", "filter", fmt.Sprintf("%+v", filter))
 	users := make([]*models.User, 0)
 	err := u.db.FindMany(&users, filter)
 	return users, err
 }
 
 func (u *MapUserRepository) Create(user *models.User) error {
-	u.logger.Info("creating user")
+	u.logger.Infow("creating user")
 	_, err := u.db.InsertOne(user)
 	return err
 }
 
 func (u *MapUserRepository) Update(user *models.User) error {
-	u.logger.Info("updating user")
+	u.logger.Infow("updating user")
 	if user.ID == "" {
 		return errors.New("user id missing")
 	}
@@ -74,6 +73,6 @@ func (u *MapUserRepository) Update(user *models.User) error {
 }
 
 func (u *MapUserRepository) Delete(id string) error {
-	u.logger.Info("deleting user by id", "id", id)
+	u.logger.Infow("deleting user by id", "id", id)
 	return u.db.ID(id).DeleteOne()
 }

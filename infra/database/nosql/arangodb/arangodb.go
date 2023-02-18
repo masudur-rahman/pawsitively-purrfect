@@ -68,7 +68,7 @@ func (a *ArangoDB) FindOne(document interface{}, filter ...interface{}) (bool, e
 		return false, errors.New("must provide id and/or filter")
 	}
 
-	collection, err := a.db.Collection(a.ctx, a.collectionName)
+	collection, err := getDBCollection(a.ctx, a.db, a.collectionName)
 	if err != nil {
 		return false, err
 	}
@@ -78,7 +78,7 @@ func (a *ArangoDB) FindOne(document interface{}, filter ...interface{}) (bool, e
 		return meta.ID != "", err
 	}
 
-	query := generateArangoQuery(a.collectionName, filter, false)
+	query := generateArangoQuery(a.collectionName, filter[0], false)
 	results, err := executeArangoQuery(a.ctx, a.db, query, 1)
 	if err != nil {
 		return false, err
@@ -92,6 +92,11 @@ func (a *ArangoDB) FindOne(document interface{}, filter ...interface{}) (bool, e
 }
 
 func (a *ArangoDB) FindMany(documents interface{}, filter interface{}) error {
+	_, err := getDBCollection(a.ctx, a.db, a.collectionName)
+	if err != nil {
+		return err
+	}
+
 	query := generateArangoQuery(a.collectionName, filter, false)
 	results, err := executeArangoQuery(a.ctx, a.db, query, -1)
 	if err != nil {
@@ -103,7 +108,7 @@ func (a *ArangoDB) FindMany(documents interface{}, filter interface{}) error {
 }
 
 func (a *ArangoDB) InsertOne(document interface{}) (id string, err error) {
-	collection, err := a.db.Collection(a.ctx, a.collectionName)
+	collection, err := getDBCollection(a.ctx, a.db, a.collectionName)
 	if err != nil {
 		return "", err
 	}
@@ -117,7 +122,7 @@ func (a *ArangoDB) InsertOne(document interface{}) (id string, err error) {
 }
 
 func (a *ArangoDB) InsertMany(documents []interface{}) ([]string, error) {
-	collection, err := a.db.Collection(a.ctx, a.collectionName)
+	collection, err := getDBCollection(a.ctx, a.db, a.collectionName)
 	if err != nil {
 		return nil, err
 	}
@@ -141,7 +146,7 @@ func (a *ArangoDB) UpdateOne(document interface{}) error {
 		return errors.New("id must be provided")
 	}
 
-	collection, err := a.db.Collection(a.ctx, a.collectionName)
+	collection, err := getDBCollection(a.ctx, a.db, a.collectionName)
 	if err != nil {
 		return err
 	}
@@ -155,7 +160,7 @@ func (a *ArangoDB) DeleteOne(filter ...interface{}) error {
 		return errors.New("must provide id and/or filter")
 	}
 
-	collection, err := a.db.Collection(a.ctx, a.collectionName)
+	collection, err := getDBCollection(a.ctx, a.db, a.collectionName)
 	if err != nil {
 		return err
 	}
@@ -165,7 +170,7 @@ func (a *ArangoDB) DeleteOne(filter ...interface{}) error {
 		return err
 	}
 
-	query := generateArangoQuery(a.collectionName, filter, true)
+	query := generateArangoQuery(a.collectionName, filter[0], true)
 	_, err = executeArangoQuery(a.ctx, a.db, query, 1)
 	if err != nil {
 		return err
@@ -175,5 +180,10 @@ func (a *ArangoDB) DeleteOne(filter ...interface{}) error {
 }
 
 func (a *ArangoDB) Query(query string, bindParams map[string]interface{}) (interface{}, error) {
+	_, err := getDBCollection(a.ctx, a.db, a.collectionName)
+	if err != nil {
+		return nil, err
+	}
+
 	return executeArangoQuery(a.ctx, a.db, &Query{queryString: query, bindVars: bindParams}, -1)
 }

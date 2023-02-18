@@ -2,10 +2,10 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
-	"github.com/masudur-rahman/pawsitively-purrfect/api/graphql/resolvers"
-	"github.com/masudur-rahman/pawsitively-purrfect/api/graphql/schema"
+	"github.com/masudur-rahman/pawsitively-purrfect/infra/logr"
 
 	"github.com/flamego/flamego"
 	"github.com/graphql-go/graphql"
@@ -17,15 +17,7 @@ type RequestOptions struct {
 	OperationName string                 `json:"operationName" url:"operationName" schema:"operationName"`
 }
 
-func ServeGraphQL(ctx flamego.Context, opts RequestOptions, resolver *resolvers.Resolver) {
-	// TODO: Do we always need to fetch the PurrfectSchema, or pass the schema as the method params ???
-	schemas, err := schema.PurrfectSchema(resolver)
-	if err != nil {
-		ctx.ResponseWriter().WriteHeader(http.StatusInternalServerError)
-		ctx.ResponseWriter().Write([]byte(err.Error()))
-		return
-	}
-
+func ServeGraphQL(ctx flamego.Context, opts RequestOptions, schemas graphql.Schema) {
 	result := graphql.Do(graphql.Params{
 		Schema:         schemas,
 		RequestString:  opts.Query,
@@ -35,17 +27,24 @@ func ServeGraphQL(ctx flamego.Context, opts RequestOptions, resolver *resolvers.
 	})
 
 	if result.HasErrors() {
-		var errors []string
 		for _, e := range result.Errors {
-			errors = append(errors, e.Error())
+			if e.OriginalError() != nil {
+				logr.DefaultLogger.Errorf(e.OriginalError().Error())
+			}
 		}
-		ctx.ResponseWriter().WriteHeader(http.StatusBadRequest)
-		ctx.ResponseWriter().Write([]byte(result.Errors[0].Error()))
+
+		ServeJson(ctx.ResponseWriter(), http.StatusBadRequest, result)
 		return
 	}
 
-	ctx.ResponseWriter().Header().Set("Content-Type", "application/json")
-	ctx.ResponseWriter().WriteHeader(http.StatusOK)
-	json.NewEncoder(ctx.ResponseWriter()).Encode(result.Data)
+	ServeJson(ctx.ResponseWriter(), http.StatusOK, result)
 	return
+}
+
+func ServeJson(w http.ResponseWriter, status int, data interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	if err := json.NewEncoder(w).Encode(data); err != nil {
+		log.Println(err.Error())
+	}
 }

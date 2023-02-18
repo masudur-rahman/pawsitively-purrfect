@@ -5,9 +5,8 @@ import (
 	"fmt"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/nosql"
+	"github.com/masudur-rahman/pawsitively-purrfect/infra/logr"
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
-
-	"github.com/go-logr/logr"
 )
 
 type NoSQLPetRepository struct {
@@ -110,7 +109,7 @@ func (p *NoSQLPetRepository) FindByOriginShelterID(id string) ([]*models.Pet, er
 }
 
 func (p *NoSQLPetRepository) FindPets(filter models.Pet) ([]*models.Pet, error) {
-	p.logger.Info("finding pets by filter", "filter", fmt.Sprintf("%+v", filter))
+	p.logger.Infow("finding pets by filter", "filter", fmt.Sprintf("%+v", filter))
 	pets := make([]*models.Pet, 0)
 	err := p.db.FindMany(&pets, filter)
 	return pets, err

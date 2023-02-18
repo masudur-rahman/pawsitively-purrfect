@@ -15,8 +15,20 @@ type Query struct {
 	bindVars    map[string]interface{}
 }
 
+func getDBCollection(ctx context.Context, db arango.Database, col string) (arango.Collection, error) {
+	collection, err := db.Collection(ctx, col)
+	if err != nil {
+		if arango.IsNotFoundGeneral(err) {
+			return db.CreateCollection(ctx, col, &arango.CreateCollectionOptions{})
+		}
+		return nil, err
+	}
+
+	return collection, nil
+}
+
 func generateArangoQuery(collection string, filter interface{}, removeQuery bool) *Query {
-	queryString := "FOR doc IN " + collection + " FILTER "
+	queryString := "FOR doc IN " + collection // + " FILTER "
 	bindVars := map[string]interface{}{}
 
 	var filters []string

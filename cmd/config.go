@@ -10,6 +10,7 @@ import (
 	"github.com/masudur-rahman/pawsitively-purrfect/configs"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/nosql"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/nosql/arangodb"
+	"github.com/masudur-rahman/pawsitively-purrfect/infra/logr"
 	"github.com/masudur-rahman/pawsitively-purrfect/pkg"
 	"github.com/masudur-rahman/pawsitively-purrfect/repos/pet"
 	"github.com/masudur-rahman/pawsitively-purrfect/repos/shelter"
@@ -18,8 +19,6 @@ import (
 	sheltersvc "github.com/masudur-rahman/pawsitively-purrfect/services/shelter"
 	usersvc "github.com/masudur-rahman/pawsitively-purrfect/services/user"
 
-	"github.com/go-logr/logr"
-	"github.com/the-redback/go-oneliners"
 	"gopkg.in/yaml.v3"
 )
 
@@ -31,7 +30,7 @@ func initialize(ctx context.Context) *resolvers.Resolver {
 
 	var db nosql.Database
 	db = arangodb.NewArangoDB(ctx, arangoDB)
-	logger := logr.New(logr.Discard().GetSink())
+	logger := logr.DefaultLogger
 	userRepo := user.NewNoSQLUserRepository(db, logger)
 	shelterRepo := shelter.NewNoSQLShelterRepository(db, logger)
 	petRepo := pet.NewNoSQLPetRepository(db, logger)
@@ -57,6 +56,4 @@ func initConfig() {
 	if err = yaml.Unmarshal(data, &configs.PurrfectConfig); err != nil {
 		log.Fatalf("Unmarshaling PurrfectConfig, %v", err)
 	}
-
-	oneliners.PrettyJson(configs.PurrfectConfig, "Purrfect Config")
 }

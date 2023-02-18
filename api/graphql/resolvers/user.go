@@ -24,7 +24,7 @@ func (r *Resolver) GetUser(p graphql.ResolveParams) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	return user, nil
+	return user.APIUser(), nil
 }
 
 func (r *Resolver) RegisterUser(p graphql.ResolveParams) (interface{}, error) {

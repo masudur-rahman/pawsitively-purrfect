@@ -5,9 +5,8 @@ import (
 	"fmt"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/nosql"
+	"github.com/masudur-rahman/pawsitively-purrfect/infra/logr"
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
-
-	"github.com/go-logr/logr"
 )
 
 type NoSQLShelterRepository struct {
@@ -67,7 +66,7 @@ func (s *NoSQLShelterRepository) FindByOwnerID(id string) ([]*models.Shelter, er
 }
 
 func (s *NoSQLShelterRepository) FindShelters(filter models.Shelter) ([]*models.Shelter, error) {
-	s.logger.Info("finding shelters by filter", "filter", fmt.Sprintf("%+v", filter))
+	s.logger.Infow("finding shelters by filter", "filter", fmt.Sprintf("%+v", filter))
 	shelters := make([]*models.Shelter, 0)
 	err := s.db.FindMany(&shelters, filter)
 	return shelters, err

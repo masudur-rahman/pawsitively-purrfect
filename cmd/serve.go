@@ -16,6 +16,9 @@ limitations under the License.
 package cmd
 
 import (
+	"log"
+
+	"github.com/masudur-rahman/pawsitively-purrfect/api/graphql/schema"
 	"github.com/masudur-rahman/pawsitively-purrfect/api/http"
 
 	"github.com/spf13/cobra"
@@ -31,8 +34,15 @@ var serveCmd = &cobra.Command{
 
 func runServe(cmd *cobra.Command, args []string) {
 	resolver := initialize(cmd.Context())
-	f := http.Routes(resolver)
+	schemas, err := schema.PurrfectSchema(resolver)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	f := http.Routes(schemas)
 	f.Run(62783)
+
+	//http.Graph(resolver)
 }
 
 func init() {
