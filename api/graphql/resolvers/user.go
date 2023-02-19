@@ -66,5 +66,5 @@ func (r *Resolver) Login(p graphql.ResolveParams) (interface{}, error) {
 
 	//TODO: Token generation, set to cookie
 
-	return nil, err
+	return user.APIUser(), err
 }

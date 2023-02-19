@@ -1,6 +1,10 @@
 package pkg
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	_ "github.com/masudur-rahman/go-oneliners"
+)
 
 func ParseInto(src any, dst any) error {
 	jsonByte, err := json.Marshal(src)

@@ -5,10 +5,12 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"reflect"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/configs"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/nosql"
+	"github.com/masudur-rahman/pawsitively-purrfect/pkg"
+
+	"github.com/masudur-rahman/go-oneliners"
 
 	arango "github.com/arangodb/go-driver"
 	"github.com/arangodb/go-driver/http"
@@ -21,8 +23,8 @@ type ArangoDB struct {
 	collectionName string
 }
 
-func NewArangoDB(ctx context.Context, db arango.Database) *ArangoDB {
-	return &ArangoDB{
+func NewArangoDB(ctx context.Context, db arango.Database) ArangoDB {
+	return ArangoDB{
 		db:  db,
 		ctx: ctx,
 	}
@@ -53,17 +55,17 @@ func InitializeArangoDB(ctx context.Context) (arango.Database, error) {
 	return db, nil
 }
 
-func (a *ArangoDB) Collection(collection string) nosql.Database {
+func (a ArangoDB) Collection(collection string) nosql.Database {
 	a.collectionName = collection
 	return a
 }
 
-func (a *ArangoDB) ID(id string) nosql.Database {
+func (a ArangoDB) ID(id string) nosql.Database {
 	a.id = id
 	return a
 }
 
-func (a *ArangoDB) FindOne(document interface{}, filter ...interface{}) (bool, error) {
+func (a ArangoDB) FindOne(document interface{}, filter ...interface{}) (bool, error) {
 	if a.id == "" && filter == nil {
 		return false, errors.New("must provide id and/or filter")
 	}
@@ -79,19 +81,25 @@ func (a *ArangoDB) FindOne(document interface{}, filter ...interface{}) (bool, e
 	}
 
 	query := generateArangoQuery(a.collectionName, filter[0], false)
+	fmt.Println("Find One => ", query.queryString, query.bindVars)
 	results, err := executeArangoQuery(a.ctx, a.db, query, 1)
 	if err != nil {
 		return false, err
 	}
+
+	oneliners.PrettyJson(results, "Data")
 	if len(results) != 1 {
 		return false, nil
 	}
 
-	reflect.ValueOf(document).Elem().Set(reflect.ValueOf(results[0]))
+	//reflect.ValueOf(documents).Elem().Set(reflect.ValueOf(results))
+	if err = pkg.ParseInto(results[0], document); err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
-func (a *ArangoDB) FindMany(documents interface{}, filter interface{}) error {
+func (a ArangoDB) FindMany(documents interface{}, filter interface{}) error {
 	_, err := getDBCollection(a.ctx, a.db, a.collectionName)
 	if err != nil {
 		return err
@@ -103,11 +111,10 @@ func (a *ArangoDB) FindMany(documents interface{}, filter interface{}) error {
 		return err
 	}
 
-	reflect.ValueOf(documents).Elem().Set(reflect.ValueOf(results))
-	return nil
+	return pkg.ParseInto(results[0], documents)
 }
 
-func (a *ArangoDB) InsertOne(document interface{}) (id string, err error) {
+func (a ArangoDB) InsertOne(document interface{}) (id string, err error) {
 	collection, err := getDBCollection(a.ctx, a.db, a.collectionName)
 	if err != nil {
 		return "", err
@@ -121,7 +128,7 @@ func (a *ArangoDB) InsertOne(document interface{}) (id string, err error) {
 	return meta.Key, nil
 }
 
-func (a *ArangoDB) InsertMany(documents []interface{}) ([]string, error) {
+func (a ArangoDB) InsertMany(documents []interface{}) ([]string, error) {
 	collection, err := getDBCollection(a.ctx, a.db, a.collectionName)
 	if err != nil {
 		return nil, err
@@ -141,7 +148,7 @@ func (a *ArangoDB) InsertMany(documents []interface{}) ([]string, error) {
 	return ids, nil
 }
 
-func (a *ArangoDB) UpdateOne(document interface{}) error {
+func (a ArangoDB) UpdateOne(document interface{}) error {
 	if a.id == "" {
 		return errors.New("id must be provided")
 	}
@@ -155,7 +162,7 @@ func (a *ArangoDB) UpdateOne(document interface{}) error {
 	return err
 }
 
-func (a *ArangoDB) DeleteOne(filter ...interface{}) error {
+func (a ArangoDB) DeleteOne(filter ...interface{}) error {
 	if a.id == "" && filter == nil {
 		return errors.New("must provide id and/or filter")
 	}
@@ -179,7 +186,7 @@ func (a *ArangoDB) DeleteOne(filter ...interface{}) error {
 	return nil
 }
 
-func (a *ArangoDB) Query(query string, bindParams map[string]interface{}) (interface{}, error) {
+func (a ArangoDB) Query(query string, bindParams map[string]interface{}) (interface{}, error) {
 	_, err := getDBCollection(a.ctx, a.db, a.collectionName)
 	if err != nil {
 		return nil, err

@@ -7,13 +7,14 @@ export GO111MODULE=on
 export GOFLAGS="-mod=vendor"
 
 TARGETS="$@"
+COMPANY_PREFIXES="github.com/masudur-rahman"
 IMPORTS_ORDER="std,project,company,general"
 
 if [ -n "$TARGETS" ]; then
     echo "Running goimports:"
     set cmd
 #    cmd="goimports-reviser -recursive -imports-order=${IMPORTS_ORDER} -format ${TARGETS}"
-    cmd="goimports-reviser -recursive -imports-order=${IMPORTS_ORDER} -format ./..."
+    cmd="goimports-reviser -recursive -company-prefixes=${COMPANY_PREFIXES} -imports-order=${IMPORTS_ORDER} -format ./..."
     echo "$cmd"
     $cmd
     echo

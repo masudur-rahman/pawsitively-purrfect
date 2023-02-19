@@ -7,6 +7,8 @@ import (
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/nosql"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/logr"
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
+
+	"github.com/rs/xid"
 )
 
 type NoSQLUserRepository struct {
@@ -75,7 +77,9 @@ func (u *NoSQLUserRepository) FindUsers(filter models.User) ([]*models.User, err
 
 func (u *NoSQLUserRepository) Create(user *models.User) error {
 	u.logger.Infow("creating user")
-	_, err := u.db.InsertOne(user)
+	user.ID = xid.New().String()
+	id, err := u.db.InsertOne(user)
+	u.logger.Infow("user created", "id", id)
 	return err
 }
 
