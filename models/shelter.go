@@ -1,14 +1,14 @@
 package models
 
 type Shelter struct {
-	ID                 string
-	Name               string
-	Website            string
-	Location           string
-	ContactInformation string
-	Description        string
-	Logo               string
-	NumberOfPets       int64
+	ID                 string `json:"id"`
+	Name               string `json:"name"`
+	Website            string `json:"website"`
+	Location           string `json:"location"`
+	ContactInformation string `json:"contactInformation"`
+	Description        string `json:"description"`
+	Logo               string `json:"logo"`
+	NumberOfPets       int64  `json:"numberOfPets"`
 	// Assuming a shelter can have only one owner
-	OwnerID string
+	OwnerID string `json:"ownerID"`
 }
