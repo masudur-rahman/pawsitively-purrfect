@@ -15,9 +15,9 @@ func (r *Resolver) GetUser(p graphql.ResolveParams) (interface{}, error) {
 	var err error
 	var user *models.User
 	if id, ok := p.Args["id"].(string); ok {
-		user, err = r.us.GetUser(id)
+		user, err = r.svc.User.GetUser(id)
 	} else if name, ok := p.Args["name"].(string); ok {
-		user, err = r.us.GetUserByName(name)
+		user, err = r.svc.User.GetUserByName(name)
 	} else {
 		return nil, errors.New("invalid argument")
 	}
@@ -33,7 +33,7 @@ func (r *Resolver) RegisterUser(p graphql.ResolveParams) (interface{}, error) {
 		return nil, err
 	}
 
-	user, err := r.us.CreateUser(params)
+	user, err := r.svc.User.CreateUser(params)
 	if err != nil {
 		return nil, err
 	}
@@ -49,22 +49,20 @@ func (r *Resolver) Login(p graphql.ResolveParams) (interface{}, error) {
 
 	var user *models.User
 	if strings.Contains(params.Username, "@") {
-		user, err = r.us.GetUserByEmail(params.Username)
+		user, err = r.svc.User.GetUserByEmail(params.Username)
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		user, err = r.us.GetUserByName(params.Username)
+		user, err = r.svc.User.GetUserByName(params.Username)
 		if err != nil {
 			return nil, err
 		}
 	}
 
 	if !pkg.CheckPasswordHash(params.Password, user.PasswordHash) {
-		return nil, errors.New("username or password is invalid")
+		return nil, models.ErrUserPasswordMismatch{}
 	}
-
-	//TODO: Token generation, set to cookie
 
 	return user.APIUser(), err
 }

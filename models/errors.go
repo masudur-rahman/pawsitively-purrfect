@@ -21,9 +21,17 @@ func (err ErrUserAlreadyExist) Error() string {
 	return fmt.Sprintf("user [username: %v, email: %v] already exist", err.Username, err.Email)
 }
 
+type ErrUserPasswordMismatch struct{}
+
+func (ErrUserPasswordMismatch) Error() string {
+	return "username or password is invalid"
+}
+
 func IsErrNotFound(err error) bool {
 	switch err.(type) {
 	case ErrUserNotFound:
+		return true
+	case ErrUserPasswordMismatch:
 		return true
 	default:
 		return false

@@ -1,13 +1,15 @@
 package handlers
 
 import (
-	"encoding/json"
-	"log"
 	"net/http"
 
+	"github.com/masudur-rahman/pawsitively-purrfect/api/graphql/resolvers"
+	"github.com/masudur-rahman/pawsitively-purrfect/api/graphql/schema"
+	"github.com/masudur-rahman/pawsitively-purrfect/api/http/middlewares"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/logr"
+	"github.com/masudur-rahman/pawsitively-purrfect/services/all"
 
-	"github.com/flamego/flamego"
+	"github.com/flamego/session"
 	"github.com/graphql-go/graphql"
 )
 
@@ -17,7 +19,15 @@ type RequestOptions struct {
 	OperationName string                 `json:"operationName" url:"operationName" schema:"operationName"`
 }
 
-func ServeGraphQL(ctx flamego.Context, opts RequestOptions, schemas graphql.Schema) {
+func ServeGraphQL(ctx *middlewares.PurrfectContext, sess session.Session, opts RequestOptions, svc *all.Services) {
+	resolver := resolvers.NewResolver(ctx, svc)
+	schemas, err := schema.PurrfectSchema(resolver)
+	if err != nil {
+		ServeJson(ctx.ResponseWriter(), http.StatusInternalServerError, gqlError(err))
+		logr.DefaultLogger.Errorw("Cannot fetch purrfect schema", "error", err)
+		return
+	}
+
 	result := graphql.Do(graphql.Params{
 		Schema:         schemas,
 		RequestString:  opts.Query,
@@ -27,24 +37,21 @@ func ServeGraphQL(ctx flamego.Context, opts RequestOptions, schemas graphql.Sche
 	})
 
 	if result.HasErrors() {
+		status := http.StatusInternalServerError
 		for _, e := range result.Errors {
-			if e.OriginalError() != nil {
-				logr.DefaultLogger.Errorf(e.OriginalError().Error())
-			}
+			status = getErrorStatus(e.OriginalError())
+			logr.DefaultLogger.Errorw("Serve GraphQL", "error", e.OriginalError())
 		}
 
-		ServeJson(ctx.ResponseWriter(), http.StatusBadRequest, result)
+		ServeJson(ctx.ResponseWriter(), status, result)
+		return
+	}
+
+	if opts.IsLoginMutation() {
+		HandlePostLogin(ctx, sess, result)
 		return
 	}
 
 	ServeJson(ctx.ResponseWriter(), http.StatusOK, result)
 	return
-}
-
-func ServeJson(w http.ResponseWriter, status int, data interface{}) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	if err := json.NewEncoder(w).Encode(data); err != nil {
-		log.Println(err.Error())
-	}
 }

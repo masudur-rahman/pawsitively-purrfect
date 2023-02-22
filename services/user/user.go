@@ -34,7 +34,7 @@ func (us *userService) ValidateUser(params types.RegisterParams) error {
 	if err != nil && !models.IsErrNotFound(err) {
 		return err
 	} else if err == nil {
-		return models.ErrUserAlreadyExist{Username: params.Username}
+		return models.ErrUserAlreadyExist{Email: params.Email}
 	}
 
 	return nil

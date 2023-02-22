@@ -1,11 +1,18 @@
 server:
     host: 0.0.0.0
     port: 8888
+    domain: pawsitively.purrfect
 
 database:
+    type: arangodb
     arangodb:
         host: "localhost"
         port: "8529"
         user: "root"
         password: "admin"
         name: "_system"
+
+session:
+    name: pawsitively_purrfect
+    httpOnly: true
+    csrfSecret: xxxxxxxxxxxxxxxxxxxxxxxxxx

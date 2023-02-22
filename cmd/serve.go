@@ -16,9 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"log"
-
-	"github.com/masudur-rahman/pawsitively-purrfect/api/graphql/schema"
 	"github.com/masudur-rahman/pawsitively-purrfect/api/http"
 
 	"github.com/spf13/cobra"
@@ -33,13 +30,9 @@ var serveCmd = &cobra.Command{
 }
 
 func runServe(cmd *cobra.Command, args []string) {
-	resolver := initialize(cmd.Context())
-	schemas, err := schema.PurrfectSchema(resolver)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	svc := initialize(cmd.Context())
 
-	f := http.Routes(schemas)
+	f := http.Routes(svc)
 	f.Run(62783)
 
 	//http.Graph(resolver)
@@ -47,14 +40,4 @@ func runServe(cmd *cobra.Command, args []string) {
 
 func init() {
 	rootCmd.AddCommand(serveCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// serveCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// serveCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

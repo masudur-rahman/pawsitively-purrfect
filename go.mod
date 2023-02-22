@@ -5,14 +5,17 @@ go 1.19
 require (
 	github.com/arangodb/go-driver v1.4.1
 	github.com/flamego/binding v1.2.0
+	github.com/flamego/cache v1.2.0
+	github.com/flamego/csrf v1.1.1
 	github.com/flamego/flamego v1.7.0
+	github.com/flamego/session v1.2.2
 	github.com/graphql-go/graphql v0.8.0
 	github.com/graphql-go/handler v0.2.3
 	github.com/masudur-rahman/go-oneliners v1.0.0
 	github.com/rs/xid v1.4.0
 	github.com/spf13/cobra v1.6.1
 	go.uber.org/zap v1.24.0
-	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
+	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
 	gopkg.in/yaml.v3 v3.0.1
 )
 
