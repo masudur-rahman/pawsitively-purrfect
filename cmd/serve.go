@@ -34,8 +34,6 @@ func runServe(cmd *cobra.Command, args []string) {
 
 	f := http.Routes(svc)
 	f.Run(62783)
-
-	//http.Graph(resolver)
 }
 
 func init() {
