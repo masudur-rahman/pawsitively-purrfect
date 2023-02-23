@@ -23,6 +23,7 @@ type PurrfectContext struct {
 	User        *models.User
 	IsSigned    bool
 	IsBasicAuth bool
+	IsValidCSRF bool
 }
 
 func ReqPurrfectContext() flamego.Handler {
@@ -33,10 +34,21 @@ func ReqPurrfectContext() flamego.Handler {
 			Session: sess,
 		}
 
-		user, err := getSignedInUser(ctx.Session, svc)
+		username, passwd, ok := c.Request().BasicAuth()
+		if ok {
+			user, err := svc.User.LoginUser(username, passwd)
+			if err == nil {
+				ctx.User = user
+				ctx.IsSigned = true
+				ctx.IsBasicAuth = true
+			}
+		}
+
+		user, err := getSignedInUserFromSession(ctx.Session, svc)
 		if err == nil {
 			ctx.User = user
 			ctx.IsSigned = true
+			ctx.IsValidCSRF = verifyCSRF(c, x)
 		}
 
 		c.Map(ctx)

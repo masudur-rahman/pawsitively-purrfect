@@ -28,7 +28,11 @@ func Sessioner() flamego.Handler {
 }
 
 func CSRFer() flamego.Handler {
+	sfg := configs.PurrfectConfig.Session
 	return csrf.Csrfer(csrf.Options{
-		Secret: configs.PurrfectConfig.Session.CSRFSecret,
+		Secret:     sfg.CSRFSecret,
+		Header:     sfg.CSRFHeader,
+		Form:       sfg.CSRFForm,
+		SessionKey: sfg.SessionKey,
 	})
 }

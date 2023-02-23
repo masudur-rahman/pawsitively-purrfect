@@ -14,4 +14,5 @@ type UserService interface {
 	CreateUser(params types.RegisterParams) (*models.User, error)      // new user sign up
 	UpdateUser(user *models.User) (*models.User, error)                // by logged-in user
 	DeleteUser(id string) error                                        // by logged-in user
+	LoginUser(usernameOrEmail string, passwd string) (*models.User, error)
 }

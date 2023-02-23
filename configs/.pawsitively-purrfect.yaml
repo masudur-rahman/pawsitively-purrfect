@@ -16,3 +16,6 @@ session:
     name: pawsitively_purrfect
     httpOnly: true
     csrfSecret: xxxxxxxxxxxxxxxxxxxxxxxxxx
+    csrfHeader: "X-CSRF-Token"
+    csrfForm: "_csrf"
+    sessionKey: "userID"

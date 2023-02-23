@@ -2,7 +2,6 @@ package resolvers
 
 import (
 	"errors"
-	"strings"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
 	"github.com/masudur-rahman/pawsitively-purrfect/models/types"
@@ -47,21 +46,9 @@ func (r *Resolver) Login(p graphql.ResolveParams) (interface{}, error) {
 		return nil, err
 	}
 
-	var user *models.User
-	if strings.Contains(params.Username, "@") {
-		user, err = r.svc.User.GetUserByEmail(params.Username)
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		user, err = r.svc.User.GetUserByName(params.Username)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	if !pkg.CheckPasswordHash(params.Password, user.PasswordHash) {
-		return nil, models.ErrUserPasswordMismatch{}
+	user, err := r.svc.User.LoginUser(params.Username, params.Password)
+	if err != nil {
+		return nil, err
 	}
 
 	return user.APIUser(), err

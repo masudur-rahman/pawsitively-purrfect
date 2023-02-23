@@ -35,4 +35,7 @@ type SessionConfig struct {
 	Name       string `json:"name"`
 	HttpOnly   bool   `json:"httpOnly"`
 	CSRFSecret string `json:"csrfSecret"`
+	CSRFHeader string `json:"csrfHeader"`
+	CSRFForm   string `json:"csrfForm"`
+	SessionKey string `json:"sessionKey"`
 }

@@ -1,6 +1,7 @@
 package user
 
 import (
+	"strings"
 	"time"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
@@ -118,4 +119,26 @@ func (us *userService) DeleteUser(id string) error {
 	}
 
 	return us.userRepo.Delete(id)
+}
+
+func (us *userService) LoginUser(usernameOrEmail string, passwd string) (*models.User, error) {
+	var err error
+	var user *models.User
+	if strings.Contains(usernameOrEmail, "@") {
+		user, err = us.GetUserByEmail(usernameOrEmail)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		user, err = us.GetUserByName(usernameOrEmail)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if !pkg.CheckPasswordHash(passwd, user.PasswordHash) {
+		return nil, models.ErrUserPasswordMismatch{}
+	}
+
+	return user, nil
 }
