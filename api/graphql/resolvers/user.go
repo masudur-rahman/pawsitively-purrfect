@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
-	"github.com/masudur-rahman/pawsitively-purrfect/models/types"
+	"github.com/masudur-rahman/pawsitively-purrfect/models/gqtypes"
 	"github.com/masudur-rahman/pawsitively-purrfect/pkg"
 
 	"github.com/graphql-go/graphql"
@@ -23,11 +23,11 @@ func (r *Resolver) GetUser(p graphql.ResolveParams) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	return user.APIUser(), nil
+	return user.APIFormat(), nil
 }
 
 func (r *Resolver) RegisterUser(p graphql.ResolveParams) (interface{}, error) {
-	params := types.RegisterParams{}
+	params := gqtypes.RegisterParams{}
 	if err := pkg.ParseInto(p.Args, &params); err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (r *Resolver) RegisterUser(p graphql.ResolveParams) (interface{}, error) {
 }
 
 func (r *Resolver) Login(p graphql.ResolveParams) (interface{}, error) {
-	params := types.LoginParams{}
+	params := gqtypes.LoginParams{}
 	err := pkg.ParseInto(p.Args, &params)
 	if err != nil {
 		return nil, err
@@ -51,5 +51,5 @@ func (r *Resolver) Login(p graphql.ResolveParams) (interface{}, error) {
 		return nil, err
 	}
 
-	return user.APIUser(), err
+	return user.APIFormat(), err
 }

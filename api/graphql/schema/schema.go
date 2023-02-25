@@ -2,6 +2,7 @@ package schema
 
 import (
 	"github.com/masudur-rahman/pawsitively-purrfect/api/graphql/resolvers"
+	"github.com/masudur-rahman/pawsitively-purrfect/models/gqtypes"
 
 	"github.com/graphql-go/graphql"
 )
@@ -30,8 +31,8 @@ var petType = graphql.NewObject(graphql.ObjectConfig{
 		"gender":         &graphql.Field{Type: graphql.String},
 		"photo":          &graphql.Field{Type: graphql.String},
 		"adoptionStatus": &graphql.Field{Type: graphql.String},
-		"shelterID":      &graphql.Field{Type: graphql.String},
-		"currentOwnerID": &graphql.Field{Type: graphql.String},
+		"shelterID":      &graphql.Field{Type: graphql.ID},
+		"currentOwnerID": &graphql.Field{Type: graphql.ID},
 	},
 })
 
@@ -40,13 +41,13 @@ var shelterType = graphql.NewObject(graphql.ObjectConfig{
 	Fields: graphql.Fields{
 		"id":                 &graphql.Field{Type: graphql.ID},
 		"name":               &graphql.Field{Type: graphql.String},
+		"description":        &graphql.Field{Type: graphql.String},
 		"website":            &graphql.Field{Type: graphql.String},
 		"location":           &graphql.Field{Type: graphql.String},
 		"contactInformation": &graphql.Field{Type: graphql.String},
-		"description":        &graphql.Field{Type: graphql.String},
 		"logo":               &graphql.Field{Type: graphql.String},
 		"numberOfPets":       &graphql.Field{Type: graphql.Int},
-		"ownerID":            &graphql.Field{Type: graphql.Int},
+		"ownerID":            &graphql.Field{Type: graphql.ID},
 	},
 })
 
@@ -89,6 +90,7 @@ func rootMutation(resolver *resolvers.Resolver) *graphql.Object {
 	mutation := graphql.NewObject(graphql.ObjectConfig{
 		Name: "RootMutation",
 		Fields: graphql.Fields{
+			// user
 			"register": &graphql.Field{
 				Type:        userType,
 				Description: "Register a new user to the system",
@@ -108,6 +110,14 @@ func rootMutation(resolver *resolvers.Resolver) *graphql.Object {
 					"password": &graphql.ArgumentConfig{Type: graphql.String},
 				},
 				Resolve: resolver.Login,
+			},
+
+			// shelter
+			"addShelter": &graphql.Field{
+				Type:        shelterType,
+				Description: "Add new shelter to the system",
+				Args:        gqtypes.AddShelterFieldArgs,
+				Resolve:     resolver.AddShelter,
 			},
 		},
 	})

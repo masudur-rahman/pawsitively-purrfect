@@ -77,7 +77,10 @@ func (u *NoSQLUserRepository) FindUsers(filter models.User) ([]*models.User, err
 
 func (u *NoSQLUserRepository) Create(user *models.User) error {
 	u.logger.Infow("creating user")
-	user.ID = xid.New().String()
+	if user.ID == "" {
+		user.ID = xid.New().String()
+	}
+	user.XKey = user.ID
 	id, err := u.db.InsertOne(user)
 	u.logger.Infow("user created", "id", id)
 	return err

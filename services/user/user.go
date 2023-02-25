@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
-	"github.com/masudur-rahman/pawsitively-purrfect/models/types"
+	"github.com/masudur-rahman/pawsitively-purrfect/models/gqtypes"
 	"github.com/masudur-rahman/pawsitively-purrfect/pkg"
 	"github.com/masudur-rahman/pawsitively-purrfect/repos"
 	"github.com/masudur-rahman/pawsitively-purrfect/services"
@@ -23,7 +23,7 @@ func NewUserService(userRepo repos.UserRepository) *userService {
 	}
 }
 
-func (us *userService) ValidateUser(params types.RegisterParams) error {
+func (us *userService) ValidateUser(params gqtypes.RegisterParams) error {
 	_, err := us.userRepo.FindByName(params.Username)
 	if err != nil && !models.IsErrNotFound(err) {
 		return err
@@ -74,7 +74,7 @@ func (us *userService) ListUsers(filter models.User, limit int64) ([]*models.Use
 	return users, nil
 }
 
-func (us *userService) CreateUser(params types.RegisterParams) (*models.User, error) {
+func (us *userService) CreateUser(params gqtypes.RegisterParams) (*models.User, error) {
 	if err := us.ValidateUser(params); err != nil {
 		return nil, err
 	}
@@ -85,7 +85,7 @@ func (us *userService) CreateUser(params types.RegisterParams) (*models.User, er
 		Username:     params.Username,
 		Email:        params.Email,
 		PasswordHash: pkg.MustHashPassword(params.Password),
-		IsActive:     false,
+		IsActive:     true,
 		IsAdmin:      false,
 		CreatedUnix:  time.Now().Unix(),
 	}

@@ -1,4 +1,4 @@
-package types
+package gqtypes
 
 type RegisterParams struct {
 	FirstName string `json:"firstName"`

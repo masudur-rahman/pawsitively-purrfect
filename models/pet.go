@@ -1,6 +1,7 @@
 package models
 
 type Pet struct {
+	XKey            string            `json:"_key"`
 	ID              string            `json:"id"`
 	Name            string            `json:"name"`
 	Breed           string            `json:"breed"`

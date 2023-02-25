@@ -18,17 +18,12 @@ func NewResolver(ctx *middlewares.PurrfectContext, svc *all.Services) *Resolver 
 	return &Resolver{ctx: ctx, svc: svc}
 }
 
-func (r *Resolver) GetShelter(p graphql.ResolveParams) (interface{}, error) {
-	id, ok := p.Args["id"].(string)
-	if !ok {
-		return nil, errors.New("invalid argument")
-	}
-	shelter, err := r.svc.Shelter.GetShelter(id)
-	if err != nil {
-		return nil, err
+func (r *Resolver) IsAuthenticated() bool {
+	if r.ctx.IsSigned && (r.ctx.IsBasicAuth || r.ctx.IsValidCSRF) {
+		return true
 	}
 
-	return shelter, nil
+	return false
 }
 
 func (r *Resolver) GetPet(p graphql.ResolveParams) (interface{}, error) {

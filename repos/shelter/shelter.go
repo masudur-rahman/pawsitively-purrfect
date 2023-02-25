@@ -7,6 +7,8 @@ import (
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/nosql"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/logr"
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
+
+	"github.com/rs/xid"
 )
 
 type NoSQLShelterRepository struct {
@@ -73,6 +75,11 @@ func (s *NoSQLShelterRepository) FindShelters(filter models.Shelter) ([]*models.
 }
 
 func (s *NoSQLShelterRepository) Save(shelter *models.Shelter) error {
+	s.logger.Infow("creating new shelter")
+	if shelter.ID == "" {
+		shelter.ID = xid.New().String()
+	}
+	shelter.XKey = shelter.ID
 	_, err := s.db.InsertOne(shelter)
 	return err
 }

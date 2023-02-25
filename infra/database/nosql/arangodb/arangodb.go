@@ -10,8 +10,6 @@ import (
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/nosql"
 	"github.com/masudur-rahman/pawsitively-purrfect/pkg"
 
-	"github.com/masudur-rahman/go-oneliners"
-
 	arango "github.com/arangodb/go-driver"
 	"github.com/arangodb/go-driver/http"
 )
@@ -81,13 +79,11 @@ func (a ArangoDB) FindOne(document interface{}, filter ...interface{}) (bool, er
 	}
 
 	query := generateArangoQuery(a.collectionName, filter[0], false)
-	fmt.Println("Find One => ", query.queryString, query.bindVars)
 	results, err := executeArangoQuery(a.ctx, a.db, query, 1)
 	if err != nil {
 		return false, err
 	}
 
-	oneliners.PrettyJson(results, "Data")
 	if len(results) != 1 {
 		return false, nil
 	}

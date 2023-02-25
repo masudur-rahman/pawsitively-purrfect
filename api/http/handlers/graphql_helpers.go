@@ -9,7 +9,7 @@ import (
 	"github.com/masudur-rahman/pawsitively-purrfect/configs"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/logr"
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
-	"github.com/masudur-rahman/pawsitively-purrfect/models/types"
+	"github.com/masudur-rahman/pawsitively-purrfect/models/gqtypes"
 	"github.com/masudur-rahman/pawsitively-purrfect/pkg"
 
 	"github.com/flamego/csrf"
@@ -24,7 +24,7 @@ func (opts RequestOptions) IsLoginMutation() bool {
 }
 
 func HandlePostLogin(ctx flamego.Context, sess session.Session, result *graphql.Result) {
-	var user types.User
+	var user gqtypes.User
 	if err := pkg.ParseGraphQLData(result, &user, "login"); err != nil {
 		ServeJson(ctx.ResponseWriter(), http.StatusInternalServerError, err)
 	}

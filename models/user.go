@@ -3,10 +3,11 @@ package models
 import (
 	"fmt"
 
-	"github.com/masudur-rahman/pawsitively-purrfect/models/types"
+	"github.com/masudur-rahman/pawsitively-purrfect/models/gqtypes"
 )
 
 type User struct {
+	XKey      string `json:"_key"`
 	ID        string `json:"id"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
@@ -26,8 +27,8 @@ type User struct {
 	LastLoginUnix int64 `json:"lastLoginUnix"`
 }
 
-func (u *User) APIUser() types.User {
-	return types.User{
+func (u *User) APIFormat() gqtypes.User {
+	return gqtypes.User{
 		ID:       u.ID,
 		Username: u.Username,
 		Email:    u.Email,
