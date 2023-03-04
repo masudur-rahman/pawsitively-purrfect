@@ -12,7 +12,7 @@ import (
 
 func (r *Resolver) GetPet(p graphql.ResolveParams) (interface{}, error) {
 	if !r.IsAuthenticated() {
-		return nil, models.ErrUserNotAuthenticated
+		return nil, models.ErrUserNotAuthenticated{}
 	}
 
 	id, ok := p.Args["id"].(string)
@@ -29,12 +29,17 @@ func (r *Resolver) GetPet(p graphql.ResolveParams) (interface{}, error) {
 
 func (r *Resolver) ListPets(p graphql.ResolveParams) (interface{}, error) {
 	if !r.IsAuthenticated() {
-		return nil, models.ErrUserNotAuthenticated
+		return nil, models.ErrUserNotAuthenticated{}
 	}
 
 	shelterID, ok := p.Args["shelterID"].(string)
 	if !ok {
 		return nil, errors.New("invalid argument")
+	}
+
+	_, err := r.svc.Shelter.GetShelter(shelterID)
+	if err != nil {
+		return nil, err
 	}
 
 	pets, err := r.svc.Pet.ListShelterPets(shelterID)
@@ -52,7 +57,7 @@ func (r *Resolver) ListPets(p graphql.ResolveParams) (interface{}, error) {
 
 func (r *Resolver) AddPetNewPet(p graphql.ResolveParams) (interface{}, error) {
 	if !r.IsAuthenticated() {
-		return nil, models.ErrUserNotAuthenticated
+		return nil, models.ErrUserNotAuthenticated{}
 	}
 
 	params := gqtypes.PetParams{}

@@ -29,7 +29,7 @@ func (s *NoSQLShelterRepository) FindByID(id string) (*models.Shelter, error) {
 	if err != nil {
 		return nil, err
 	} else if !found {
-		return nil, errors.New("shelter not found")
+		return nil, models.ErrShelterNotFound{ID: id}
 	}
 	return &shelter, err
 }

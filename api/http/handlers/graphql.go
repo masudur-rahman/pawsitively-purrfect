@@ -37,9 +37,11 @@ func ServeGraphQL(ctx *middlewares.PurrfectContext, sess session.Session, opts R
 	})
 
 	if result.HasErrors() {
-		status := http.StatusInternalServerError
-		for _, e := range result.Errors {
-			status = getErrorStatus(e.OriginalError())
+		var status int
+		var errMsg string
+		for idx, e := range result.Errors {
+			status, errMsg = parseStatusError(e.OriginalError())
+			result.Errors[idx].Message = errMsg
 			logr.DefaultLogger.Errorw("Serve GraphQL", "error", e.OriginalError())
 		}
 

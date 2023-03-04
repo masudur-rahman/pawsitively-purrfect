@@ -2,6 +2,7 @@ package pet
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
 	"github.com/masudur-rahman/pawsitively-purrfect/models/gqtypes"
@@ -23,16 +24,19 @@ func NewPetService(petRepo repos.PetRepository, userRepo repos.UserRepository) *
 func (p *petService) AdoptPet(userID string, petID string) error {
 	pet, err := p.petRepo.FindByID(petID)
 	if err != nil {
-		return fmt.Errorf("could not find pet with ID %s: %w", petID, err)
+		return err
 	}
 
 	if pet.AdoptionStatus == models.PetAdopted {
-		return fmt.Errorf("pet with ID %s already adopted", petID)
+		return models.StatusError{
+			Status:  http.StatusBadRequest,
+			Message: fmt.Sprintf("pet with ID %s already adopted", petID),
+		}
 	}
 
 	_, err = p.userRepo.FindByID(userID)
 	if err != nil {
-		return fmt.Errorf("error while fetching user with ID %s: %v", userID, err)
+		return err
 	}
 
 	pet.AdoptionStatus = models.PetAdopted
@@ -40,7 +44,10 @@ func (p *petService) AdoptPet(userID string, petID string) error {
 	pet.OriginShelterID, pet.ShelterID = pet.ShelterID, ""
 	err = p.petRepo.Update(pet)
 	if err != nil {
-		return fmt.Errorf("error while updating the pet: %v", err)
+		return models.StatusError{
+			Status:  http.StatusBadRequest,
+			Message: fmt.Sprintf("error while updating the pet: %v", err),
+		}
 	}
 	return nil
 }

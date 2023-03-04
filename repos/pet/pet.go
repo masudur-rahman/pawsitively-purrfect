@@ -66,7 +66,7 @@ func (p *NoSQLPetRepository) FindByID(id string) (*models.Pet, error) {
 		return nil, err
 	}
 	if !found {
-		return nil, fmt.Errorf("pet with ID %q not found", id)
+		return nil, models.ErrPetNotFound{ID: id}
 	}
 	return &pet, nil
 }
@@ -81,7 +81,7 @@ func (p *NoSQLPetRepository) FindByName(name string) (*models.Pet, error) {
 		return nil, err
 	}
 	if !found {
-		return nil, fmt.Errorf("pet with name %q not found", name)
+		return nil, models.ErrPetNotFound{Name: name}
 	}
 	return &pet, nil
 }

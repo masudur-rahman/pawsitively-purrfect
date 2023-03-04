@@ -1,8 +1,29 @@
 package models
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+)
 
-var ErrUserNotAuthenticated = fmt.Errorf("user must be authenticated")
+type StatusError struct {
+	Status  int    `json:"status"`
+	Message string `json:"message"`
+}
+
+func (err StatusError) Error() string {
+	jsonBytes, _ := json.Marshal(err)
+	return string(jsonBytes)
+}
+
+type ErrUserNotAuthenticated struct{}
+
+func (err ErrUserNotAuthenticated) Error() string {
+	return StatusError{
+		Status:  http.StatusUnauthorized,
+		Message: "user must be authenticated",
+	}.Error()
+}
 
 type ErrUserNotFound struct {
 	ID       string
@@ -11,7 +32,10 @@ type ErrUserNotFound struct {
 }
 
 func (err ErrUserNotFound) Error() string {
-	return fmt.Sprintf("user [id: %v, username: %v, email: %v] doesn't exist", err.ID, err.Username, err.Email)
+	return StatusError{
+		Status:  http.StatusNotFound,
+		Message: fmt.Sprintf("user [id: %v, username: %v, email: %v] doesn't exist", err.ID, err.Username, err.Email),
+	}.Error()
 }
 
 type ErrUserAlreadyExist struct {
@@ -20,13 +44,19 @@ type ErrUserAlreadyExist struct {
 }
 
 func (err ErrUserAlreadyExist) Error() string {
-	return fmt.Sprintf("user [username: %v, email: %v] already exist", err.Username, err.Email)
+	return StatusError{
+		Status:  http.StatusConflict,
+		Message: fmt.Sprintf("user [username: %v, email: %v] already exist", err.Username, err.Email),
+	}.Error()
 }
 
 type ErrUserPasswordMismatch struct{}
 
 func (ErrUserPasswordMismatch) Error() string {
-	return "username or password is invalid"
+	return StatusError{
+		Status:  http.StatusBadRequest,
+		Message: "username or password is invalid",
+	}.Error()
 }
 
 type ErrShelterNotFound struct {
@@ -35,7 +65,10 @@ type ErrShelterNotFound struct {
 }
 
 func (err ErrShelterNotFound) Error() string {
-	return fmt.Sprintf("shelter [id: %v, name: %v] doesn't exist", err.ID, err.Name)
+	return StatusError{
+		Status:  http.StatusNotFound,
+		Message: fmt.Sprintf("shelter [id: %v, name: %v] doesn't exist", err.ID, err.Name),
+	}.Error()
 }
 
 type ErrShelterAlreadyExist struct {
@@ -44,16 +77,31 @@ type ErrShelterAlreadyExist struct {
 }
 
 func (err ErrShelterAlreadyExist) Error() string {
-	return fmt.Sprintf("shelter [id: %v, name: %v] already exist", err.ID, err.Name)
+	return StatusError{
+		Status:  http.StatusConflict,
+		Message: fmt.Sprintf("shelter [id: %v, name: %v] already exist", err.ID, err.Name),
+	}.Error()
+}
+
+type ErrPetNotFound struct {
+	ID   string
+	Name string
+}
+
+func (err ErrPetNotFound) Error() string {
+	return StatusError{
+		Status:  http.StatusNotFound,
+		Message: fmt.Sprintf("pet [id: %v, name: %v] doesn't exist", err.ID, err.Name),
+	}.Error()
 }
 
 func IsErrNotFound(err error) bool {
 	switch err.(type) {
 	case ErrUserNotFound:
 		return true
-	case ErrUserPasswordMismatch:
-		return true
 	case ErrShelterNotFound:
+		return true
+	case ErrPetNotFound:
 		return true
 	default:
 		return false
@@ -73,6 +121,8 @@ func IsErrConflict(err error) bool {
 
 func IsErrBadRequest(err error) bool {
 	switch err.(type) {
+	case ErrUserPasswordMismatch:
+		return true
 	default:
 		return false
 	}

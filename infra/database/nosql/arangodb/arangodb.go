@@ -80,7 +80,9 @@ func (a ArangoDB) FindOne(document interface{}, filter ...interface{}) (bool, er
 
 	query := generateArangoQuery(a.collectionName, filter[0], false)
 	results, err := executeArangoQuery(a.ctx, a.db, query, 1)
-	if err != nil {
+	if arango.IsNotFoundGeneral(err) {
+		return false, nil
+	} else if err != nil {
 		return false, err
 	}
 

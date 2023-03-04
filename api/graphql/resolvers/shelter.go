@@ -25,7 +25,7 @@ func (r *Resolver) GetShelter(p graphql.ResolveParams) (interface{}, error) {
 
 func (r *Resolver) ListShelters(p graphql.ResolveParams) (interface{}, error) {
 	if r.IsAuthenticated() {
-		return nil, models.ErrUserNotAuthenticated
+		return nil, models.ErrUserNotAuthenticated{}
 	}
 
 	params := gqtypes.ShelterParams{}
@@ -48,7 +48,7 @@ func (r *Resolver) ListShelters(p graphql.ResolveParams) (interface{}, error) {
 
 func (r *Resolver) AddShelter(p graphql.ResolveParams) (interface{}, error) {
 	if !r.IsAuthenticated() {
-		return nil, models.ErrUserNotAuthenticated
+		return nil, models.ErrUserNotAuthenticated{}
 	}
 
 	params := gqtypes.ShelterParams{}

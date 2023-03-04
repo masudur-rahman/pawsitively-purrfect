@@ -55,6 +55,15 @@ func ServeJson(w http.ResponseWriter, status int, data interface{}) {
 	}
 }
 
+func parseStatusError(err error) (int, string) {
+	serr := models.StatusError{}
+	if perr := json.Unmarshal([]byte(err.Error()), &serr); perr != nil {
+		return http.StatusInternalServerError, err.Error()
+	}
+
+	return serr.Status, serr.Message
+}
+
 func getErrorStatus(err error) int {
 	if models.IsErrNotFound(err) {
 		return http.StatusNotFound
