@@ -2,7 +2,6 @@ package schema
 
 import (
 	"github.com/masudur-rahman/pawsitively-purrfect/api/graphql/resolvers"
-	"github.com/masudur-rahman/pawsitively-purrfect/models/gqtypes"
 
 	"github.com/graphql-go/graphql"
 )
@@ -64,21 +63,37 @@ func rootQuery(resolver *resolvers.Resolver) *graphql.Object {
 				},
 				Resolve: resolver.GetUser,
 			},
+
 			"shelter": &graphql.Field{
 				Type:        shelterType,
 				Description: "Get a shelter by ID.",
 				Args: graphql.FieldConfigArgument{
-					"id": &graphql.ArgumentConfig{Type: graphql.ID},
+					"id": &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.ID}},
 				},
 				Resolve: resolver.GetShelter,
 			},
+			"listShelters": &graphql.Field{
+				Type:        graphql.NewList(shelterType),
+				Description: "List shelters by filter",
+				Args:        shelterFilterFieldArgs,
+				Resolve:     resolver.ListShelters,
+			},
+
 			"pet": &graphql.Field{
 				Type:        petType,
 				Description: "Get a pet by ID.",
 				Args: graphql.FieldConfigArgument{
-					"id": &graphql.ArgumentConfig{Type: graphql.ID},
+					"id": &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.ID}},
 				},
 				Resolve: resolver.GetPet,
+			},
+			"listPets": &graphql.Field{
+				Type:        graphql.NewList(petType),
+				Description: "List pets by shelter",
+				Args: graphql.FieldConfigArgument{
+					"shelterID": &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.ID}},
+				},
+				Resolve: resolver.ListPets,
 			},
 		},
 	})
@@ -94,30 +109,30 @@ func rootMutation(resolver *resolvers.Resolver) *graphql.Object {
 			"register": &graphql.Field{
 				Type:        userType,
 				Description: "Register a new user to the system",
-				Args: graphql.FieldConfigArgument{
-					"username": &graphql.ArgumentConfig{Type: graphql.String},
-					"email":    &graphql.ArgumentConfig{Type: graphql.String},
-					"password": &graphql.ArgumentConfig{Type: graphql.String},
-				},
-				Resolve: resolver.RegisterUser,
+				Args:        registerParams,
+				Resolve:     resolver.RegisterUser,
 			},
 
 			"login": &graphql.Field{
 				Type:        userType,
 				Description: "Login user to the system",
-				Args: graphql.FieldConfigArgument{
-					"username": &graphql.ArgumentConfig{Type: graphql.String},
-					"password": &graphql.ArgumentConfig{Type: graphql.String},
-				},
-				Resolve: resolver.Login,
+				Args:        loginParams,
+				Resolve:     resolver.Login,
 			},
 
 			// shelter
 			"addShelter": &graphql.Field{
 				Type:        shelterType,
 				Description: "Add new shelter to the system",
-				Args:        gqtypes.AddShelterFieldArgs,
+				Args:        addShelterFieldArgs,
 				Resolve:     resolver.AddShelter,
+			},
+
+			"addPet": &graphql.Field{
+				Type:        petType,
+				Description: "Add new pet to a shelter",
+				Args:        addPetFieldArgs,
+				Resolve:     resolver.AddPetNewPet,
 			},
 		},
 	})

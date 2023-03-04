@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
+	"github.com/masudur-rahman/pawsitively-purrfect/models/gqtypes"
 	"github.com/masudur-rahman/pawsitively-purrfect/repos"
 	"github.com/masudur-rahman/pawsitively-purrfect/services"
 )
@@ -44,24 +45,33 @@ func (p *petService) AdoptPet(userID string, petID string) error {
 	return nil
 }
 
-func (p *petService) AddPetToShelter(shelterID string, pet *models.Pet) error {
-	if shelterID == "" || pet == nil {
-		return fmt.Errorf("invalid input")
+func (p *petService) AddPetToShelter(params gqtypes.PetParams) (*models.Pet, error) {
+	if params.ShelterID == "" {
+		return nil, fmt.Errorf("shelterID must be non empty")
 	}
 
-	// TODO: might need to check if the shelterID is valid
-	pet.ShelterID = shelterID
+	pet := &models.Pet{
+		Name:           params.Name,
+		Breed:          params.Breed,
+		Gender:         params.Gender,
+		AdoptionStatus: models.PetAvailable,
+		ShelterID:      params.ShelterID,
+	}
 
 	err := p.petRepo.Save(pet)
 	if err != nil {
-		return fmt.Errorf("failed to add pet to shelter: %w", err)
+		return nil, fmt.Errorf("failed to add pet to shelter: %v", err)
 	}
 
-	return nil
+	return pet, nil
 }
 
 func (p *petService) GetPetByID(id string) (*models.Pet, error) {
 	return p.petRepo.FindByID(id)
+}
+
+func (p *petService) ListShelterPets(shelterID string) ([]*models.Pet, error) {
+	return p.petRepo.FindByShelterID(shelterID)
 }
 
 func (p *petService) UpdatePet(pet *models.Pet) error {

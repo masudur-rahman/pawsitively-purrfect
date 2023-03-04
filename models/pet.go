@@ -1,5 +1,14 @@
 package models
 
+import "github.com/masudur-rahman/pawsitively-purrfect/models/gqtypes"
+
+type PetAdoptionStatus int
+
+const (
+	PetAvailable PetAdoptionStatus = iota
+	PetAdopted
+)
+
 type Pet struct {
 	XKey            string            `json:"_key"`
 	ID              string            `json:"id"`
@@ -15,9 +24,25 @@ type Pet struct {
 	CurrentOwnerID string `json:"currentOwnerID"`
 }
 
-type PetAdoptionStatus string
+func (s PetAdoptionStatus) String() string {
+	switch s {
+	case PetAvailable:
+		return "Available"
+	case PetAdopted:
+		return "Adopted"
+	}
+	return ""
+}
 
-const (
-	PetAdopted   = "adopted"
-	PetAvailable = "available"
-)
+func (pet *Pet) APIFormat() gqtypes.Pet {
+	return gqtypes.Pet{
+		ID:             pet.ID,
+		Name:           pet.Name,
+		Breed:          pet.Breed,
+		Gender:         pet.Gender,
+		Photo:          pet.Photo,
+		AdoptionStatus: pet.AdoptionStatus.String(),
+		ShelterID:      pet.ShelterID,
+		CurrentOwnerID: pet.CurrentOwnerID,
+	}
+}

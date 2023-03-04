@@ -40,7 +40,7 @@ func generateArangoQuery(collection string, filter interface{}, removeQuery bool
 			continue
 		}
 
-		fieldName := strings.ToLower(field.Name)
+		fieldName := field.Tag.Get("json")
 		filters = append(filters, fmt.Sprintf("doc.%s == @%s", fieldName, fieldName))
 		bindVars[fieldName] = val.Field(idx).Interface()
 	}

@@ -1,12 +1,8 @@
 package resolvers
 
 import (
-	"errors"
-
 	"github.com/masudur-rahman/pawsitively-purrfect/api/http/middlewares"
 	"github.com/masudur-rahman/pawsitively-purrfect/services/all"
-
-	"github.com/graphql-go/graphql"
 )
 
 type Resolver struct {
@@ -24,17 +20,4 @@ func (r *Resolver) IsAuthenticated() bool {
 	}
 
 	return false
-}
-
-func (r *Resolver) GetPet(p graphql.ResolveParams) (interface{}, error) {
-	id, ok := p.Args["id"].(string)
-	if !ok {
-		return nil, errors.New("invalid argument")
-	}
-	pet, err := r.svc.Pet.GetPetByID(id)
-	if err != nil {
-		return nil, err
-	}
-
-	return pet, nil
 }

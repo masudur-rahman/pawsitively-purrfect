@@ -29,7 +29,7 @@ func (s *shelterService) ValidateShelter(params gqtypes.ShelterParams) error {
 	// if params.ID is set, then it's an update operation
 	// verify that the shelter owner is the same person
 	if params.ID != "" {
-		if err := s.checkIfShelterOwnedByCurrentUser(params.ID, params.OwnerID); err != nil {
+		if err := s.ShelterOwnedByUser(params.ID, params.OwnerID); err != nil {
 			return err
 		}
 	}
@@ -46,7 +46,7 @@ func (s *shelterService) ValidateShelter(params gqtypes.ShelterParams) error {
 	return nil
 }
 
-func (s *shelterService) checkIfShelterOwnedByCurrentUser(id, ownerID string) error {
+func (s *shelterService) ShelterOwnedByUser(id, ownerID string) error {
 	shelter, err := s.shelterRepo.FindByID(id)
 	if err != nil {
 		return err
@@ -63,8 +63,17 @@ func (s *shelterService) GetShelter(id string) (*models.Shelter, error) {
 	return s.shelterRepo.FindByID(id)
 }
 
-func (s *shelterService) FindShelters(filter models.Shelter) ([]*models.Shelter, error) {
-	return s.shelterRepo.FindShelters(filter)
+func (s *shelterService) FindShelters(filter gqtypes.ShelterParams) ([]*models.Shelter, error) {
+	sf := models.Shelter{
+		ID:                 filter.ID,
+		Name:               filter.Name,
+		Description:        filter.Description,
+		Website:            filter.Website,
+		Location:           filter.Location,
+		ContactInformation: filter.ContactInformation,
+		OwnerID:            filter.OwnerID,
+	}
+	return s.shelterRepo.FindShelters(sf)
 }
 
 func (s *shelterService) UserShelters(userID string) ([]*models.Shelter, error) {

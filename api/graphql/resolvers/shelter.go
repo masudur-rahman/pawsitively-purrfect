@@ -20,7 +20,30 @@ func (r *Resolver) GetShelter(p graphql.ResolveParams) (interface{}, error) {
 		return nil, err
 	}
 
-	return shelter, nil
+	return shelter.APIFormat(), nil
+}
+
+func (r *Resolver) ListShelters(p graphql.ResolveParams) (interface{}, error) {
+	if r.IsAuthenticated() {
+		return nil, models.ErrUserNotAuthenticated
+	}
+
+	params := gqtypes.ShelterParams{}
+	if err := pkg.ParseInto(p.Args, &params); err != nil {
+		return nil, err
+	}
+
+	shelters, err := r.svc.Shelter.FindShelters(params)
+	if err != nil {
+		return nil, err
+	}
+
+	apiShelters := make([]gqtypes.Shelter, 0, len(shelters))
+	for _, shelter := range shelters {
+		apiShelters = append(apiShelters, shelter.APIFormat())
+	}
+
+	return apiShelters, nil
 }
 
 func (r *Resolver) AddShelter(p graphql.ResolveParams) (interface{}, error) {
@@ -33,7 +56,7 @@ func (r *Resolver) AddShelter(p graphql.ResolveParams) (interface{}, error) {
 		return nil, err
 	}
 
-	params.OwnerID = r.ctx.User.ID
+	params.OwnerID = r.ctx.GetLoggedInUserID()
 	if err := r.svc.Shelter.ValidateShelter(params); err != nil {
 		return nil, err
 	}

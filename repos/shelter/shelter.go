@@ -44,7 +44,7 @@ func (s *NoSQLShelterRepository) FindByName(name string) (*models.Shelter, error
 		return nil, err
 	}
 	if !found {
-		return nil, fmt.Errorf("shelter with name %q not found", name)
+		return nil, models.ErrShelterNotFound{Name: name}
 	}
 	return &shelter, nil
 }

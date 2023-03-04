@@ -107,7 +107,7 @@ func (a ArangoDB) FindMany(documents interface{}, filter interface{}) error {
 		return err
 	}
 
-	return pkg.ParseInto(results[0], documents)
+	return pkg.ParseInto(results, documents)
 }
 
 func (a ArangoDB) InsertOne(document interface{}) (id string, err error) {

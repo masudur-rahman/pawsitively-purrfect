@@ -26,6 +26,14 @@ type PurrfectContext struct {
 	IsValidCSRF bool
 }
 
+func (ctx *PurrfectContext) GetLoggedInUserID() string {
+	if ctx.IsSigned {
+		return ctx.User.ID
+	}
+
+	return ""
+}
+
 func ReqPurrfectContext() flamego.Handler {
 	return func(c flamego.Context, sess session.Session, x csrf.CSRF, svc *all.Services) {
 		ctx := &PurrfectContext{
@@ -42,13 +50,13 @@ func ReqPurrfectContext() flamego.Handler {
 				ctx.IsSigned = true
 				ctx.IsBasicAuth = true
 			}
-		}
-
-		user, err := getSignedInUserFromSession(ctx.Session, svc)
-		if err == nil {
-			ctx.User = user
-			ctx.IsSigned = true
-			ctx.IsValidCSRF = verifyCSRF(c, x)
+		} else {
+			user, err := getSignedInUserFromSession(ctx.Session, svc)
+			if err == nil {
+				ctx.User = user
+				ctx.IsSigned = true
+				ctx.IsValidCSRF = verifyCSRF(c, x)
+			}
 		}
 
 		c.Map(ctx)

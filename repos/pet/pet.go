@@ -7,6 +7,8 @@ import (
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/nosql"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/logr"
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
+
+	"github.com/rs/xid"
 )
 
 type NoSQLPetRepository struct {
@@ -116,6 +118,11 @@ func (p *NoSQLPetRepository) FindPets(filter models.Pet) ([]*models.Pet, error) 
 }
 
 func (p *NoSQLPetRepository) Save(pet *models.Pet) error {
+	p.logger.Infow("adding new pet")
+	if pet.ID == "" {
+		pet.ID = xid.New().String()
+	}
+	pet.XKey = pet.ID
 	_, err := p.db.InsertOne(pet)
 	return err
 }
