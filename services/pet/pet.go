@@ -54,7 +54,10 @@ func (p *petService) AdoptPet(userID string, petID string) error {
 
 func (p *petService) AddPetToShelter(params gqtypes.PetParams) (*models.Pet, error) {
 	if params.ShelterID == "" {
-		return nil, fmt.Errorf("shelterID must be non empty")
+		return nil, models.StatusError{
+			Status:  http.StatusBadRequest,
+			Message: "shelterID must be non empty",
+		}
 	}
 
 	pet := &models.Pet{
@@ -67,7 +70,7 @@ func (p *petService) AddPetToShelter(params gqtypes.PetParams) (*models.Pet, err
 
 	err := p.petRepo.Save(pet)
 	if err != nil {
-		return nil, fmt.Errorf("failed to add pet to shelter: %v", err)
+		return nil, models.StatusError{Message: fmt.Sprintf("failed to add pet to shelter: %v", err)}
 	}
 
 	return pet, nil

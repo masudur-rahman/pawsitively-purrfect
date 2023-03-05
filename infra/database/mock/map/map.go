@@ -1,7 +1,6 @@
 package _map
 
 import (
-	"errors"
 	"reflect"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/mock"
@@ -32,11 +31,11 @@ func (m *MockDB) ID(id string) mock.Database {
 }
 
 func (m *MockDB) FindOne(document interface{}, filter ...interface{}) (bool, error) {
-	if m.entity == "" {
-		return false, errors.New("must set entity")
+	if err := checkEntityNameNonEmpty(m.entity); err != nil {
+		return false, err
 	}
-	if m.id == "" && filter == nil {
-		return false, errors.New("must provide id and/or filter")
+	if err := checkIdOrFilterNonEmpty(m.id, filter); err != nil {
+		return false, err
 	}
 	if filter == nil {
 		doc, ok := m.db[m.entity][m.id]
@@ -50,8 +49,8 @@ func (m *MockDB) FindOne(document interface{}, filter ...interface{}) (bool, err
 }
 
 func (m *MockDB) FindMany(documents interface{}, filter interface{}) error {
-	if m.entity == "" {
-		return errors.New("must set entity")
+	if err := checkEntityNameNonEmpty(m.entity); err != nil {
+		return err
 	}
 
 	reflect.ValueOf(documents).Elem().Set(reflect.ValueOf(documents))
@@ -77,11 +76,11 @@ func (m *MockDB) InsertMany(documents []interface{}) ([]string, error) {
 }
 
 func (m *MockDB) UpdateOne(document interface{}) error {
-	if m.entity == "" {
-		return errors.New("must set entity")
+	if err := checkEntityNameNonEmpty(m.entity); err != nil {
+		return err
 	}
-	if m.id == "" {
-		return errors.New("must provide id")
+	if err := checkIDNonEmpty(m.id); err != nil {
+		return err
 	}
 	m.db[m.entity][m.id] = document
 	return nil

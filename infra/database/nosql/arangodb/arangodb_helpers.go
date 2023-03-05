@@ -4,8 +4,11 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"reflect"
 	"strings"
+
+	"github.com/masudur-rahman/pawsitively-purrfect/models"
 
 	arango "github.com/arangodb/go-driver"
 )
@@ -90,4 +93,33 @@ func executeArangoQuery(ctx context.Context, db arango.Database, query *Query, l
 	}
 
 	return results, nil
+}
+
+func checkEntityNameNonEmpty(entity string) error {
+	if entity == "" {
+		return models.StatusError{
+			Message: "entity name must be set",
+		}
+	}
+	return nil
+}
+
+func checkIDNonEmpty(id string) error {
+	if id == "" {
+		return models.StatusError{
+			Status:  http.StatusBadRequest,
+			Message: "must provide document id",
+		}
+	}
+	return nil
+}
+
+func checkIdOrFilterNonEmpty(id string, filter interface{}) error {
+	if id == "" && filter == nil {
+		return models.StatusError{
+			Status:  http.StatusBadRequest,
+			Message: "must provide id and/or filter",
+		}
+	}
+	return nil
 }

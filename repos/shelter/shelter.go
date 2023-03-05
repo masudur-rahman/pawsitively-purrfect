@@ -1,8 +1,8 @@
 package shelter
 
 import (
-	"errors"
 	"fmt"
+	"net/http"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/nosql"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/logr"
@@ -86,7 +86,10 @@ func (s *NoSQLShelterRepository) Save(shelter *models.Shelter) error {
 
 func (s *NoSQLShelterRepository) Update(shelter *models.Shelter) error {
 	if shelter.ID == "" {
-		return errors.New("shelter id missing")
+		return models.StatusError{
+			Status:  http.StatusBadRequest,
+			Message: "shelter id missing",
+		}
 	}
 
 	return s.db.ID(shelter.ID).UpdateOne(shelter)

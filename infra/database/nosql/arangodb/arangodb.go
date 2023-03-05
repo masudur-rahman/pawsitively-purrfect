@@ -3,7 +3,6 @@ package arangodb
 import (
 	"context"
 	"crypto/tls"
-	"errors"
 	"fmt"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/configs"
@@ -64,8 +63,8 @@ func (a ArangoDB) ID(id string) nosql.Database {
 }
 
 func (a ArangoDB) FindOne(document interface{}, filter ...interface{}) (bool, error) {
-	if a.id == "" && filter == nil {
-		return false, errors.New("must provide id and/or filter")
+	if err := checkIdOrFilterNonEmpty(a.id, filter); err != nil {
+		return false, err
 	}
 
 	collection, err := getDBCollection(a.ctx, a.db, a.collectionName)
@@ -75,6 +74,9 @@ func (a ArangoDB) FindOne(document interface{}, filter ...interface{}) (bool, er
 
 	if filter == nil {
 		meta, err := collection.ReadDocument(a.ctx, a.id, document)
+		if arango.IsNotFoundGeneral(err) {
+			return false, nil
+		}
 		return meta.ID != "", err
 	}
 
@@ -147,8 +149,8 @@ func (a ArangoDB) InsertMany(documents []interface{}) ([]string, error) {
 }
 
 func (a ArangoDB) UpdateOne(document interface{}) error {
-	if a.id == "" {
-		return errors.New("id must be provided")
+	if err := checkIDNonEmpty(a.id); err != nil {
+		return err
 	}
 
 	collection, err := getDBCollection(a.ctx, a.db, a.collectionName)
@@ -161,8 +163,8 @@ func (a ArangoDB) UpdateOne(document interface{}) error {
 }
 
 func (a ArangoDB) DeleteOne(filter ...interface{}) error {
-	if a.id == "" && filter == nil {
-		return errors.New("must provide id and/or filter")
+	if err := checkIdOrFilterNonEmpty(a.id, filter); err != nil {
+		return err
 	}
 
 	collection, err := getDBCollection(a.ctx, a.db, a.collectionName)

@@ -1,8 +1,8 @@
 package pet
 
 import (
-	"errors"
 	"fmt"
+	"net/http"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/nosql"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/logr"
@@ -129,7 +129,10 @@ func (p *NoSQLPetRepository) Save(pet *models.Pet) error {
 
 func (p *NoSQLPetRepository) Update(pet *models.Pet) error {
 	if pet.ID == "" {
-		return errors.New("pet id missing")
+		return models.StatusError{
+			Status:  http.StatusBadRequest,
+			Message: "pet id missing",
+		}
 	}
 
 	return p.db.ID(pet.ID).UpdateOne(pet)

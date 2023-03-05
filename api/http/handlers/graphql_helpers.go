@@ -61,6 +61,9 @@ func parseStatusError(err error) (int, string) {
 		return http.StatusInternalServerError, err.Error()
 	}
 
+	if serr.Status == 0 {
+		serr.Status = http.StatusInternalServerError
+	}
 	return serr.Status, serr.Message
 }
 

@@ -1,7 +1,7 @@
 package shelter
 
 import (
-	"fmt"
+	"net/http"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
 	"github.com/masudur-rahman/pawsitively-purrfect/models/gqtypes"
@@ -23,7 +23,10 @@ func NewShelterService(shelterRepo repos.ShelterRepository) *shelterService {
 
 func (s *shelterService) ValidateShelter(params gqtypes.ShelterParams) error {
 	if params.Name == "" {
-		return fmt.Errorf("shelter name can't be empty")
+		return models.StatusError{
+			Status:  http.StatusBadRequest,
+			Message: "shelter name can't be empty",
+		}
 	}
 
 	// if params.ID is set, then it's an update operation
@@ -53,7 +56,10 @@ func (s *shelterService) ShelterOwnedByUser(id, ownerID string) error {
 	}
 
 	if shelter.OwnerID != ownerID {
-		return fmt.Errorf("shelter doesn't owned by logged in user")
+		return models.StatusError{
+			Status:  http.StatusBadRequest,
+			Message: "shelter isn't owned by logged in user",
+		}
 	}
 
 	return nil
@@ -102,7 +108,10 @@ func (s *shelterService) CreateShelter(params gqtypes.ShelterParams) (*models.Sh
 
 func (s *shelterService) UpdateShelter(params gqtypes.ShelterParams) (*models.Shelter, error) {
 	if params.ID == "" {
-		return nil, fmt.Errorf("shelter id missing")
+		return nil, models.StatusError{
+			Status:  http.StatusBadRequest,
+			Message: "shelter id missing",
+		}
 	}
 
 	if err := s.ValidateShelter(params); err != nil {

@@ -1,8 +1,8 @@
 package user
 
 import (
-	"errors"
 	"fmt"
+	"net/http"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/mock"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/logr"
@@ -66,7 +66,10 @@ func (u *MapUserRepository) Create(user *models.User) error {
 func (u *MapUserRepository) Update(user *models.User) error {
 	u.logger.Infow("updating user")
 	if user.ID == "" {
-		return errors.New("user id missing")
+		return models.StatusError{
+			Status:  http.StatusBadRequest,
+			Message: "user id missing",
+		}
 	}
 
 	return u.db.ID(user.ID).UpdateOne(user)
