@@ -135,7 +135,6 @@ go-build: | $(BUILD_DIRS)
 	    -v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin                \
 	    -v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin/$(OS)_$(ARCH)  \
 	    -v $$(pwd)/.go/cache:/.cache                            \
-	    -v $$(pwd)/.go/pkg:/go/pkg                              \
 	    --env ARCH="$(ARCH)"                                    \
 	    --env OS="$(OS)"                                        \
 	    --env VERSION="$(VERSION)"                              \
@@ -157,7 +156,6 @@ fmt: $(BUILD_DIRS)
 	    -v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin                \
 	    -v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin/$(OS)_$(ARCH)  \
 	    -v $$(pwd)/.go/cache:/.cache                            \
-	    -v $$(pwd)/.go/pkg:/go/pkg                              \
 	    --env HTTP_PROXY=$(HTTP_PROXY)                          \
 	    --env HTTPS_PROXY=$(HTTPS_PROXY)                        \
 	    $(BUILD_IMAGE)                                          \
@@ -200,7 +198,6 @@ modules: $(BUILD_DIRS)
 		-v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin                \
 		-v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin/$(OS)_$(ARCH)  \
 		-v $$(pwd)/.go/cache:/.cache                            \
-		-v $$(pwd)/.go/pkg:/go/pkg                              \
 		--env HTTP_PROXY=$(HTTP_PROXY)                          \
 		--env HTTPS_PROXY=$(HTTPS_PROXY)                        \
 		$(BUILD_IMAGE)                                          \
@@ -224,7 +221,6 @@ gen:
 		-v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin                \
 		-v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin/$(OS)_$(ARCH)  \
 		-v $$(pwd)/.go/cache:/.cache                            \
-		-v $$(pwd)/.go/pkg:/go/pkg                              \
 		--env HTTP_PROXY=$(HTTP_PROXY)                          \
 		--env HTTPS_PROXY=$(HTTPS_PROXY)                        \
 		$(BUILD_IMAGE)                                          \
