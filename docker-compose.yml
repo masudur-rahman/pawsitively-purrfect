@@ -4,7 +4,7 @@ services:
     arangodb:
         container_name: arangodb
         image: arangodb:3.8.4
-        platform: linux/x86_64
+        platform: linux/arm64
         environment:
             ARANGO_ROOT_PASSWORD: ${ARANGODB_ROOT_PASSWORD:-admin}
         volumes:
@@ -15,22 +15,22 @@ services:
             - arangodb
         restart: unless-stopped
 
-#    app:
-#        build: .
-#        container_name: app
-#        image: pawsitively-purrfect:latest
-#        depends_on:
-#            - arangodb
-##        volumes:
-##            - ./configs/.pawsitively-purrfect.yaml:/etc/pawsitively-purrfect/configs/.pawsitively-purrfect.yaml
-#        ports:
-#            - 52783:62783
-#        networks:
-#            - arangodb
-#        links:
-#            - arangodb
-#        command: 'serve'
-#        restart: unless-stopped
+    pawsitively-purrfect:
+        build: .
+        container_name: pawsitively-purrfect
+        image: pawsitively-purrfect:latest
+        depends_on:
+            - arangodb
+        volumes:
+            - ./configs/.pawsitively-purrfect.yaml:/etc/pawsitively-purrfect/configs/.pawsitively-purrfect.yaml
+        ports:
+            - "62783:62783"
+        networks:
+            - arangodb
+        links:
+            - arangodb
+        command: 'serve'
+        restart: unless-stopped
 
 networks:
     arangodb:

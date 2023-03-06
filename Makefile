@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # The binaries to build (just the basenames).
-BINS := pawsitively-purrfect
+BIN := pawsitively-purrfect
 
 # Where to push the docker image.
 REGISTRY ?= masudjuly02
@@ -30,7 +30,8 @@ VERSION ?= $(shell git describe --tags --always --dirty)
 
 SRC_DIRS := api cmd infra models pkg repos services # directories which hold app source (not vendored)
 
-ALL_PLATFORMS := darwin/arm64 linux/amd64 linux/arm linux/arm64 linux/ppc64le linux/s390x windows/amd64
+#ALL_PLATFORMS := darwin/arm64 linux/amd64 linux/arm linux/arm64 linux/ppc64le linux/s390x windows/amd64
+ALL_PLATFORMS := linux/arm64 linux/amd64
 
 # Used internally.  Users should pass GOOS and/or GOARCH.
 OS := $(if $(GOOS),$(GOOS),$(shell go env GOOS))
@@ -38,9 +39,11 @@ ARCH := $(if $(GOARCH),$(GOARCH),$(shell go env GOARCH))
 
 BASEIMAGE ?= gcr.io/distroless/static
 
-TAG := $(VERSION)__$(OS)_$(ARCH)
+TAG := $(VERSION)_$(OS)_$(ARCH)
 
-GO_VERSION       ?= 1.19
+DOCKER_IMAGE := $(REGISTRY)/$(BIN)
+
+GO_VERSION       ?= 1.20
 BUILD_IMAGE      ?= ghcr.io/masudur-rahman/golang:$(GO_VERSION)
 
 BIN_EXTENSION :=
@@ -87,7 +90,7 @@ all-push: $(addprefix push-, $(subst /,_, $(ALL_PLATFORMS)))
 # The following structure defeats Go's (intentional) behavior to always touch
 # result files, even if they have not changed.  This will still run `go` but
 # will not trigger further work if nothing has actually changed.
-OUTBINS = $(foreach bin,$(BINS),bin/$(OS)_$(ARCH)/$(bin)$(BIN_EXTENSION))
+OUTBINS = $(foreach bin,$(BIN),bin/$(OS)_$(ARCH)/$(bin)$(BIN_EXTENSION))
 
 build: $(OUTBINS)
 
@@ -232,52 +235,62 @@ gen:
 				internal/proto-files/*/*.proto \
 		"
 
-CONTAINER_DOTFILES = $(foreach bin,$(BINS),.container-$(subst /,_,$(REGISTRY)/$(bin))-$(TAG))
+CONTAINER_DOTFILES = $(foreach bin,$(BIN),.container-$(subst /,_,$(REGISTRY)/$(bin))-$(TAG))
 
 container containers: # @HELP builds containers for one platform ($OS/$ARCH)
 container containers: $(CONTAINER_DOTFILES)
-	@for bin in $(BINS); do              \
-	    echo "container: $(REGISTRY)/$$bin:$(TAG)"; \
-	done
+	@echo "container: $(DOCKER_IMAGE):$(TAG)"
 
 # Each container-dotfile target can reference a $(BIN) variable.
 # This is done in 2 steps to enable target-specific variables.
-$(foreach bin,$(BINS),$(eval $(strip                                 \
+$(foreach bin,$(BIN),$(eval $(strip                                 \
     .container-$(subst /,_,$(REGISTRY)/$(bin))-$(TAG): BIN = $(bin)  \
 )))
-$(foreach bin,$(BINS),$(eval                                         \
+$(foreach bin,$(BIN),$(eval                                         \
     .container-$(subst /,_,$(REGISTRY)/$(bin))-$(TAG): bin/$(OS)_$(ARCH)/$(bin)$(BIN_EXTENSION) Dockerfile.in  \
 ))
 # This is the target definition for all container-dotfiles.
 # These are used to track build state in hidden files.
 $(CONTAINER_DOTFILES):
-	@sed                                          \
+	sed                                          \
 	    -e 's|{ARG_BIN}|$(BIN)$(BIN_EXTENSION)|g' \
 	    -e 's|{ARG_ARCH}|$(ARCH)|g'               \
 	    -e 's|{ARG_OS}|$(OS)|g'                   \
 	    -e 's|{ARG_FROM}|$(BASEIMAGE)|g'          \
 	    Dockerfile.in > .dockerfile-$(BIN)-$(OS)_$(ARCH)
-	@docker build -t $(REGISTRY)/$(BIN):$(TAG) -f .dockerfile-$(BIN)-$(OS)_$(ARCH) .
-	@docker images -q $(REGISTRY)/$(BIN):$(TAG) > $@
+	docker buildx build --platform $(OS)/$(ARCH) --load --pull -t $(REGISTRY)/$(BIN):$(TAG) -f .dockerfile-$(BIN)-$(OS)_$(ARCH) .
+	docker images -q $(REGISTRY)/$(BIN):$(TAG) > $@
 	@echo
 
 push: # @HELP pushes the container for one platform ($OS/$ARCH) to the defined registry
 push: $(CONTAINER_DOTFILES)
-	@for bin in $(BINS); do                    \
-	    docker push $(REGISTRY)/$$bin:$(TAG);  \
-	done
+	docker push $(DOCKER_IMAGE):$(TAG);  \
 
 manifest-list: # @HELP builds a manifest list of containers for all platforms
 manifest-list: all-push
-	@for bin in $(BINS); do                                   \
-	    platforms=$$(echo $(ALL_PLATFORMS) | sed 's/ /,/g');  \
-	    manifest-tool                                         \
-	        --username=oauth2accesstoken                      \
-	        --password=$$(gcloud auth print-access-token)     \
-	        push from-args                                    \
-	        --platforms "$$platforms"                         \
-	        --template $(REGISTRY)/$$bin:$(VERSION)__OS_ARCH  \
-	        --target $(REGISTRY)/$$bin:$(VERSION)
+	platforms=$$(echo $(ALL_PLATFORMS) | sed 's/ /,/g');  \
+	manifest-tool                                         \
+		push from-args                                    \
+		--platforms "$$platforms"                         \
+		--template $(DOCKER_IMAGE):$(VERSION)_OS_ARCH  \
+		--target $(DOCKER_IMAGE):$(VERSION)
+
+define newline
+
+endef
+.PHONY: docker-manifest
+docker-manifest:
+	docker manifest create -a $(DOCKER_IMAGE):$(VERSION) $(foreach PLATFORM,$(ALL_PLATFORMS),$(DOCKER_IMAGE):$(VERSION)_$(subst /,_,$(PLATFORM)))
+	$(foreach PLATFORM,$(ALL_PLATFORMS), \
+		docker manifest annotate $(DOCKER_IMAGE):$(VERSION) $(DOCKER_IMAGE):$(VERSION)_$(subst /,_,$(PLATFORM)) --arch $(lastword $(subst /, ,$(PLATFORM))); \
+	)
+	docker manifest push $(DOCKER_IMAGE):$(VERSION)
+
+#docker-manifest: docker-manifest-PROD docker-manifest-DBG
+#docker-manifest-%:
+#	docker manifest create -a $(DOCKER_IMAGE):$(VERSION)_$* $(foreach PLATFORM,$(ALL_PLATFORMS),$(DOCKER_IMAGE):$(VERSION)_$*_$(subst /,_,$(PLATFORM)))
+#	docker manifest push $(IMAGE):$(VERSION_$*)
+
 
 version: # @HELP outputs the version string
 version:
@@ -319,7 +332,7 @@ bin-clean:
 help: # @HELP prints this message
 help:
 	@echo "VARIABLES:"
-	@echo "  BINS = $(BINS)"
+	@echo "  BIN = $(BIN)"
 	@echo "  OS = $(OS)"
 	@echo "  ARCH = $(ARCH)"
 	@echo "  REGISTRY = $(REGISTRY)"
