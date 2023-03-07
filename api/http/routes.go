@@ -5,6 +5,7 @@ import (
 	"github.com/masudur-rahman/pawsitively-purrfect/api/http/middlewares"
 	"github.com/masudur-rahman/pawsitively-purrfect/services/all"
 
+	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/flamego/binding"
 	"github.com/flamego/flamego"
 	"golang.org/x/time/rate"
@@ -24,6 +25,7 @@ func Routes(svc *all.Services) *flamego.Flame {
 	f.Use(middlewares.ReqPurrfectContext())
 
 	f.Any("/graphql", binding.JSON(handlers.RequestOptions{}), handlers.ServeGraphQL)
+	f.Any("/playground", playground.Handler("GraphQL Playground", "/graphql"))
 
 	return f
 }

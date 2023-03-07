@@ -248,14 +248,14 @@ $(foreach bin,$(BIN),$(eval                                         \
 # This is the target definition for all container-dotfiles.
 # These are used to track build state in hidden files.
 $(CONTAINER_DOTFILES):
-	sed                                          \
+	@sed                                          \
 	    -e 's|{ARG_BIN}|$(BIN)$(BIN_EXTENSION)|g' \
 	    -e 's|{ARG_ARCH}|$(ARCH)|g'               \
 	    -e 's|{ARG_OS}|$(OS)|g'                   \
 	    -e 's|{ARG_FROM}|$(BASEIMAGE)|g'          \
 	    Dockerfile.in > .dockerfile-$(BIN)-$(OS)_$(ARCH)
-	docker buildx build --platform $(OS)/$(ARCH) --load --pull -t $(REGISTRY)/$(BIN):$(TAG) -f .dockerfile-$(BIN)-$(OS)_$(ARCH) .
-	docker images -q $(REGISTRY)/$(BIN):$(TAG) > $@
+	@docker buildx build --platform $(OS)/$(ARCH) --load --pull -t $(REGISTRY)/$(BIN):$(TAG) -f .dockerfile-$(BIN)-$(OS)_$(ARCH) .
+	@docker images -q $(REGISTRY)/$(BIN):$(TAG) > $@
 	@echo
 
 push: # @HELP pushes the container for one platform ($OS/$ARCH) to the defined registry

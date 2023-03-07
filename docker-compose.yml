@@ -4,7 +4,7 @@ services:
     arangodb:
         container_name: arangodb
         image: arangodb:3.8.4
-        platform: linux/arm64
+#        platform: linux/arm64
         environment:
             ARANGO_ROOT_PASSWORD: ${ARANGODB_ROOT_PASSWORD:-admin}
         volumes:
