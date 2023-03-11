@@ -1,9 +1,12 @@
-FROM gcr.io/distroless/static
+FROM golang:1.20.1
 
-COPY bin/linux_arm64/pawsitively-purrfect /pawsitively-purrfect
-COPY configs/.pawsitively-purrfect.yaml /configs/.pawsitively-purrfect.yaml
+WORKDIR /pawsitively-purrfect
 
+COPY . .
+RUN go mod tidy && go mod vendor
+RUN go build -o pawsitively-purrfect
+
+#USER nobody:nobody
 USER 65535:65535
-ENV HOME /
 
-ENTRYPOINT ["/pawsitively-purrfect"]
+ENTRYPOINT ["./pawsitively-purrfect"]

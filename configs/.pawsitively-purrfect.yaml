@@ -6,7 +6,7 @@ server:
 database:
     type: arangodb
     arangodb:
-        host: "localhost"
+        host: "arangodb"
         port: "8529"
         user: "root"
         password: "admin"
