@@ -3,6 +3,7 @@ module github.com/masudur-rahman/pawsitively-purrfect
 go 1.19
 
 require (
+	github.com/99designs/gqlgen v0.17.25
 	github.com/arangodb/go-driver v1.4.1
 	github.com/flamego/binding v1.2.0
 	github.com/flamego/cache v1.2.0
@@ -34,6 +35,6 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
-	golang.org/x/sys v0.3.0 // indirect
-	golang.org/x/text v0.4.0 // indirect
+	golang.org/x/sys v0.5.0 // indirect
+	golang.org/x/text v0.7.0 // indirect
 )
