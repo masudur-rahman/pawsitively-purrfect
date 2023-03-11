@@ -52,4 +52,4 @@ jobs:
           USERNAME: masudjuly02
         run: |
           docker login --username ${USERNAME} --password ${DOCKER_TOKEN}
-          make all-container docker-manifest
+          make manifest-list
