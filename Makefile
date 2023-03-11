@@ -51,6 +51,15 @@ ifeq ($(OS), windows)
   BIN_EXTENSION := .exe
 endif
 
+
+REPO_PKGs := user shelter pet
+DB_TYPEs  := nosql sql
+
+define \n
+
+
+endef
+
 # If you want to build all binaries, see the 'all-build' rule.
 # If you want to build all containers, see the 'all-container' rule.
 # If you want to build AND push all containers, see the 'all-push' rule.
@@ -186,6 +195,21 @@ start-server:
 start-client:
 	go run ./cmd/grpc/client/main.go
 
+
+mockgen: # @HELP Generate mock implementations for repo & database interfaces
+mockgen:
+	$(foreach repo,$(REPO_PKGs), \
+		mockgen -source=repos/$(repo).go -destination=repos/$(repo)/$(repo)_mock.go -package=$(repo)${\n} \
+	)
+	$(foreach db,$(DB_TYPEs), \
+		mockgen -source=infra/database/$(db)/database.go -destination=infra/database/$(db)/mock/mock.go -package=mock${\n} \
+	)
+
+verify-mockgen: mockgen
+	@if !(git diff --exit-code HEAD); then 						\
+		echo "mock implementations for repo & database interfaces are out of date";	exit 1; 		\
+	fi
+
 modules: # @HELP Update module dependencies
 modules: $(BUILD_DIRS)
 	@echo "updating go dependencies"
@@ -210,6 +234,8 @@ verify-modules: modules
 	@if !(git diff --exit-code HEAD); then 						\
 		echo "go module files are out of date";	exit 1; 		\
 	fi
+
+verify: verify-mockgen
 
 gen:
 	@docker run                                                 \
@@ -271,9 +297,6 @@ manifest-list: all-push
 		--template $(DOCKER_IMAGE):$(VERSION)_OS_ARCH  \
 		--target $(DOCKER_IMAGE):$(VERSION)
 
-define newline
-
-endef
 .PHONY: docker-manifest
 docker-manifest:
 	docker manifest create -a $(DOCKER_IMAGE):$(VERSION) $(foreach PLATFORM,$(ALL_PLATFORMS),$(DOCKER_IMAGE):$(VERSION)_$(subst /,_,$(PLATFORM)))

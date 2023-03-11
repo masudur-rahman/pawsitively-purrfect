@@ -25,7 +25,7 @@ func Routes(svc *all.Services) *flamego.Flame {
 	f.Use(middlewares.ReqPurrfectContext())
 
 	f.Any("/graphql", binding.JSON(handlers.RequestOptions{}), handlers.ServeGraphQL)
-	f.Any("/playground", playground.Handler("GraphQL Playground", "/graphql"))
+	f.Any("/playground", playground.Handler("Pawsitively Purrfect", "/graphql"))
 
 	return f
 }

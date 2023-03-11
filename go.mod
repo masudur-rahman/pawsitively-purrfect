@@ -10,6 +10,7 @@ require (
 	github.com/flamego/csrf v1.1.1
 	github.com/flamego/flamego v1.7.0
 	github.com/flamego/session v1.2.2
+	github.com/golang/mock v1.6.0
 	github.com/graphql-go/graphql v0.8.0
 	github.com/masudur-rahman/go-oneliners v1.0.0
 	github.com/rs/xid v1.4.0
