@@ -26,7 +26,7 @@ func TestNoSQLUserRepository_FindByID(t *testing.T) {
 		db.EXPECT().FindOne(&uf).Return(false, models.ErrUserNotFound{ID: id}),
 	)
 
-	ur := NewNoSQLUserRepository(mock.NewMockDatabase(ctl), logr.DefaultLogger)
+	ur := NewNoSQLUserRepository(db, logr.DefaultLogger)
 	user, err := ur.FindByID(id)
 	assert.Error(t, err)
 	assert.ErrorIs(t, err, models.ErrUserNotFound{ID: id})

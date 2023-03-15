@@ -44,3 +44,7 @@ jobs:
       - name: Build
         run: |
           make all-container
+
+      - name: Test
+        run: |
+          make test

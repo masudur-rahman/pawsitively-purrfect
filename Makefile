@@ -329,11 +329,11 @@ test: $(BUILD_DIRS)
 	    --env HTTP_PROXY=$(HTTP_PROXY)                          \
 	    --env HTTPS_PROXY=$(HTTPS_PROXY)                        \
 	    $(BUILD_IMAGE)                                          \
-	    /bin/sh -c "                                            \
+	    /bin/bash -c "                                          \
 	        ARCH=$(ARCH)                                        \
 	        OS=$(OS)                                            \
 	        VERSION=$(VERSION)                                  \
-	        ./build/test.sh $(SRC_DIRS)                         \
+	        ./hack/test.sh $(SRC_DIRS)                         \
 	    "
 
 $(BUILD_DIRS):
