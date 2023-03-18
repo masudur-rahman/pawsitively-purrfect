@@ -170,6 +170,10 @@ fmt: $(BUILD_DIRS)
 	    $(BUILD_IMAGE)                                          \
 	    ./hack/fmt.sh $(SRC_DIRS)
 
+verify-fmt: fmt
+	@if !(git diff --exit-code HEAD); then 						\
+		echo "formatting to source code is out of date"; exit 1;	\
+	fi
 
 # Example: make shell CMD="-c 'date > datefile'"
 shell: # @HELP launches a shell in the containerized build environment
@@ -229,13 +233,12 @@ modules: $(BUILD_DIRS)
 			go mod tidy && go mod vendor						\
 		"
 
-GIT_DIFF := "if !(git diff --exit-code HEAD); then echo \"go module files are out of date\"; exit 1; fi"
 verify-modules: modules
 	@if !(git diff --exit-code HEAD); then 						\
 		echo "go module files are out of date";	exit 1; 		\
 	fi
 
-verify: verify-mockgen
+verify: verify-mockgen verify-modules verify-fmt
 
 gen:
 	@docker run                                                 \
