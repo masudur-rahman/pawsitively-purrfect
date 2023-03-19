@@ -13,6 +13,17 @@ var loginParams = graphql.FieldConfigArgument{
 	"password": &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
 }
 
+var updateProfileFieldArgs = graphql.FieldConfigArgument{
+	"id":        &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
+	"username":  &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
+	"email":     &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
+	"firstName": &graphql.ArgumentConfig{Type: graphql.String},
+	"lastName":  &graphql.ArgumentConfig{Type: graphql.String},
+	"bio":       &graphql.ArgumentConfig{Type: graphql.String},
+	"location":  &graphql.ArgumentConfig{Type: graphql.String},
+	"avatar":    &graphql.ArgumentConfig{Type: graphql.String},
+}
+
 var shelterFilterFieldArgs = graphql.FieldConfigArgument{
 	"name":        &graphql.ArgumentConfig{Type: graphql.String},
 	"description": &graphql.ArgumentConfig{Type: graphql.String},

@@ -96,14 +96,14 @@ func (us *userService) CreateUser(params gqtypes.RegisterParams) (*models.User, 
 	return user, nil
 }
 
-func (us *userService) UpdateUser(opts *models.User) (*models.User, error) {
-	user, err := us.userRepo.FindByName(opts.Username)
+func (us *userService) UpdateUser(params gqtypes.UserParams) (*models.User, error) {
+	user, err := us.userRepo.FindByName(params.Username)
 	if err != nil {
 		return nil, err
 	}
-	user.FirstName = opts.FirstName
-	user.LastName = opts.LastName
-	user.Location = opts.Location
+	user.FirstName = params.FirstName
+	user.LastName = params.LastName
+	user.Location = params.Location
 
 	if err = us.userRepo.Update(user); err != nil {
 		return nil, err

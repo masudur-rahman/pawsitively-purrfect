@@ -9,15 +9,16 @@ import (
 var userType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "User",
 	Fields: graphql.Fields{
-		"id":       &graphql.Field{Type: graphql.ID},
-		"username": &graphql.Field{Type: graphql.String},
-		"email":    &graphql.Field{Type: graphql.String},
-		"fullName": &graphql.Field{Type: graphql.String},
-		"bio":      &graphql.Field{Type: graphql.String},
-		"location": &graphql.Field{Type: graphql.String},
-		"avatar":   &graphql.Field{Type: graphql.String},
-		"isActive": &graphql.Field{Type: graphql.Boolean},
-		"isAdmin":  &graphql.Field{Type: graphql.Boolean},
+		"id":        &graphql.Field{Type: graphql.ID},
+		"username":  &graphql.Field{Type: graphql.String},
+		"email":     &graphql.Field{Type: graphql.String},
+		"firstName": &graphql.Field{Type: graphql.String},
+		"lastName":  &graphql.Field{Type: graphql.String},
+		"bio":       &graphql.Field{Type: graphql.String},
+		"location":  &graphql.Field{Type: graphql.String},
+		"avatar":    &graphql.Field{Type: graphql.String},
+		"isActive":  &graphql.Field{Type: graphql.Boolean},
+		"isAdmin":   &graphql.Field{Type: graphql.Boolean},
 	},
 })
 
@@ -120,6 +121,13 @@ func rootMutation(resolver *resolvers.Resolver) *graphql.Object {
 				Resolve:     resolver.Login,
 			},
 
+			"updateProfile": &graphql.Field{
+				Type:        userType,
+				Description: "Update user profile",
+				Args:        updateProfileFieldArgs,
+				Resolve:     resolver.UpdateProfile,
+			},
+
 			// shelter
 			"addShelter": &graphql.Field{
 				Type:        shelterType,
@@ -127,12 +135,34 @@ func rootMutation(resolver *resolvers.Resolver) *graphql.Object {
 				Args:        addShelterFieldArgs,
 				Resolve:     resolver.AddShelter,
 			},
+			"updateShelter": &graphql.Field{
+				Type:        shelterType,
+				Description: "Update shelter information",
+				Args:        updateShelterFieldArgs,
+				Resolve:     nil, // TODO
+			},
 
 			"addPet": &graphql.Field{
 				Type:        petType,
 				Description: "Add new pet to a shelter",
 				Args:        addPetFieldArgs,
 				Resolve:     resolver.AddPetNewPet,
+			},
+
+			"updatePet": &graphql.Field{
+				Type:        petType,
+				Description: "Update pet information",
+				Args:        updatePetFieldArgs,
+				Resolve:     nil, // TODO
+			},
+
+			"adoptPet": &graphql.Field{
+				Type:        petType,
+				Description: "Adopt pet from a shelter",
+				Args: graphql.FieldConfigArgument{
+					"petID": &graphql.ArgumentConfig{Type: graphql.ID},
+				},
+				Resolve: nil, // TODO
 			},
 		},
 	})

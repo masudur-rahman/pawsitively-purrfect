@@ -12,7 +12,7 @@ type UserService interface {
 	GetUserByEmail(email string) (*models.User, error)
 	ListUsers(filter models.User, limit int64) ([]*models.User, error) // mainly for internal uses
 	CreateUser(params gqtypes.RegisterParams) (*models.User, error)    // new user sign up
-	UpdateUser(user *models.User) (*models.User, error)                // by logged-in user
+	UpdateUser(params gqtypes.UserParams) (*models.User, error)        // by logged-in user
 	DeleteUser(id string) error                                        // by logged-in user
 	LoginUser(usernameOrEmail string, passwd string) (*models.User, error)
 }

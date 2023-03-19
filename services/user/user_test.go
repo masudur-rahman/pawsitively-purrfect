@@ -283,19 +283,22 @@ func Test_userService_UpdateUser(t *testing.T) {
 			Location:  "Chittagong",
 		}
 
-		newLocation := "Dhaka"
+		updateParams := gqtypes.UserParams{
+			Username:  username,
+			FirstName: "Masudur",
+			LastName:  "Rahman",
+			Location:  "Dhaka",
+		}
+
 		gomock.InOrder(
 			ur.EXPECT().FindByName(username).Return(existingUser, nil),
-			ur.EXPECT().Update(gomock.Any()).DoAndReturn(func(user *models.User) error {
-				user.Location = newLocation
-				return nil
-			}),
+			ur.EXPECT().Update(gomock.Any()).Return(nil),
 		)
 
-		user, err := us.UpdateUser(existingUser)
+		user, err := us.UpdateUser(updateParams)
 		assert.NoError(t, err)
 		assert.NotNil(t, user)
-		assert.EqualValues(t, newLocation, user.Location)
+		assert.EqualValues(t, updateParams.Location, user.Location)
 	})
 }
 

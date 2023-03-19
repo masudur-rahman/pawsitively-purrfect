@@ -2,6 +2,7 @@ package resolvers
 
 import (
 	"errors"
+	"net/http"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
 	"github.com/masudur-rahman/pawsitively-purrfect/models/gqtypes"
@@ -52,4 +53,30 @@ func (r *Resolver) Login(p graphql.ResolveParams) (interface{}, error) {
 	}
 
 	return user.APIFormat(), err
+}
+
+func (r *Resolver) UpdateProfile(p graphql.ResolveParams) (interface{}, error) {
+	if !r.IsAuthenticated() {
+		return nil, models.ErrUserNotAuthenticated{}
+	}
+
+	params := gqtypes.UserParams{}
+	if err := pkg.ParseInto(p.Args, &params); err != nil {
+		return nil, err
+	}
+
+	// TODO: need to add username update support
+	if params.ID != r.ctx.GetLoggedInUserID() || params.Username != r.ctx.User.Username {
+		return nil, models.StatusError{
+			Status:  http.StatusBadRequest,
+			Message: "can't update id or username",
+		}
+	}
+
+	user, err := r.svc.User.UpdateUser(params)
+	if err != nil {
+		return nil, err
+	}
+
+	return user.APIFormat(), nil
 }

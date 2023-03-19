@@ -1,8 +1,6 @@
 package models
 
 import (
-	"fmt"
-
 	"github.com/masudur-rahman/pawsitively-purrfect/models/gqtypes"
 )
 
@@ -29,10 +27,12 @@ type User struct {
 
 func (u *User) APIFormat() gqtypes.User {
 	return gqtypes.User{
-		ID:       u.ID,
-		Username: u.Username,
-		Email:    u.Email,
-		FullName: fmt.Sprintf("%s %s", u.FirstName, u.LastName),
+		ID:        u.ID,
+		Username:  u.Username,
+		Email:     u.Email,
+		FirstName: u.FirstName,
+		LastName:  u.LastName,
+		//FullName: fmt.Sprintf("%s %s", u.FirstName, u.LastName),
 		Bio:      u.Bio,
 		Location: u.Location,
 		Avatar:   u.Avatar,
