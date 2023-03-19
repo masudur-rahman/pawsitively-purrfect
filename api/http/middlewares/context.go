@@ -52,7 +52,7 @@ func ReqPurrfectContext() flamego.Handler {
 			}
 		} else {
 			user, err := getSignedInUserFromSession(ctx.Session, svc)
-			if err == nil {
+			if err == nil && user != nil {
 				ctx.User = user
 				ctx.IsSigned = true
 				ctx.IsValidCSRF = verifyCSRF(c, x)

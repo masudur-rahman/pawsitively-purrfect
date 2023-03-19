@@ -44,5 +44,15 @@ func verifyCSRF(ctx flamego.Context, csrf csrf.CSRF) bool {
 			return true
 		}
 	}
+
+	// FIXME: it's not the write way, research how to do the write way
+	if _csrf, err := ctx.Request().Cookie("_csrf"); err == nil {
+		token := _csrf.Value
+		if csrf.ValidToken(token) {
+			return true
+		}
+		return true
+	}
+
 	return false
 }

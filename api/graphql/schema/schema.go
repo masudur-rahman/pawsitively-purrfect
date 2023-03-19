@@ -64,6 +64,11 @@ func rootQuery(resolver *resolvers.Resolver) *graphql.Object {
 				},
 				Resolve: resolver.GetUser,
 			},
+			"profile": &graphql.Field{
+				Type:        userType,
+				Description: "Get logged-in user profile",
+				Resolve:     resolver.Profile,
+			},
 
 			"shelter": &graphql.Field{
 				Type:        shelterType,
