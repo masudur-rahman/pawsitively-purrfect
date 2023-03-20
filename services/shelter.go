@@ -13,5 +13,7 @@ type ShelterService interface {
 	UserShelters(userID string) ([]*models.Shelter, error)
 	CreateShelter(params gqtypes.ShelterParams) (*models.Shelter, error)
 	UpdateShelter(shelter gqtypes.ShelterParams) (*models.Shelter, error)
+	IncreasePetCount(shelterID string) error
+	DecreasePetCount(shelterID string) error
 	DeleteShelter(id string) error
 }

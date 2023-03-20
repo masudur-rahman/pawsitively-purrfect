@@ -133,6 +133,26 @@ func (s *shelterService) UpdateShelter(params gqtypes.ShelterParams) (*models.Sh
 	return shelter, nil
 }
 
+func (s *shelterService) IncreasePetCount(shelterID string) error {
+	shelter, err := s.shelterRepo.FindByID(shelterID)
+	if err != nil {
+		return err
+	}
+
+	shelter.NumberOfPets++
+	return s.shelterRepo.Update(shelter)
+}
+
+func (s *shelterService) DecreasePetCount(shelterID string) error {
+	shelter, err := s.shelterRepo.FindByID(shelterID)
+	if err != nil {
+		return err
+	}
+
+	shelter.NumberOfPets--
+	return s.shelterRepo.Update(shelter)
+}
+
 func (s *shelterService) DeleteShelter(id string) error {
 	return s.shelterRepo.Delete(id)
 }

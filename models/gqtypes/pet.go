@@ -7,8 +7,8 @@ type Pet struct {
 	Gender         string `json:"gender"`
 	Photo          string `json:"photo"`
 	AdoptionStatus string `json:"adoptionStatus"`
-	ShelterID      string `json:"shelterID"`
-	CurrentOwnerID string `json:"currentOwnerID"`
+	ShelterID      string `json:"shelterID,omitempty"`
+	CurrentOwnerID string `json:"currentOwnerID,omitempty"`
 }
 
 type PetParams struct {

@@ -144,9 +144,10 @@ func rootMutation(resolver *resolvers.Resolver) *graphql.Object {
 				Type:        shelterType,
 				Description: "Update shelter information",
 				Args:        updateShelterFieldArgs,
-				Resolve:     nil, // TODO
+				Resolve:     resolver.UpdateShelter,
 			},
 
+			// pet
 			"addPet": &graphql.Field{
 				Type:        petType,
 				Description: "Add new pet to a shelter",
@@ -158,7 +159,7 @@ func rootMutation(resolver *resolvers.Resolver) *graphql.Object {
 				Type:        petType,
 				Description: "Update pet information",
 				Args:        updatePetFieldArgs,
-				Resolve:     nil, // TODO
+				Resolve:     resolver.UpdatePet,
 			},
 
 			"adoptPet": &graphql.Field{
@@ -167,7 +168,7 @@ func rootMutation(resolver *resolvers.Resolver) *graphql.Object {
 				Args: graphql.FieldConfigArgument{
 					"petID": &graphql.ArgumentConfig{Type: graphql.ID},
 				},
-				Resolve: nil, // TODO
+				Resolve: resolver.AdoptPet,
 			},
 		},
 	})

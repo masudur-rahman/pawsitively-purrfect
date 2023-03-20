@@ -57,9 +57,9 @@ var addPetFieldArgs = graphql.FieldConfigArgument{
 }
 
 var updatePetFieldArgs = graphql.FieldConfigArgument{
-	"id":        &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
-	"name":      &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
-	"breed":     &graphql.ArgumentConfig{Type: graphql.String},
-	"gender":    &graphql.ArgumentConfig{Type: graphql.String},
-	"shelterID": &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
+	"id":     &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
+	"name":   &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
+	"breed":  &graphql.ArgumentConfig{Type: graphql.String},
+	"gender": &graphql.ArgumentConfig{Type: graphql.String},
+	//"shelterID": &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
 }

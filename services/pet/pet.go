@@ -84,8 +84,21 @@ func (p *petService) ListShelterPets(shelterID string) ([]*models.Pet, error) {
 	return p.petRepo.FindByShelterID(shelterID)
 }
 
-func (p *petService) UpdatePet(pet *models.Pet) error {
-	return p.petRepo.Update(pet)
+func (p *petService) UpdatePet(params gqtypes.PetParams) (*models.Pet, error) {
+	pet, err := p.petRepo.FindByID(params.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	pet.Name = params.Name
+	pet.Breed = params.Breed
+	pet.Gender = params.Gender
+
+	if err = p.petRepo.Update(pet); err != nil {
+		return nil, err
+	}
+
+	return pet, nil
 }
 
 func (p *petService) DeletePet(id string) error {

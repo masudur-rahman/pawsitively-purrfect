@@ -2,6 +2,7 @@ package resolvers
 
 import (
 	"errors"
+	"net/http"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
 	"github.com/masudur-rahman/pawsitively-purrfect/models/gqtypes"
@@ -62,6 +63,35 @@ func (r *Resolver) AddShelter(p graphql.ResolveParams) (interface{}, error) {
 	}
 
 	shelter, err := r.svc.Shelter.CreateShelter(params)
+	if err != nil {
+		return nil, err
+	}
+
+	return shelter.APIFormat(), nil
+}
+
+func (r *Resolver) UpdateShelter(p graphql.ResolveParams) (interface{}, error) {
+	if !r.IsAuthenticated() {
+		return nil, models.ErrUserNotAuthenticated{}
+	}
+
+	params := gqtypes.ShelterParams{}
+	if err := pkg.ParseInto(p.Args, &params); err != nil {
+		return nil, err
+	}
+
+	shelter, err := r.svc.Shelter.GetShelter(params.ID)
+	if err != nil {
+		return nil, err
+	}
+	if shelter.OwnerID != r.ctx.GetLoggedInUserID() {
+		return nil, models.StatusError{
+			Status:  http.StatusBadRequest,
+			Message: "user don't own the shelter",
+		}
+	}
+
+	shelter, err = r.svc.Shelter.UpdateShelter(params)
 	if err != nil {
 		return nil, err
 	}
