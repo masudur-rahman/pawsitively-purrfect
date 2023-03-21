@@ -3,6 +3,7 @@ package http
 import (
 	"github.com/masudur-rahman/pawsitively-purrfect/api/http/handlers"
 	"github.com/masudur-rahman/pawsitively-purrfect/api/http/middlewares"
+	"github.com/masudur-rahman/pawsitively-purrfect/models/gqtypes"
 	"github.com/masudur-rahman/pawsitively-purrfect/services/all"
 	"github.com/masudur-rahman/pawsitively-purrfect/templates"
 
@@ -39,7 +40,7 @@ func Routes(svc *all.Services) *flamego.Flame {
 
 	f.Combo("/user/login").
 		Get(handlers.Login).
-		Post(handlers.LoginPost)
+		Post(binding.Form(gqtypes.LoginParams{}), handlers.LoginPost)
 	f.Combo("/user/register").
 		Get(handlers.Register).
 		Post(handlers.RegisterPost)

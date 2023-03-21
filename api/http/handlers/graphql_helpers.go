@@ -50,8 +50,10 @@ func HandlePostLogin(ctx flamego.Context, sess session.Session, result *graphql.
 func ServeJson(w http.ResponseWriter, status int, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
-	if err := json.NewEncoder(w).Encode(data); err != nil {
-		logr.DefaultLogger.Errorw("serve json to response", "error", err.Error())
+	if data != nil {
+		if err := json.NewEncoder(w).Encode(data); err != nil {
+			logr.DefaultLogger.Errorw("serve json to response", "error", err.Error())
+		}
 	}
 }
 
