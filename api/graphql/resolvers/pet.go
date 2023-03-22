@@ -12,7 +12,7 @@ import (
 )
 
 func (r *Resolver) GetPet(p graphql.ResolveParams) (interface{}, error) {
-	if !r.IsAuthenticated() {
+	if !r.ctx.IsAuthenticated() {
 		return nil, models.ErrUserNotAuthenticated{}
 	}
 
@@ -29,7 +29,7 @@ func (r *Resolver) GetPet(p graphql.ResolveParams) (interface{}, error) {
 }
 
 func (r *Resolver) ListPets(p graphql.ResolveParams) (interface{}, error) {
-	if !r.IsAuthenticated() {
+	if !r.ctx.IsAuthenticated() {
 		return nil, models.ErrUserNotAuthenticated{}
 	}
 
@@ -57,7 +57,7 @@ func (r *Resolver) ListPets(p graphql.ResolveParams) (interface{}, error) {
 }
 
 func (r *Resolver) AddPetNewPet(p graphql.ResolveParams) (interface{}, error) {
-	if !r.IsAuthenticated() {
+	if !r.ctx.IsAuthenticated() {
 		return nil, models.ErrUserNotAuthenticated{}
 	}
 
@@ -83,7 +83,7 @@ func (r *Resolver) AddPetNewPet(p graphql.ResolveParams) (interface{}, error) {
 }
 
 func (r *Resolver) UpdatePet(p graphql.ResolveParams) (interface{}, error) {
-	if !r.IsAuthenticated() {
+	if !r.ctx.IsAuthenticated() {
 		return nil, models.ErrUserNotAuthenticated{}
 	}
 
@@ -122,7 +122,7 @@ func (r *Resolver) UpdatePet(p graphql.ResolveParams) (interface{}, error) {
 }
 
 func (r *Resolver) AdoptPet(p graphql.ResolveParams) (interface{}, error) {
-	if !r.IsAuthenticated() {
+	if !r.ctx.IsAuthenticated() {
 		return nil, models.ErrUserNotAuthenticated{}
 	}
 

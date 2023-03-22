@@ -127,11 +127,17 @@ func (us *userService) LoginUser(usernameOrEmail string, passwd string) (*models
 	if strings.Contains(usernameOrEmail, "@") {
 		user, err = us.GetUserByEmail(usernameOrEmail)
 		if err != nil {
+			if models.IsErrNotFound(err) {
+				return nil, models.ErrUserPasswordMismatch{}
+			}
 			return nil, err
 		}
 	} else {
 		user, err = us.GetUserByName(usernameOrEmail)
 		if err != nil {
+			if models.IsErrNotFound(err) {
+				return nil, models.ErrUserPasswordMismatch{}
+			}
 			return nil, err
 		}
 	}

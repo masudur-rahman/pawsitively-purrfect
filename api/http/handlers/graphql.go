@@ -7,6 +7,7 @@ import (
 	"github.com/masudur-rahman/pawsitively-purrfect/api/graphql/schema"
 	"github.com/masudur-rahman/pawsitively-purrfect/api/http/middlewares"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/logr"
+	"github.com/masudur-rahman/pawsitively-purrfect/models"
 	"github.com/masudur-rahman/pawsitively-purrfect/services/all"
 
 	"github.com/flamego/session"
@@ -40,7 +41,7 @@ func ServeGraphQL(ctx *middlewares.PurrfectContext, sess session.Session, opts R
 		var status int
 		var errMsg string
 		for idx, e := range result.Errors {
-			status, errMsg = parseStatusError(e.OriginalError())
+			status, errMsg = models.ParseStatusError(e.OriginalError())
 			result.Errors[idx].Message = errMsg
 			logr.DefaultLogger.Errorw("Serve GraphQL", "error", e.OriginalError())
 		}
@@ -50,7 +51,7 @@ func ServeGraphQL(ctx *middlewares.PurrfectContext, sess session.Session, opts R
 	}
 
 	if opts.IsLoginMutation() {
-		HandlePostLogin(ctx, sess, result)
+		HandlePostLoginWithGQLResult(ctx, sess, result)
 		return
 	}
 

@@ -16,9 +16,6 @@ import (
 
 func Routes(svc *all.Services) *flamego.Flame {
 	f := flamego.Classic()
-	f.Get("/", func() string {
-		return "Hello, Flamego!\n"
-	})
 
 	f.Use(middlewares.RateLimiter(rate.NewLimiter(10, 20)))
 
@@ -38,12 +35,16 @@ func Routes(svc *all.Services) *flamego.Flame {
 	f.Use(middlewares.CSRFer())
 	f.Use(middlewares.ReqPurrfectContext())
 
+	f.Get("/", handlers.Home)
+
 	f.Combo("/user/login").
 		Get(handlers.Login).
 		Post(binding.Form(gqtypes.LoginParams{}), handlers.LoginPost)
 	f.Combo("/user/register").
 		Get(handlers.Register).
 		Post(handlers.RegisterPost)
+
+	f.Get("/{name}", middlewares.ReqAuth(), handlers.Profile)
 
 	f.Any("/graphql", binding.JSON(handlers.RequestOptions{}), handlers.ServeGraphQL)
 	f.Any("/playground", playground.Handler("Pawsitively Purrfect", "/graphql"))

@@ -16,6 +16,18 @@ func (err StatusError) Error() string {
 	return string(jsonBytes)
 }
 
+func ParseStatusError(err error) (int, string) {
+	serr := StatusError{}
+	if perr := json.Unmarshal([]byte(err.Error()), &serr); perr != nil {
+		return http.StatusInternalServerError, err.Error()
+	}
+
+	if serr.Status == 0 {
+		serr.Status = http.StatusInternalServerError
+	}
+	return serr.Status, serr.Message
+}
+
 type ErrUserNotAuthenticated struct{}
 
 func (err ErrUserNotAuthenticated) Error() string {

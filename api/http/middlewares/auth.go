@@ -56,3 +56,15 @@ func verifyCSRF(ctx flamego.Context, csrf csrf.CSRF) bool {
 
 	return false
 }
+
+func ReqAuth() flamego.Handler {
+	return func(ctx *PurrfectContext) {
+		if ctx.IsAuthenticated() {
+			return
+		}
+
+		//ctx.Error(models.ErrUserNotAuthenticated{})
+		ctx.Redirect("/user/login")
+		return
+	}
+}

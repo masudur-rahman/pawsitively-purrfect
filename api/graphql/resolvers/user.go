@@ -56,7 +56,7 @@ func (r *Resolver) Login(p graphql.ResolveParams) (interface{}, error) {
 }
 
 func (r *Resolver) Profile(p graphql.ResolveParams) (interface{}, error) {
-	if !r.IsAuthenticated() {
+	if !r.ctx.IsAuthenticated() {
 		return nil, models.ErrUserNotAuthenticated{}
 	}
 
@@ -64,7 +64,7 @@ func (r *Resolver) Profile(p graphql.ResolveParams) (interface{}, error) {
 }
 
 func (r *Resolver) UpdateProfile(p graphql.ResolveParams) (interface{}, error) {
-	if !r.IsAuthenticated() {
+	if !r.ctx.IsAuthenticated() {
 		return nil, models.ErrUserNotAuthenticated{}
 	}
 

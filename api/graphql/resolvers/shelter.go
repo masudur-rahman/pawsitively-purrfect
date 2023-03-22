@@ -25,7 +25,7 @@ func (r *Resolver) GetShelter(p graphql.ResolveParams) (interface{}, error) {
 }
 
 func (r *Resolver) ListShelters(p graphql.ResolveParams) (interface{}, error) {
-	if r.IsAuthenticated() {
+	if r.ctx.IsAuthenticated() {
 		return nil, models.ErrUserNotAuthenticated{}
 	}
 
@@ -48,7 +48,7 @@ func (r *Resolver) ListShelters(p graphql.ResolveParams) (interface{}, error) {
 }
 
 func (r *Resolver) AddShelter(p graphql.ResolveParams) (interface{}, error) {
-	if !r.IsAuthenticated() {
+	if !r.ctx.IsAuthenticated() {
 		return nil, models.ErrUserNotAuthenticated{}
 	}
 
@@ -71,7 +71,7 @@ func (r *Resolver) AddShelter(p graphql.ResolveParams) (interface{}, error) {
 }
 
 func (r *Resolver) UpdateShelter(p graphql.ResolveParams) (interface{}, error) {
-	if !r.IsAuthenticated() {
+	if !r.ctx.IsAuthenticated() {
 		return nil, models.ErrUserNotAuthenticated{}
 	}
 

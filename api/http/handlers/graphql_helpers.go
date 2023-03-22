@@ -23,12 +23,17 @@ func (opts RequestOptions) IsLoginMutation() bool {
 	return strings.Contains(opts.Query, "mutation login")
 }
 
-func HandlePostLogin(ctx flamego.Context, sess session.Session, result *graphql.Result) {
+func HandlePostLoginWithGQLResult(ctx flamego.Context, sess session.Session, result *graphql.Result) {
 	var user gqtypes.User
 	if err := pkg.ParseGraphQLData(result, &user, "login"); err != nil {
 		ServeJson(ctx.ResponseWriter(), http.StatusInternalServerError, err)
 	}
 
+	HandlePostLogin(ctx, sess, user)
+	ServeJson(ctx.ResponseWriter(), http.StatusOK, result)
+}
+
+func HandlePostLogin(ctx flamego.Context, sess session.Session, user gqtypes.User) {
 	sess.Set("userID", user.ID)
 	sess.Set("username", user.Username)
 
@@ -43,8 +48,6 @@ func HandlePostLogin(ctx flamego.Context, sess session.Session, result *graphql.
 		Secure:   false,
 		HttpOnly: cfg.Session.HttpOnly,
 	})
-
-	ServeJson(ctx.ResponseWriter(), http.StatusOK, result)
 }
 
 func ServeJson(w http.ResponseWriter, status int, data interface{}) {
@@ -55,18 +58,6 @@ func ServeJson(w http.ResponseWriter, status int, data interface{}) {
 			logr.DefaultLogger.Errorw("serve json to response", "error", err.Error())
 		}
 	}
-}
-
-func parseStatusError(err error) (int, string) {
-	serr := models.StatusError{}
-	if perr := json.Unmarshal([]byte(err.Error()), &serr); perr != nil {
-		return http.StatusInternalServerError, err.Error()
-	}
-
-	if serr.Status == 0 {
-		serr.Status = http.StatusInternalServerError
-	}
-	return serr.Status, serr.Message
 }
 
 func getErrorStatus(err error) int {
