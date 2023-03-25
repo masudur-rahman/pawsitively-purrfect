@@ -104,6 +104,7 @@ func (us *userService) UpdateUser(params gqtypes.UserParams) (*models.User, erro
 	user.FirstName = params.FirstName
 	user.LastName = params.LastName
 	user.Location = params.Location
+	user.Bio = params.Bio
 
 	if err = us.userRepo.Update(user); err != nil {
 		return nil, err

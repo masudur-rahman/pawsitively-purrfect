@@ -126,7 +126,7 @@ func (r *Resolver) AdoptPet(p graphql.ResolveParams) (interface{}, error) {
 		return nil, models.ErrUserNotAuthenticated{}
 	}
 
-	id, ok := p.Args["id"].(string)
+	id, ok := p.Args["petID"].(string)
 	if !ok {
 		return nil, errors.New("invalid argument")
 	}
@@ -150,5 +150,10 @@ func (r *Resolver) AdoptPet(p graphql.ResolveParams) (interface{}, error) {
 		return nil, err
 	}
 
-	return nil, nil
+	pet, err = r.svc.Pet.GetPetByID(pet.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return pet.APIFormat(), nil
 }

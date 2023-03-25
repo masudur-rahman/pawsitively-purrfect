@@ -37,13 +37,14 @@ func Routes(svc *all.Services) *flamego.Flame {
 
 	f.Get("/", handlers.Home)
 
-	f.Combo("/user/login").
-		Get(handlers.Login).
-		Post(binding.Form(gqtypes.LoginParams{}), handlers.LoginPost)
-	f.Combo("/user/register").
-		Get(handlers.Register).
-		Post(handlers.RegisterPost)
+	f.Group("/user", func() {
+		f.Combo("/login").Get(handlers.Login).
+			Post(binding.Form(gqtypes.LoginParams{}), handlers.LoginPost)
+		f.Combo("/register").Get(handlers.Register).
+			Post(handlers.RegisterPost)
+	}, middlewares.ReqSignedOut())
 
+	f.Get("/logout", middlewares.ReqAuth(), handlers.Logout)
 	f.Get("/{name}", middlewares.ReqAuth(), handlers.Profile)
 
 	f.Any("/graphql", binding.JSON(handlers.RequestOptions{}), handlers.ServeGraphQL)

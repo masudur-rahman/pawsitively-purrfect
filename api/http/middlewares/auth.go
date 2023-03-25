@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/configs"
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
@@ -65,6 +66,17 @@ func ReqAuth() flamego.Handler {
 
 		//ctx.Error(models.ErrUserNotAuthenticated{})
 		ctx.Redirect("/user/login")
+		return
+	}
+}
+
+func ReqSignedOut() flamego.Handler {
+	return func(ctx *PurrfectContext) {
+		if !ctx.IsAuthenticated() {
+			return
+		}
+
+		ctx.Redirect(fmt.Sprintf("/%s", ctx.User.Username))
 		return
 	}
 }

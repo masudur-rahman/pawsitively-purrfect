@@ -3,8 +3,10 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/api/http/middlewares"
+	"github.com/masudur-rahman/pawsitively-purrfect/configs"
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
 	"github.com/masudur-rahman/pawsitively-purrfect/models/gqtypes"
 	"github.com/masudur-rahman/pawsitively-purrfect/pkg"
@@ -14,7 +16,11 @@ import (
 )
 
 func Home(ctx *middlewares.PurrfectContext) {
-	ctx.Redirect("/user/login")
+	if !ctx.IsAuthenticated() {
+		ctx.Redirect("/user/login")
+	} else {
+		ctx.Redirect(fmt.Sprintf("/%s", ctx.User.Username))
+	}
 }
 
 func Login(ctx *middlewares.PurrfectContext) {
@@ -40,6 +46,27 @@ func Register(ctx *middlewares.PurrfectContext) {
 
 func RegisterPost(ctx *middlewares.PurrfectContext) {
 	ctx.HTML(http.StatusOK, "register")
+}
+
+func Logout(ctx *middlewares.PurrfectContext, sess session.Session) {
+	handleLogout(ctx, sess)
+	ctx.Redirect("/")
+}
+
+func handleLogout(ctx *middlewares.PurrfectContext, sess session.Session) {
+	sess.Delete("userID")
+	sess.Delete("username")
+
+	cfg := configs.PurrfectConfig
+	ctx.SetCookie(http.Cookie{
+		Name:     "_csrf",
+		Value:    "",
+		Path:     "/",
+		Domain:   cfg.Server.Domain,
+		Expires:  time.Now(),
+		Secure:   false,
+		HttpOnly: cfg.Session.HttpOnly,
+	})
 }
 
 func Profile(ctx *middlewares.PurrfectContext) {
