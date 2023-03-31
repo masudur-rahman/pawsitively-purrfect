@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package database;
+
+option go_package = "github.com/masudur-rahman/pawsitively-purrfect/infra/database/sql/postgres/pb";
+
+import "google/protobuf/any.proto";
+
+service Postgres {
+  rpc getById(GetByIdRequest) returns (GetByIdResponse) {}
+  rpc find(FindRequest) returns (FindResponse) {}
+  rpc create(CreateRequest) returns (CreateResponse) {}
+  rpc update(UpdateRequest) returns (UpdateResponse) {}
+  rpc delete(DeleteRequest) returns (DeleteResponse) {}
+  rpc query(QueryRequest) returns (QueryResponse) {}
+  rpc exec(ExecRequest) returns (ExecResponse) {}
+}
+
+message GetByIdRequest {
+  string id = 1;
+}
+
+message GetByIdResponse {
+  // Define your response message fields here
+}
+
+message FindRequest {
+  // Define your find request message fields here
+}
+
+message FindResponse {
+  // Define your response message fields here
+}
+
+message CreateRequest {
+  // Define your create request message fields here
+}
+
+message CreateResponse {
+  string id = 1;
+}
+
+message UpdateRequest {
+  // Define your update request message fields here
+}
+
+message UpdateResponse {
+  // Define your response message fields here
+}
+
+message DeleteRequest {
+  string id = 1;
+}
+
+message DeleteResponse {
+  // Define your response message fields here
+}
+
+message QueryRequest {
+  string query = 1;
+  repeated google.protobuf.Any args = 2;
+}
+
+message QueryResponse {
+  google.protobuf.Any result = 1;
+}
+
+message ExecRequest {
+  string query = 1;
+  repeated google.protobuf.Any args = 2;
+}
+
+message ExecResponse {
+  google.protobuf.Any result = 1;
+}

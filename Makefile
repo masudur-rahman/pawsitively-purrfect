@@ -178,7 +178,7 @@ verify-fmt: fmt
 # Example: make shell CMD="-c 'date > datefile'"
 shell: # @HELP launches a shell in the containerized build environment
 shell: $(BUILD_DIRS)
-	@echo "launching a shell in the containerized build environment"
+	@echo "launching a shell in the containerized build environment $(BUILD_IMAGE)"
 	@docker run                                                 \
 	    -ti                                                     \
 	    --rm                                                    \
@@ -240,7 +240,9 @@ verify-modules: modules
 
 verify: verify-mockgen verify-modules verify-fmt
 
-gen:
+proto-gen: # @HELP Generate database protobuf codes
+proto-gen:
+	@echo "Generating database protobuf codes"
 	@docker run                                                 \
 		-i                                                      \
 		--rm                                                    \
@@ -254,10 +256,10 @@ gen:
 		--env HTTPS_PROXY=$(HTTPS_PROXY)                        \
 		$(BUILD_IMAGE)                                          \
 		/bin/bash -c "	\
-			protoc -I=. \
-			--go_out=. --go_opt=module=github.com/masudur-rahman/repo-management-svc \
-				--go-grpc_out=. --go-grpc_opt=module=github.com/masudur-rahman/repo-management-svc \
-				internal/proto-files/*/*.proto \
+			protoc -I=/usr/include \
+			--go_out=. --go_opt=module=github.com/masudur-rahman/pawsitively-purrfect \
+			--go-grpc_out=. --go-grpc_opt=module=github.com/masudur-rahman/pawsitively-purrfect \
+			-I=. proto/database/*.proto \
 		"
 
 CONTAINER_DOTFILES = $(foreach bin,$(BIN),.container-$(subst /,_,$(REGISTRY)/$(bin))-$(TAG))
