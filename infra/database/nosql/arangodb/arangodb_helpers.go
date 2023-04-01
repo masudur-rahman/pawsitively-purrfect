@@ -2,16 +2,44 @@ package arangodb
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"log"
 	"net/http"
 	"reflect"
 	"strings"
 
+	"github.com/masudur-rahman/pawsitively-purrfect/configs"
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
 
 	arango "github.com/arangodb/go-driver"
+	ahttp "github.com/arangodb/go-driver/http"
 )
+
+func InitializeArangoDB(ctx context.Context) (arango.Database, error) {
+	cfg := configs.PurrfectConfig.Database.ArangoDB
+	conn, err := ahttp.NewConnection(ahttp.ConnectionConfig{
+		Endpoints: []string{fmt.Sprintf("http://%s:%s", cfg.Host, cfg.Port)},
+		TLSConfig: &tls.Config{ /*...*/ },
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	c, err := arango.NewClient(arango.ClientConfig{
+		Connection:     conn,
+		Authentication: arango.BasicAuthentication(cfg.User, cfg.Password),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	db, err := c.Database(ctx, cfg.Name)
+	if err != nil {
+		return nil, err
+	}
+	return db, nil
+}
 
 type Query struct {
 	queryString string
