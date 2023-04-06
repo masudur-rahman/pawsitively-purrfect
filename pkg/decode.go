@@ -6,6 +6,9 @@ import (
 	_ "github.com/masudur-rahman/go-oneliners"
 
 	"github.com/graphql-go/graphql"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/types/known/anypb"
+	"google.golang.org/protobuf/types/known/structpb"
 )
 
 func ParseInto(src any, dst any) error {
@@ -28,4 +31,26 @@ func ParseGraphQLData(src *graphql.Result, dst any, key string) error {
 	}
 
 	return json.Unmarshal(data[key], dst)
+}
+
+func ProtoAnyToMap(in *anypb.Any) (map[string]interface{}, error) {
+	out := structpb.Struct{}
+	if err := in.UnmarshalTo(&out); err != nil {
+		return nil, err
+	}
+
+	return out.AsMap(), nil
+}
+
+func MapToProtoAny(in map[string]interface{}) (*anypb.Any, error) {
+	out := structpb.Struct{}
+	data, err := json.Marshal(&out)
+	if err != nil {
+		return nil, err
+	}
+	if err = protojson.Unmarshal(data, &out); err != nil {
+		return nil, err
+	}
+
+	return anypb.New(&out)
 }

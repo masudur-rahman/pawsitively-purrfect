@@ -1,5 +1,7 @@
 package configs
 
+import "fmt"
+
 var PurrfectConfig PawsitiveConfiguration
 
 type PawsitiveConfiguration struct {
@@ -17,11 +19,15 @@ type ServerConfig struct {
 type DatabaseConfig struct {
 	Type     DatabaseType     `json:"type" yaml:"type"`
 	ArangoDB DBConfigArangoDB `json:"arangodb" yaml:"arangodb"`
+	Postgres DBConfigPostgres `json:"postgres" yaml:"postgres"`
 }
 
 type DatabaseType string
 
-const DatabaseArangoDB DatabaseType = "arangodb"
+const (
+	DatabaseArangoDB DatabaseType = "arangodb"
+	DatabasePostgres DatabaseType = "postgres"
+)
 
 type DBConfigArangoDB struct {
 	Name     string `json:"name" yaml:"name"`
@@ -29,6 +35,19 @@ type DBConfigArangoDB struct {
 	Port     string `json:"port" yaml:"port"`
 	User     string `json:"user" yaml:"user"`
 	Password string `json:"password" yaml:"password"`
+}
+
+type DBConfigPostgres struct {
+	Name     string `json:"name" yaml:"name"`
+	Host     string `json:"host" yaml:"host"`
+	Port     string `json:"port" yaml:"port"`
+	User     string `json:"user" yaml:"user"`
+	Password string `json:"password" yaml:"password"`
+	SSLMode  string `json:"sslmode" yaml:"sslmode"`
+}
+
+func (cp DBConfigPostgres) String() string {
+	return fmt.Sprintf("user=%v password=%v dbname=%v host=%v port=%v sslmode=%v", cp.User, cp.Password, cp.Name, cp.Host, cp.Port, cp.SSLMode)
 }
 
 type SessionConfig struct {

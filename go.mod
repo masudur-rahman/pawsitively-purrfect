@@ -13,6 +13,7 @@ require (
 	github.com/flamego/template v1.2.0
 	github.com/golang/mock v1.6.0
 	github.com/graphql-go/graphql v0.8.0
+	github.com/lib/pq v1.10.2
 	github.com/masudur-rahman/go-oneliners v1.0.0
 	github.com/rs/xid v1.4.0
 	github.com/spf13/cobra v1.6.1

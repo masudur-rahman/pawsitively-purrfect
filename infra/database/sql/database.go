@@ -3,6 +3,8 @@ package sql
 import "database/sql"
 
 type Database interface {
+	Table(name string) Database
+
 	ID(id string) Database
 
 	SetFilter(filter string, args ...interface{}) Database
