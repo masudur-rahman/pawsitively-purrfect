@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	Postgres_GetById_FullMethodName = "/database.Postgres/getById"
+	Postgres_Get_FullMethodName     = "/database.Postgres/get"
 	Postgres_Find_FullMethodName    = "/database.Postgres/find"
 	Postgres_Create_FullMethodName  = "/database.Postgres/create"
 	Postgres_Update_FullMethodName  = "/database.Postgres/update"
@@ -32,13 +33,14 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PostgresClient interface {
-	GetById(ctx context.Context, in *GetByIdRequest, opts ...grpc.CallOption) (*GetByIdResponse, error)
-	Find(ctx context.Context, in *FindRequest, opts ...grpc.CallOption) (*FindResponse, error)
-	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
-	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
-	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
-	Query(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error)
-	Exec(ctx context.Context, in *ExecRequest, opts ...grpc.CallOption) (*ExecResponse, error)
+	GetById(ctx context.Context, in *IdParams, opts ...grpc.CallOption) (*RecordResponse, error)
+	Get(ctx context.Context, in *FilterParams, opts ...grpc.CallOption) (*RecordResponse, error)
+	Find(ctx context.Context, in *FilterParams, opts ...grpc.CallOption) (*RecordsResponse, error)
+	Create(ctx context.Context, in *CreateParams, opts ...grpc.CallOption) (*RecordResponse, error)
+	Update(ctx context.Context, in *UpdateParams, opts ...grpc.CallOption) (*RecordResponse, error)
+	Delete(ctx context.Context, in *IdParams, opts ...grpc.CallOption) (*DeleteResponse, error)
+	Query(ctx context.Context, in *QueryParams, opts ...grpc.CallOption) (*QueryResponse, error)
+	Exec(ctx context.Context, in *ExecParams, opts ...grpc.CallOption) (*ExecResponse, error)
 }
 
 type postgresClient struct {
@@ -49,8 +51,8 @@ func NewPostgresClient(cc grpc.ClientConnInterface) PostgresClient {
 	return &postgresClient{cc}
 }
 
-func (c *postgresClient) GetById(ctx context.Context, in *GetByIdRequest, opts ...grpc.CallOption) (*GetByIdResponse, error) {
-	out := new(GetByIdResponse)
+func (c *postgresClient) GetById(ctx context.Context, in *IdParams, opts ...grpc.CallOption) (*RecordResponse, error) {
+	out := new(RecordResponse)
 	err := c.cc.Invoke(ctx, Postgres_GetById_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -58,8 +60,17 @@ func (c *postgresClient) GetById(ctx context.Context, in *GetByIdRequest, opts .
 	return out, nil
 }
 
-func (c *postgresClient) Find(ctx context.Context, in *FindRequest, opts ...grpc.CallOption) (*FindResponse, error) {
-	out := new(FindResponse)
+func (c *postgresClient) Get(ctx context.Context, in *FilterParams, opts ...grpc.CallOption) (*RecordResponse, error) {
+	out := new(RecordResponse)
+	err := c.cc.Invoke(ctx, Postgres_Get_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *postgresClient) Find(ctx context.Context, in *FilterParams, opts ...grpc.CallOption) (*RecordsResponse, error) {
+	out := new(RecordsResponse)
 	err := c.cc.Invoke(ctx, Postgres_Find_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -67,8 +78,8 @@ func (c *postgresClient) Find(ctx context.Context, in *FindRequest, opts ...grpc
 	return out, nil
 }
 
-func (c *postgresClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
-	out := new(CreateResponse)
+func (c *postgresClient) Create(ctx context.Context, in *CreateParams, opts ...grpc.CallOption) (*RecordResponse, error) {
+	out := new(RecordResponse)
 	err := c.cc.Invoke(ctx, Postgres_Create_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -76,8 +87,8 @@ func (c *postgresClient) Create(ctx context.Context, in *CreateRequest, opts ...
 	return out, nil
 }
 
-func (c *postgresClient) Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error) {
-	out := new(UpdateResponse)
+func (c *postgresClient) Update(ctx context.Context, in *UpdateParams, opts ...grpc.CallOption) (*RecordResponse, error) {
+	out := new(RecordResponse)
 	err := c.cc.Invoke(ctx, Postgres_Update_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -85,7 +96,7 @@ func (c *postgresClient) Update(ctx context.Context, in *UpdateRequest, opts ...
 	return out, nil
 }
 
-func (c *postgresClient) Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error) {
+func (c *postgresClient) Delete(ctx context.Context, in *IdParams, opts ...grpc.CallOption) (*DeleteResponse, error) {
 	out := new(DeleteResponse)
 	err := c.cc.Invoke(ctx, Postgres_Delete_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -94,7 +105,7 @@ func (c *postgresClient) Delete(ctx context.Context, in *DeleteRequest, opts ...
 	return out, nil
 }
 
-func (c *postgresClient) Query(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error) {
+func (c *postgresClient) Query(ctx context.Context, in *QueryParams, opts ...grpc.CallOption) (*QueryResponse, error) {
 	out := new(QueryResponse)
 	err := c.cc.Invoke(ctx, Postgres_Query_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -103,7 +114,7 @@ func (c *postgresClient) Query(ctx context.Context, in *QueryRequest, opts ...gr
 	return out, nil
 }
 
-func (c *postgresClient) Exec(ctx context.Context, in *ExecRequest, opts ...grpc.CallOption) (*ExecResponse, error) {
+func (c *postgresClient) Exec(ctx context.Context, in *ExecParams, opts ...grpc.CallOption) (*ExecResponse, error) {
 	out := new(ExecResponse)
 	err := c.cc.Invoke(ctx, Postgres_Exec_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -116,13 +127,14 @@ func (c *postgresClient) Exec(ctx context.Context, in *ExecRequest, opts ...grpc
 // All implementations must embed UnimplementedPostgresServer
 // for forward compatibility
 type PostgresServer interface {
-	GetById(context.Context, *GetByIdRequest) (*GetByIdResponse, error)
-	Find(context.Context, *FindRequest) (*FindResponse, error)
-	Create(context.Context, *CreateRequest) (*CreateResponse, error)
-	Update(context.Context, *UpdateRequest) (*UpdateResponse, error)
-	Delete(context.Context, *DeleteRequest) (*DeleteResponse, error)
-	Query(context.Context, *QueryRequest) (*QueryResponse, error)
-	Exec(context.Context, *ExecRequest) (*ExecResponse, error)
+	GetById(context.Context, *IdParams) (*RecordResponse, error)
+	Get(context.Context, *FilterParams) (*RecordResponse, error)
+	Find(context.Context, *FilterParams) (*RecordsResponse, error)
+	Create(context.Context, *CreateParams) (*RecordResponse, error)
+	Update(context.Context, *UpdateParams) (*RecordResponse, error)
+	Delete(context.Context, *IdParams) (*DeleteResponse, error)
+	Query(context.Context, *QueryParams) (*QueryResponse, error)
+	Exec(context.Context, *ExecParams) (*ExecResponse, error)
 	mustEmbedUnimplementedPostgresServer()
 }
 
@@ -130,25 +142,28 @@ type PostgresServer interface {
 type UnimplementedPostgresServer struct {
 }
 
-func (UnimplementedPostgresServer) GetById(context.Context, *GetByIdRequest) (*GetByIdResponse, error) {
+func (UnimplementedPostgresServer) GetById(context.Context, *IdParams) (*RecordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetById not implemented")
 }
-func (UnimplementedPostgresServer) Find(context.Context, *FindRequest) (*FindResponse, error) {
+func (UnimplementedPostgresServer) Get(context.Context, *FilterParams) (*RecordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+}
+func (UnimplementedPostgresServer) Find(context.Context, *FilterParams) (*RecordsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Find not implemented")
 }
-func (UnimplementedPostgresServer) Create(context.Context, *CreateRequest) (*CreateResponse, error) {
+func (UnimplementedPostgresServer) Create(context.Context, *CreateParams) (*RecordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (UnimplementedPostgresServer) Update(context.Context, *UpdateRequest) (*UpdateResponse, error) {
+func (UnimplementedPostgresServer) Update(context.Context, *UpdateParams) (*RecordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
-func (UnimplementedPostgresServer) Delete(context.Context, *DeleteRequest) (*DeleteResponse, error) {
+func (UnimplementedPostgresServer) Delete(context.Context, *IdParams) (*DeleteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
-func (UnimplementedPostgresServer) Query(context.Context, *QueryRequest) (*QueryResponse, error) {
+func (UnimplementedPostgresServer) Query(context.Context, *QueryParams) (*QueryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Query not implemented")
 }
-func (UnimplementedPostgresServer) Exec(context.Context, *ExecRequest) (*ExecResponse, error) {
+func (UnimplementedPostgresServer) Exec(context.Context, *ExecParams) (*ExecResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Exec not implemented")
 }
 func (UnimplementedPostgresServer) mustEmbedUnimplementedPostgresServer() {}
@@ -165,7 +180,7 @@ func RegisterPostgresServer(s grpc.ServiceRegistrar, srv PostgresServer) {
 }
 
 func _Postgres_GetById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetByIdRequest)
+	in := new(IdParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -177,13 +192,31 @@ func _Postgres_GetById_Handler(srv interface{}, ctx context.Context, dec func(in
 		FullMethod: Postgres_GetById_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PostgresServer).GetById(ctx, req.(*GetByIdRequest))
+		return srv.(PostgresServer).GetById(ctx, req.(*IdParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Postgres_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FilterParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostgresServer).Get(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Postgres_Get_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostgresServer).Get(ctx, req.(*FilterParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Postgres_Find_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FindRequest)
+	in := new(FilterParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -195,13 +228,13 @@ func _Postgres_Find_Handler(srv interface{}, ctx context.Context, dec func(inter
 		FullMethod: Postgres_Find_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PostgresServer).Find(ctx, req.(*FindRequest))
+		return srv.(PostgresServer).Find(ctx, req.(*FilterParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Postgres_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateRequest)
+	in := new(CreateParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -213,13 +246,13 @@ func _Postgres_Create_Handler(srv interface{}, ctx context.Context, dec func(int
 		FullMethod: Postgres_Create_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PostgresServer).Create(ctx, req.(*CreateRequest))
+		return srv.(PostgresServer).Create(ctx, req.(*CreateParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Postgres_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateRequest)
+	in := new(UpdateParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -231,13 +264,13 @@ func _Postgres_Update_Handler(srv interface{}, ctx context.Context, dec func(int
 		FullMethod: Postgres_Update_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PostgresServer).Update(ctx, req.(*UpdateRequest))
+		return srv.(PostgresServer).Update(ctx, req.(*UpdateParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Postgres_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteRequest)
+	in := new(IdParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -249,13 +282,13 @@ func _Postgres_Delete_Handler(srv interface{}, ctx context.Context, dec func(int
 		FullMethod: Postgres_Delete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PostgresServer).Delete(ctx, req.(*DeleteRequest))
+		return srv.(PostgresServer).Delete(ctx, req.(*IdParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Postgres_Query_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryRequest)
+	in := new(QueryParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -267,13 +300,13 @@ func _Postgres_Query_Handler(srv interface{}, ctx context.Context, dec func(inte
 		FullMethod: Postgres_Query_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PostgresServer).Query(ctx, req.(*QueryRequest))
+		return srv.(PostgresServer).Query(ctx, req.(*QueryParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Postgres_Exec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ExecRequest)
+	in := new(ExecParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -285,7 +318,7 @@ func _Postgres_Exec_Handler(srv interface{}, ctx context.Context, dec func(inter
 		FullMethod: Postgres_Exec_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PostgresServer).Exec(ctx, req.(*ExecRequest))
+		return srv.(PostgresServer).Exec(ctx, req.(*ExecParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -300,6 +333,10 @@ var Postgres_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "getById",
 			Handler:    _Postgres_GetById_Handler,
+		},
+		{
+			MethodName: "get",
+			Handler:    _Postgres_Get_Handler,
 		},
 		{
 			MethodName: "find",

@@ -7,69 +7,61 @@ option go_package = "github.com/masudur-rahman/pawsitively-purrfect/infra/databa
 import "google/protobuf/any.proto";
 
 service Postgres {
-  rpc getById(GetByIdRequest) returns (GetByIdResponse) {}
-  rpc find(FindRequest) returns (FindResponse) {}
-  rpc create(CreateRequest) returns (CreateResponse) {}
-  rpc update(UpdateRequest) returns (UpdateResponse) {}
-  rpc delete(DeleteRequest) returns (DeleteResponse) {}
-  rpc query(QueryRequest) returns (QueryResponse) {}
-  rpc exec(ExecRequest) returns (ExecResponse) {}
+  rpc getById(idParams) returns (recordResponse) {}
+  rpc get(filterParams) returns (recordResponse) {}
+  rpc find(filterParams) returns (recordsResponse) {}
+  rpc create(createParams) returns (recordResponse) {}
+  rpc update(updateParams) returns (recordResponse) {}
+  rpc delete(idParams) returns (deleteResponse) {}
+  rpc query(queryParams) returns (queryResponse) {}
+  rpc exec(execParams) returns (execResponse) {}
 }
 
-message GetByIdRequest {
-  string id = 1;
+message idParams {
+  string table = 1;
+  string id = 2;
 }
 
-message GetByIdResponse {
-  // Define your response message fields here
+message filterParams {
+  string table =1;
+  google.protobuf.Any filter = 2;
 }
 
-message FindRequest {
-  // Define your find request message fields here
+message recordResponse {
+  google.protobuf.Any record = 1;
 }
 
-message FindResponse {
-  // Define your response message fields here
+message recordsResponse {
+  repeated recordResponse records = 1;
 }
 
-message CreateRequest {
-  // Define your create request message fields here
+message createParams {
+  string table =1;
+  google.protobuf.Any bean = 2;
 }
 
-message CreateResponse {
-  string id = 1;
+message updateParams {
+  string table =1;
+  string id = 2;
+  google.protobuf.Any bean = 3;
 }
 
-message UpdateRequest {
-  // Define your update request message fields here
-}
+message deleteResponse {}
 
-message UpdateResponse {
-  // Define your response message fields here
-}
-
-message DeleteRequest {
-  string id = 1;
-}
-
-message DeleteResponse {
-  // Define your response message fields here
-}
-
-message QueryRequest {
+message queryParams {
   string query = 1;
   repeated google.protobuf.Any args = 2;
 }
 
-message QueryResponse {
+message queryResponse {
   google.protobuf.Any result = 1;
 }
 
-message ExecRequest {
+message execParams {
   string query = 1;
   repeated google.protobuf.Any args = 2;
 }
 
-message ExecResponse {
+message execResponse {
   google.protobuf.Any result = 1;
 }

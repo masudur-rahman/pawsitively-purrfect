@@ -21,16 +21,17 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GetByIdRequest struct {
+type IdParams struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Table string `protobuf:"bytes,1,opt,name=table,proto3" json:"table,omitempty"`
+	Id    string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
 }
 
-func (x *GetByIdRequest) Reset() {
-	*x = GetByIdRequest{}
+func (x *IdParams) Reset() {
+	*x = IdParams{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_database_postgres_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -38,13 +39,13 @@ func (x *GetByIdRequest) Reset() {
 	}
 }
 
-func (x *GetByIdRequest) String() string {
+func (x *IdParams) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetByIdRequest) ProtoMessage() {}
+func (*IdParams) ProtoMessage() {}
 
-func (x *GetByIdRequest) ProtoReflect() protoreflect.Message {
+func (x *IdParams) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_database_postgres_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -56,26 +57,36 @@ func (x *GetByIdRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetByIdRequest.ProtoReflect.Descriptor instead.
-func (*GetByIdRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use IdParams.ProtoReflect.Descriptor instead.
+func (*IdParams) Descriptor() ([]byte, []int) {
 	return file_proto_database_postgres_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GetByIdRequest) GetId() string {
+func (x *IdParams) GetTable() string {
+	if x != nil {
+		return x.Table
+	}
+	return ""
+}
+
+func (x *IdParams) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-type GetByIdResponse struct {
+type FilterParams struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	Table  string     `protobuf:"bytes,1,opt,name=table,proto3" json:"table,omitempty"`
+	Filter *anypb.Any `protobuf:"bytes,2,opt,name=filter,proto3" json:"filter,omitempty"`
 }
 
-func (x *GetByIdResponse) Reset() {
-	*x = GetByIdResponse{}
+func (x *FilterParams) Reset() {
+	*x = FilterParams{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_database_postgres_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -83,13 +94,13 @@ func (x *GetByIdResponse) Reset() {
 	}
 }
 
-func (x *GetByIdResponse) String() string {
+func (x *FilterParams) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetByIdResponse) ProtoMessage() {}
+func (*FilterParams) ProtoMessage() {}
 
-func (x *GetByIdResponse) ProtoReflect() protoreflect.Message {
+func (x *FilterParams) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_database_postgres_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -101,19 +112,35 @@ func (x *GetByIdResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetByIdResponse.ProtoReflect.Descriptor instead.
-func (*GetByIdResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use FilterParams.ProtoReflect.Descriptor instead.
+func (*FilterParams) Descriptor() ([]byte, []int) {
 	return file_proto_database_postgres_proto_rawDescGZIP(), []int{1}
 }
 
-type FindRequest struct {
+func (x *FilterParams) GetTable() string {
+	if x != nil {
+		return x.Table
+	}
+	return ""
+}
+
+func (x *FilterParams) GetFilter() *anypb.Any {
+	if x != nil {
+		return x.Filter
+	}
+	return nil
+}
+
+type RecordResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	Record *anypb.Any `protobuf:"bytes,1,opt,name=record,proto3" json:"record,omitempty"`
 }
 
-func (x *FindRequest) Reset() {
-	*x = FindRequest{}
+func (x *RecordResponse) Reset() {
+	*x = RecordResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_database_postgres_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -121,13 +148,13 @@ func (x *FindRequest) Reset() {
 	}
 }
 
-func (x *FindRequest) String() string {
+func (x *RecordResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*FindRequest) ProtoMessage() {}
+func (*RecordResponse) ProtoMessage() {}
 
-func (x *FindRequest) ProtoReflect() protoreflect.Message {
+func (x *RecordResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_database_postgres_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -139,19 +166,28 @@ func (x *FindRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use FindRequest.ProtoReflect.Descriptor instead.
-func (*FindRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use RecordResponse.ProtoReflect.Descriptor instead.
+func (*RecordResponse) Descriptor() ([]byte, []int) {
 	return file_proto_database_postgres_proto_rawDescGZIP(), []int{2}
 }
 
-type FindResponse struct {
+func (x *RecordResponse) GetRecord() *anypb.Any {
+	if x != nil {
+		return x.Record
+	}
+	return nil
+}
+
+type RecordsResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	Records []*RecordResponse `protobuf:"bytes,1,rep,name=records,proto3" json:"records,omitempty"`
 }
 
-func (x *FindResponse) Reset() {
-	*x = FindResponse{}
+func (x *RecordsResponse) Reset() {
+	*x = RecordsResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_database_postgres_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -159,13 +195,13 @@ func (x *FindResponse) Reset() {
 	}
 }
 
-func (x *FindResponse) String() string {
+func (x *RecordsResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*FindResponse) ProtoMessage() {}
+func (*RecordsResponse) ProtoMessage() {}
 
-func (x *FindResponse) ProtoReflect() protoreflect.Message {
+func (x *RecordsResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_database_postgres_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -177,19 +213,29 @@ func (x *FindResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use FindResponse.ProtoReflect.Descriptor instead.
-func (*FindResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use RecordsResponse.ProtoReflect.Descriptor instead.
+func (*RecordsResponse) Descriptor() ([]byte, []int) {
 	return file_proto_database_postgres_proto_rawDescGZIP(), []int{3}
 }
 
-type CreateRequest struct {
+func (x *RecordsResponse) GetRecords() []*RecordResponse {
+	if x != nil {
+		return x.Records
+	}
+	return nil
+}
+
+type CreateParams struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	Table string     `protobuf:"bytes,1,opt,name=table,proto3" json:"table,omitempty"`
+	Bean  *anypb.Any `protobuf:"bytes,2,opt,name=bean,proto3" json:"bean,omitempty"`
 }
 
-func (x *CreateRequest) Reset() {
-	*x = CreateRequest{}
+func (x *CreateParams) Reset() {
+	*x = CreateParams{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_database_postgres_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -197,13 +243,13 @@ func (x *CreateRequest) Reset() {
 	}
 }
 
-func (x *CreateRequest) String() string {
+func (x *CreateParams) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateRequest) ProtoMessage() {}
+func (*CreateParams) ProtoMessage() {}
 
-func (x *CreateRequest) ProtoReflect() protoreflect.Message {
+func (x *CreateParams) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_database_postgres_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -215,21 +261,37 @@ func (x *CreateRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateRequest.ProtoReflect.Descriptor instead.
-func (*CreateRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use CreateParams.ProtoReflect.Descriptor instead.
+func (*CreateParams) Descriptor() ([]byte, []int) {
 	return file_proto_database_postgres_proto_rawDescGZIP(), []int{4}
 }
 
-type CreateResponse struct {
+func (x *CreateParams) GetTable() string {
+	if x != nil {
+		return x.Table
+	}
+	return ""
+}
+
+func (x *CreateParams) GetBean() *anypb.Any {
+	if x != nil {
+		return x.Bean
+	}
+	return nil
+}
+
+type UpdateParams struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Table string     `protobuf:"bytes,1,opt,name=table,proto3" json:"table,omitempty"`
+	Id    string     `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	Bean  *anypb.Any `protobuf:"bytes,3,opt,name=bean,proto3" json:"bean,omitempty"`
 }
 
-func (x *CreateResponse) Reset() {
-	*x = CreateResponse{}
+func (x *UpdateParams) Reset() {
+	*x = UpdateParams{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_database_postgres_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -237,13 +299,13 @@ func (x *CreateResponse) Reset() {
 	}
 }
 
-func (x *CreateResponse) String() string {
+func (x *UpdateParams) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateResponse) ProtoMessage() {}
+func (*UpdateParams) ProtoMessage() {}
 
-func (x *CreateResponse) ProtoReflect() protoreflect.Message {
+func (x *UpdateParams) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_database_postgres_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -255,139 +317,30 @@ func (x *CreateResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateResponse.ProtoReflect.Descriptor instead.
-func (*CreateResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use UpdateParams.ProtoReflect.Descriptor instead.
+func (*UpdateParams) Descriptor() ([]byte, []int) {
 	return file_proto_database_postgres_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *CreateResponse) GetId() string {
+func (x *UpdateParams) GetTable() string {
+	if x != nil {
+		return x.Table
+	}
+	return ""
+}
+
+func (x *UpdateParams) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-type UpdateRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *UpdateRequest) Reset() {
-	*x = UpdateRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_database_postgres_proto_msgTypes[6]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *UpdateRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UpdateRequest) ProtoMessage() {}
-
-func (x *UpdateRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_postgres_proto_msgTypes[6]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UpdateRequest.ProtoReflect.Descriptor instead.
-func (*UpdateRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_postgres_proto_rawDescGZIP(), []int{6}
-}
-
-type UpdateResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *UpdateResponse) Reset() {
-	*x = UpdateResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_database_postgres_proto_msgTypes[7]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *UpdateResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UpdateResponse) ProtoMessage() {}
-
-func (x *UpdateResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_postgres_proto_msgTypes[7]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UpdateResponse.ProtoReflect.Descriptor instead.
-func (*UpdateResponse) Descriptor() ([]byte, []int) {
-	return file_proto_database_postgres_proto_rawDescGZIP(), []int{7}
-}
-
-type DeleteRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-}
-
-func (x *DeleteRequest) Reset() {
-	*x = DeleteRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_database_postgres_proto_msgTypes[8]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *DeleteRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DeleteRequest) ProtoMessage() {}
-
-func (x *DeleteRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_postgres_proto_msgTypes[8]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use DeleteRequest.ProtoReflect.Descriptor instead.
-func (*DeleteRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_postgres_proto_rawDescGZIP(), []int{8}
-}
-
-func (x *DeleteRequest) GetId() string {
+func (x *UpdateParams) GetBean() *anypb.Any {
 	if x != nil {
-		return x.Id
+		return x.Bean
 	}
-	return ""
+	return nil
 }
 
 type DeleteResponse struct {
@@ -399,7 +352,7 @@ type DeleteResponse struct {
 func (x *DeleteResponse) Reset() {
 	*x = DeleteResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_database_postgres_proto_msgTypes[9]
+		mi := &file_proto_database_postgres_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -412,7 +365,7 @@ func (x *DeleteResponse) String() string {
 func (*DeleteResponse) ProtoMessage() {}
 
 func (x *DeleteResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_postgres_proto_msgTypes[9]
+	mi := &file_proto_database_postgres_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -425,10 +378,10 @@ func (x *DeleteResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteResponse.ProtoReflect.Descriptor instead.
 func (*DeleteResponse) Descriptor() ([]byte, []int) {
-	return file_proto_database_postgres_proto_rawDescGZIP(), []int{9}
+	return file_proto_database_postgres_proto_rawDescGZIP(), []int{6}
 }
 
-type QueryRequest struct {
+type QueryParams struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -437,23 +390,23 @@ type QueryRequest struct {
 	Args  []*anypb.Any `protobuf:"bytes,2,rep,name=args,proto3" json:"args,omitempty"`
 }
 
-func (x *QueryRequest) Reset() {
-	*x = QueryRequest{}
+func (x *QueryParams) Reset() {
+	*x = QueryParams{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_database_postgres_proto_msgTypes[10]
+		mi := &file_proto_database_postgres_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
 }
 
-func (x *QueryRequest) String() string {
+func (x *QueryParams) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*QueryRequest) ProtoMessage() {}
+func (*QueryParams) ProtoMessage() {}
 
-func (x *QueryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_postgres_proto_msgTypes[10]
+func (x *QueryParams) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_postgres_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -464,19 +417,19 @@ func (x *QueryRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use QueryRequest.ProtoReflect.Descriptor instead.
-func (*QueryRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_postgres_proto_rawDescGZIP(), []int{10}
+// Deprecated: Use QueryParams.ProtoReflect.Descriptor instead.
+func (*QueryParams) Descriptor() ([]byte, []int) {
+	return file_proto_database_postgres_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *QueryRequest) GetQuery() string {
+func (x *QueryParams) GetQuery() string {
 	if x != nil {
 		return x.Query
 	}
 	return ""
 }
 
-func (x *QueryRequest) GetArgs() []*anypb.Any {
+func (x *QueryParams) GetArgs() []*anypb.Any {
 	if x != nil {
 		return x.Args
 	}
@@ -494,7 +447,7 @@ type QueryResponse struct {
 func (x *QueryResponse) Reset() {
 	*x = QueryResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_database_postgres_proto_msgTypes[11]
+		mi := &file_proto_database_postgres_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -507,7 +460,7 @@ func (x *QueryResponse) String() string {
 func (*QueryResponse) ProtoMessage() {}
 
 func (x *QueryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_postgres_proto_msgTypes[11]
+	mi := &file_proto_database_postgres_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -520,7 +473,7 @@ func (x *QueryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryResponse.ProtoReflect.Descriptor instead.
 func (*QueryResponse) Descriptor() ([]byte, []int) {
-	return file_proto_database_postgres_proto_rawDescGZIP(), []int{11}
+	return file_proto_database_postgres_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *QueryResponse) GetResult() *anypb.Any {
@@ -530,7 +483,7 @@ func (x *QueryResponse) GetResult() *anypb.Any {
 	return nil
 }
 
-type ExecRequest struct {
+type ExecParams struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -539,23 +492,23 @@ type ExecRequest struct {
 	Args  []*anypb.Any `protobuf:"bytes,2,rep,name=args,proto3" json:"args,omitempty"`
 }
 
-func (x *ExecRequest) Reset() {
-	*x = ExecRequest{}
+func (x *ExecParams) Reset() {
+	*x = ExecParams{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_database_postgres_proto_msgTypes[12]
+		mi := &file_proto_database_postgres_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
 }
 
-func (x *ExecRequest) String() string {
+func (x *ExecParams) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ExecRequest) ProtoMessage() {}
+func (*ExecParams) ProtoMessage() {}
 
-func (x *ExecRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_postgres_proto_msgTypes[12]
+func (x *ExecParams) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_postgres_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -566,19 +519,19 @@ func (x *ExecRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ExecRequest.ProtoReflect.Descriptor instead.
-func (*ExecRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_postgres_proto_rawDescGZIP(), []int{12}
+// Deprecated: Use ExecParams.ProtoReflect.Descriptor instead.
+func (*ExecParams) Descriptor() ([]byte, []int) {
+	return file_proto_database_postgres_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *ExecRequest) GetQuery() string {
+func (x *ExecParams) GetQuery() string {
 	if x != nil {
 		return x.Query
 	}
 	return ""
 }
 
-func (x *ExecRequest) GetArgs() []*anypb.Any {
+func (x *ExecParams) GetArgs() []*anypb.Any {
 	if x != nil {
 		return x.Args
 	}
@@ -596,7 +549,7 @@ type ExecResponse struct {
 func (x *ExecResponse) Reset() {
 	*x = ExecResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_database_postgres_proto_msgTypes[13]
+		mi := &file_proto_database_postgres_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -609,7 +562,7 @@ func (x *ExecResponse) String() string {
 func (*ExecResponse) ProtoMessage() {}
 
 func (x *ExecResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_postgres_proto_msgTypes[13]
+	mi := &file_proto_database_postgres_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -622,7 +575,7 @@ func (x *ExecResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ExecResponse.ProtoReflect.Descriptor instead.
 func (*ExecResponse) Descriptor() ([]byte, []int) {
-	return file_proto_database_postgres_proto_rawDescGZIP(), []int{13}
+	return file_proto_database_postgres_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *ExecResponse) GetResult() *anypb.Any {
@@ -639,71 +592,89 @@ var file_proto_database_postgres_proto_rawDesc = []byte{
 	0x2f, 0x70, 0x6f, 0x73, 0x74, 0x67, 0x72, 0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12,
 	0x08, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x1a, 0x19, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
 	0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x61, 0x6e, 0x79, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x22, 0x20, 0x0a, 0x0e, 0x47, 0x65, 0x74, 0x42, 0x79, 0x49, 0x64, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x11, 0x0a, 0x0f, 0x47, 0x65, 0x74, 0x42, 0x79, 0x49,
-	0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x0d, 0x0a, 0x0b, 0x46, 0x69, 0x6e,
-	0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x0e, 0x0a, 0x0c, 0x46, 0x69, 0x6e, 0x64,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x0f, 0x0a, 0x0d, 0x43, 0x72, 0x65, 0x61,
-	0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x20, 0x0a, 0x0e, 0x43, 0x72, 0x65,
-	0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x0f, 0x0a, 0x0d, 0x55,
-	0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x10, 0x0a, 0x0e,
-	0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x1f,
-	0x0a, 0x0d, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
-	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22,
-	0x10, 0x0a, 0x0e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x4e, 0x0a, 0x0c, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x12, 0x14, 0x0a, 0x05, 0x71, 0x75, 0x65, 0x72, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x05, 0x71, 0x75, 0x65, 0x72, 0x79, 0x12, 0x28, 0x0a, 0x04, 0x61, 0x72, 0x67, 0x73, 0x18,
-	0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x04, 0x61, 0x72, 0x67,
-	0x73, 0x22, 0x3d, 0x0a, 0x0d, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x12, 0x2c, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74,
-	0x22, 0x4d, 0x0a, 0x0b, 0x45, 0x78, 0x65, 0x63, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x72, 0x6f, 0x74, 0x6f, 0x22, 0x30, 0x0a, 0x08, 0x69, 0x64, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
+	0x12, 0x14, 0x0a, 0x05, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x05, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x52, 0x0a, 0x0c, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72,
+	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x12, 0x2c, 0x0a, 0x06,
+	0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67,
+	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41,
+	0x6e, 0x79, 0x52, 0x06, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x22, 0x3e, 0x0a, 0x0e, 0x72, 0x65,
+	0x63, 0x6f, 0x72, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2c, 0x0a, 0x06,
+	0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67,
+	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41,
+	0x6e, 0x79, 0x52, 0x06, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x22, 0x45, 0x0a, 0x0f, 0x72, 0x65,
+	0x63, 0x6f, 0x72, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x32, 0x0a,
+	0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x18,
+	0x2e, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64,
+	0x73, 0x22, 0x4e, 0x0a, 0x0c, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d,
+	0x73, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x05, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x12, 0x28, 0x0a, 0x04, 0x62, 0x65, 0x61, 0x6e, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x04, 0x62, 0x65, 0x61,
+	0x6e, 0x22, 0x5e, 0x0a, 0x0c, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d,
+	0x73, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x05, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x28, 0x0a, 0x04, 0x62, 0x65, 0x61, 0x6e, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x04, 0x62, 0x65, 0x61,
+	0x6e, 0x22, 0x10, 0x0a, 0x0e, 0x64, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x4d, 0x0a, 0x0b, 0x71, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61,
+	0x6d, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x71, 0x75, 0x65, 0x72, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x05, 0x71, 0x75, 0x65, 0x72, 0x79, 0x12, 0x28, 0x0a, 0x04, 0x61, 0x72, 0x67, 0x73,
+	0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x04, 0x61, 0x72,
+	0x67, 0x73, 0x22, 0x3d, 0x0a, 0x0d, 0x71, 0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x2c, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c,
+	0x74, 0x22, 0x4c, 0x0a, 0x0a, 0x65, 0x78, 0x65, 0x63, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12,
 	0x14, 0x0a, 0x05, 0x71, 0x75, 0x65, 0x72, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
 	0x71, 0x75, 0x65, 0x72, 0x79, 0x12, 0x28, 0x0a, 0x04, 0x61, 0x72, 0x67, 0x73, 0x18, 0x02, 0x20,
 	0x03, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x04, 0x61, 0x72, 0x67, 0x73, 0x22,
-	0x3c, 0x0a, 0x0c, 0x45, 0x78, 0x65, 0x63, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x3c, 0x0a, 0x0c, 0x65, 0x78, 0x65, 0x63, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
 	0x2c, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
 	0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
-	0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x32, 0xb7, 0x03,
-	0x0a, 0x08, 0x50, 0x6f, 0x73, 0x74, 0x67, 0x72, 0x65, 0x73, 0x12, 0x40, 0x0a, 0x07, 0x67, 0x65,
-	0x74, 0x42, 0x79, 0x49, 0x64, 0x12, 0x18, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65,
-	0x2e, 0x47, 0x65, 0x74, 0x42, 0x79, 0x49, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
-	0x19, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x47, 0x65, 0x74, 0x42, 0x79,
-	0x49, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x37, 0x0a, 0x04,
-	0x66, 0x69, 0x6e, 0x64, 0x12, 0x15, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2e,
-	0x46, 0x69, 0x6e, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x64, 0x61,
-	0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x46, 0x69, 0x6e, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x3d, 0x0a, 0x06, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x12,
-	0x17, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74,
-	0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x62,
-	0x61, 0x73, 0x65, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x22, 0x00, 0x12, 0x3d, 0x0a, 0x06, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x12, 0x17,
-	0x2e, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61,
-	0x73, 0x65, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x00, 0x12, 0x3d, 0x0a, 0x06, 0x64, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x12, 0x17, 0x2e,
-	0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73,
-	0x65, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x22, 0x00, 0x12, 0x3a, 0x0a, 0x05, 0x71, 0x75, 0x65, 0x72, 0x79, 0x12, 0x16, 0x2e, 0x64, 0x61,
-	0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x1a, 0x17, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x37,
-	0x0a, 0x04, 0x65, 0x78, 0x65, 0x63, 0x12, 0x15, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73,
-	0x65, 0x2e, 0x45, 0x78, 0x65, 0x63, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e,
-	0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x45, 0x78, 0x65, 0x63, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x4f, 0x5a, 0x4d, 0x67, 0x69, 0x74, 0x68, 0x75,
-	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6d, 0x61, 0x73, 0x75, 0x64, 0x75, 0x72, 0x2d, 0x72, 0x61,
-	0x68, 0x6d, 0x61, 0x6e, 0x2f, 0x70, 0x61, 0x77, 0x73, 0x69, 0x74, 0x69, 0x76, 0x65, 0x6c, 0x79,
-	0x2d, 0x70, 0x75, 0x72, 0x72, 0x66, 0x65, 0x63, 0x74, 0x2f, 0x69, 0x6e, 0x66, 0x72, 0x61, 0x2f,
-	0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2f, 0x73, 0x71, 0x6c, 0x2f, 0x70, 0x6f, 0x73,
-	0x74, 0x67, 0x72, 0x65, 0x73, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x32, 0xe6, 0x03,
+	0x0a, 0x08, 0x50, 0x6f, 0x73, 0x74, 0x67, 0x72, 0x65, 0x73, 0x12, 0x39, 0x0a, 0x07, 0x67, 0x65,
+	0x74, 0x42, 0x79, 0x49, 0x64, 0x12, 0x12, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65,
+	0x2e, 0x69, 0x64, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x18, 0x2e, 0x64, 0x61, 0x74, 0x61,
+	0x62, 0x61, 0x73, 0x65, 0x2e, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x39, 0x0a, 0x03, 0x67, 0x65, 0x74, 0x12, 0x16, 0x2e, 0x64,
+	0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x50, 0x61,
+	0x72, 0x61, 0x6d, 0x73, 0x1a, 0x18, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2e,
+	0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
+	0x12, 0x3b, 0x0a, 0x04, 0x66, 0x69, 0x6e, 0x64, 0x12, 0x16, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x62,
+	0x61, 0x73, 0x65, 0x2e, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
+	0x1a, 0x19, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x72, 0x65, 0x63, 0x6f,
+	0x72, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x3c, 0x0a,
+	0x06, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x12, 0x16, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61,
+	0x73, 0x65, 0x2e, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a,
+	0x18, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x72, 0x65, 0x63, 0x6f, 0x72,
+	0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x3c, 0x0a, 0x06, 0x75,
+	0x70, 0x64, 0x61, 0x74, 0x65, 0x12, 0x16, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65,
+	0x2e, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x18, 0x2e,
+	0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x38, 0x0a, 0x06, 0x64, 0x65, 0x6c,
+	0x65, 0x74, 0x65, 0x12, 0x12, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x69,
+	0x64, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x18, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61,
+	0x73, 0x65, 0x2e, 0x64, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x22, 0x00, 0x12, 0x39, 0x0a, 0x05, 0x71, 0x75, 0x65, 0x72, 0x79, 0x12, 0x15, 0x2e, 0x64,
+	0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72,
+	0x61, 0x6d, 0x73, 0x1a, 0x17, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71,
+	0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x36,
+	0x0a, 0x04, 0x65, 0x78, 0x65, 0x63, 0x12, 0x14, 0x2e, 0x64, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73,
+	0x65, 0x2e, 0x65, 0x78, 0x65, 0x63, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x16, 0x2e, 0x64,
+	0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x65, 0x78, 0x65, 0x63, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x4f, 0x5a, 0x4d, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
+	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6d, 0x61, 0x73, 0x75, 0x64, 0x75, 0x72, 0x2d, 0x72, 0x61, 0x68,
+	0x6d, 0x61, 0x6e, 0x2f, 0x70, 0x61, 0x77, 0x73, 0x69, 0x74, 0x69, 0x76, 0x65, 0x6c, 0x79, 0x2d,
+	0x70, 0x75, 0x72, 0x72, 0x66, 0x65, 0x63, 0x74, 0x2f, 0x69, 0x6e, 0x66, 0x72, 0x61, 0x2f, 0x64,
+	0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x2f, 0x73, 0x71, 0x6c, 0x2f, 0x70, 0x6f, 0x73, 0x74,
+	0x67, 0x72, 0x65, 0x73, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -718,48 +689,52 @@ func file_proto_database_postgres_proto_rawDescGZIP() []byte {
 	return file_proto_database_postgres_proto_rawDescData
 }
 
-var file_proto_database_postgres_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_proto_database_postgres_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_proto_database_postgres_proto_goTypes = []interface{}{
-	(*GetByIdRequest)(nil),  // 0: database.GetByIdRequest
-	(*GetByIdResponse)(nil), // 1: database.GetByIdResponse
-	(*FindRequest)(nil),     // 2: database.FindRequest
-	(*FindResponse)(nil),    // 3: database.FindResponse
-	(*CreateRequest)(nil),   // 4: database.CreateRequest
-	(*CreateResponse)(nil),  // 5: database.CreateResponse
-	(*UpdateRequest)(nil),   // 6: database.UpdateRequest
-	(*UpdateResponse)(nil),  // 7: database.UpdateResponse
-	(*DeleteRequest)(nil),   // 8: database.DeleteRequest
-	(*DeleteResponse)(nil),  // 9: database.DeleteResponse
-	(*QueryRequest)(nil),    // 10: database.QueryRequest
-	(*QueryResponse)(nil),   // 11: database.QueryResponse
-	(*ExecRequest)(nil),     // 12: database.ExecRequest
-	(*ExecResponse)(nil),    // 13: database.ExecResponse
-	(*anypb.Any)(nil),       // 14: google.protobuf.Any
+	(*IdParams)(nil),        // 0: database.idParams
+	(*FilterParams)(nil),    // 1: database.filterParams
+	(*RecordResponse)(nil),  // 2: database.recordResponse
+	(*RecordsResponse)(nil), // 3: database.recordsResponse
+	(*CreateParams)(nil),    // 4: database.createParams
+	(*UpdateParams)(nil),    // 5: database.updateParams
+	(*DeleteResponse)(nil),  // 6: database.deleteResponse
+	(*QueryParams)(nil),     // 7: database.queryParams
+	(*QueryResponse)(nil),   // 8: database.queryResponse
+	(*ExecParams)(nil),      // 9: database.execParams
+	(*ExecResponse)(nil),    // 10: database.execResponse
+	(*anypb.Any)(nil),       // 11: google.protobuf.Any
 }
 var file_proto_database_postgres_proto_depIdxs = []int32{
-	14, // 0: database.QueryRequest.args:type_name -> google.protobuf.Any
-	14, // 1: database.QueryResponse.result:type_name -> google.protobuf.Any
-	14, // 2: database.ExecRequest.args:type_name -> google.protobuf.Any
-	14, // 3: database.ExecResponse.result:type_name -> google.protobuf.Any
-	0,  // 4: database.Postgres.getById:input_type -> database.GetByIdRequest
-	2,  // 5: database.Postgres.find:input_type -> database.FindRequest
-	4,  // 6: database.Postgres.create:input_type -> database.CreateRequest
-	6,  // 7: database.Postgres.update:input_type -> database.UpdateRequest
-	8,  // 8: database.Postgres.delete:input_type -> database.DeleteRequest
-	10, // 9: database.Postgres.query:input_type -> database.QueryRequest
-	12, // 10: database.Postgres.exec:input_type -> database.ExecRequest
-	1,  // 11: database.Postgres.getById:output_type -> database.GetByIdResponse
-	3,  // 12: database.Postgres.find:output_type -> database.FindResponse
-	5,  // 13: database.Postgres.create:output_type -> database.CreateResponse
-	7,  // 14: database.Postgres.update:output_type -> database.UpdateResponse
-	9,  // 15: database.Postgres.delete:output_type -> database.DeleteResponse
-	11, // 16: database.Postgres.query:output_type -> database.QueryResponse
-	13, // 17: database.Postgres.exec:output_type -> database.ExecResponse
-	11, // [11:18] is the sub-list for method output_type
-	4,  // [4:11] is the sub-list for method input_type
-	4,  // [4:4] is the sub-list for extension type_name
-	4,  // [4:4] is the sub-list for extension extendee
-	0,  // [0:4] is the sub-list for field type_name
+	11, // 0: database.filterParams.filter:type_name -> google.protobuf.Any
+	11, // 1: database.recordResponse.record:type_name -> google.protobuf.Any
+	2,  // 2: database.recordsResponse.records:type_name -> database.recordResponse
+	11, // 3: database.createParams.bean:type_name -> google.protobuf.Any
+	11, // 4: database.updateParams.bean:type_name -> google.protobuf.Any
+	11, // 5: database.queryParams.args:type_name -> google.protobuf.Any
+	11, // 6: database.queryResponse.result:type_name -> google.protobuf.Any
+	11, // 7: database.execParams.args:type_name -> google.protobuf.Any
+	11, // 8: database.execResponse.result:type_name -> google.protobuf.Any
+	0,  // 9: database.Postgres.getById:input_type -> database.idParams
+	1,  // 10: database.Postgres.get:input_type -> database.filterParams
+	1,  // 11: database.Postgres.find:input_type -> database.filterParams
+	4,  // 12: database.Postgres.create:input_type -> database.createParams
+	5,  // 13: database.Postgres.update:input_type -> database.updateParams
+	0,  // 14: database.Postgres.delete:input_type -> database.idParams
+	7,  // 15: database.Postgres.query:input_type -> database.queryParams
+	9,  // 16: database.Postgres.exec:input_type -> database.execParams
+	2,  // 17: database.Postgres.getById:output_type -> database.recordResponse
+	2,  // 18: database.Postgres.get:output_type -> database.recordResponse
+	3,  // 19: database.Postgres.find:output_type -> database.recordsResponse
+	2,  // 20: database.Postgres.create:output_type -> database.recordResponse
+	2,  // 21: database.Postgres.update:output_type -> database.recordResponse
+	6,  // 22: database.Postgres.delete:output_type -> database.deleteResponse
+	8,  // 23: database.Postgres.query:output_type -> database.queryResponse
+	10, // 24: database.Postgres.exec:output_type -> database.execResponse
+	17, // [17:25] is the sub-list for method output_type
+	9,  // [9:17] is the sub-list for method input_type
+	9,  // [9:9] is the sub-list for extension type_name
+	9,  // [9:9] is the sub-list for extension extendee
+	0,  // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_proto_database_postgres_proto_init() }
@@ -769,7 +744,7 @@ func file_proto_database_postgres_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_proto_database_postgres_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetByIdRequest); i {
+			switch v := v.(*IdParams); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -781,7 +756,7 @@ func file_proto_database_postgres_proto_init() {
 			}
 		}
 		file_proto_database_postgres_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetByIdResponse); i {
+			switch v := v.(*FilterParams); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -793,7 +768,7 @@ func file_proto_database_postgres_proto_init() {
 			}
 		}
 		file_proto_database_postgres_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FindRequest); i {
+			switch v := v.(*RecordResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -805,7 +780,7 @@ func file_proto_database_postgres_proto_init() {
 			}
 		}
 		file_proto_database_postgres_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FindResponse); i {
+			switch v := v.(*RecordsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -817,7 +792,7 @@ func file_proto_database_postgres_proto_init() {
 			}
 		}
 		file_proto_database_postgres_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateRequest); i {
+			switch v := v.(*CreateParams); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -829,7 +804,7 @@ func file_proto_database_postgres_proto_init() {
 			}
 		}
 		file_proto_database_postgres_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateResponse); i {
+			switch v := v.(*UpdateParams); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -841,42 +816,6 @@ func file_proto_database_postgres_proto_init() {
 			}
 		}
 		file_proto_database_postgres_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_database_postgres_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_database_postgres_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeleteRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_database_postgres_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DeleteResponse); i {
 			case 0:
 				return &v.state
@@ -888,8 +827,8 @@ func file_proto_database_postgres_proto_init() {
 				return nil
 			}
 		}
-		file_proto_database_postgres_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryRequest); i {
+		file_proto_database_postgres_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryParams); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -900,7 +839,7 @@ func file_proto_database_postgres_proto_init() {
 				return nil
 			}
 		}
-		file_proto_database_postgres_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_database_postgres_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*QueryResponse); i {
 			case 0:
 				return &v.state
@@ -912,8 +851,8 @@ func file_proto_database_postgres_proto_init() {
 				return nil
 			}
 		}
-		file_proto_database_postgres_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ExecRequest); i {
+		file_proto_database_postgres_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ExecParams); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -924,7 +863,7 @@ func file_proto_database_postgres_proto_init() {
 				return nil
 			}
 		}
-		file_proto_database_postgres_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_database_postgres_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ExecResponse); i {
 			case 0:
 				return &v.state
@@ -943,7 +882,7 @@ func file_proto_database_postgres_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_database_postgres_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   14,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
