@@ -238,7 +238,6 @@ verify-modules: modules
 		echo "go module files are out of date";	exit 1; 		\
 	fi
 
-verify: verify-mockgen verify-modules verify-fmt
 
 proto-gen: # @HELP Generate database protobuf codes
 proto-gen:
@@ -261,6 +260,16 @@ proto-gen:
 			--go-grpc_out=. --go-grpc_opt=module=github.com/masudur-rahman/pawsitively-purrfect \
 			-I=. proto/database/*.proto \
 		"
+
+verify-proto-gen: proto-gen
+	@if !(git diff --exit-code HEAD); then 						\
+		echo "database protobuf codes are out of date";	exit 1; 		\
+	fi
+
+
+gen: proto-gen mockgen
+
+verify: verify-proto-gen verify-mockgen verify-modules verify-fmt
 
 CONTAINER_DOTFILES = $(foreach bin,$(BIN),.container-$(subst /,_,$(REGISTRY)/$(bin))-$(TAG))
 
