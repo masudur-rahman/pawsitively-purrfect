@@ -16,28 +16,32 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/masudur-rahman/pawsitively-purrfect/api/http"
+	"log"
+
 	"github.com/masudur-rahman/pawsitively-purrfect/configs"
+	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/sql/postgres/server"
 
 	"github.com/spf13/cobra"
 )
 
-// serveCmd represents the serve command
-var serveCmd = &cobra.Command{
-	Use:     "serve",
-	Short:   "Start the Pawsitively Purrfect GraphQL Server",
-	Example: "pawsitively-purrfect serve",
-	Run:     runServe,
+// grpcCmd represents the grpc-serve command
+var grpcCmd = &cobra.Command{
+	Use:     "grpc-serve",
+	Short:   "Start the Postgresql gRPC Server",
+	Example: "pawsitively-purrfect grpc-serve",
+	Run:     runGRPCServer,
 }
 
-func runServe(cmd *cobra.Command, args []string) {
-	scfg := configs.PurrfectConfig.Server
-	svc := initialize(cmd.Context())
+func runGRPCServer(cmd *cobra.Command, args []string) {
+	if configs.PurrfectConfig.Database.Type != configs.DatabasePostgres {
+		log.Fatalln("gRPC only enabled for postgres database")
+	}
 
-	f := http.Routes(svc)
-	f.Run(scfg.Host, scfg.Port)
+	if err := server.StartPostgresServer("", "8080"); err != nil {
+		log.Fatalln(err)
+	}
 }
 
 func init() {
-	rootCmd.AddCommand(serveCmd)
+	rootCmd.AddCommand(grpcCmd)
 }

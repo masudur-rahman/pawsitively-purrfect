@@ -134,8 +134,8 @@ $(STAMPS): go-build
 
 # This runs the actual `go build` which updates all binaries.
 go-build: | $(BUILD_DIRS)
-	echo "# building for $(OS)/$(ARCH)"
-	@docker run                                                  \
+	@echo "# building for $(OS)/$(ARCH)"
+	@docker run                                                 \
 	    -i                                                      \
 	    --rm                                                    \
 	    -u $$(id -u):$$(id -g)                                  \

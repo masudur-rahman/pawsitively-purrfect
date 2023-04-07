@@ -36,6 +36,8 @@ func initialize(ctx context.Context) *all.Services {
 	switch configs.PurrfectConfig.Database.Type {
 	case configs.DatabaseArangoDB:
 		return getServicesForArangoDB(ctx)
+	case configs.DatabasePostgres:
+		return getServicesForPostgres(ctx)
 	default:
 		return nil
 	}
@@ -51,4 +53,8 @@ func getServicesForArangoDB(ctx context.Context) *all.Services {
 	db = arangodb.NewArangoDB(ctx, arangoDB)
 	logger := logr.DefaultLogger
 	return all.GetNoSQLServices(db, logger)
+}
+
+func getServicesForPostgres(ctx context.Context) *all.Services {
+	panic("return sql services")
 }

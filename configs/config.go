@@ -12,7 +12,7 @@ type PawsitiveConfiguration struct {
 
 type ServerConfig struct {
 	Host   string `json:"host" yaml:"host"`
-	Port   string `json:"port" yaml:"port"`
+	Port   int    `json:"port" yaml:"port"`
 	Domain string `json:"domain" yaml:"domain"`
 }
 

@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/configs"
@@ -14,27 +13,21 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var pgConn *sql.Conn
-
-func getPostgresConnection() *sql.Conn {
-	if pgConn != nil {
-		return pgConn
-	}
-
+func getPostgresConnection() (*sql.Conn, error) {
 	db, err := sql.Open("postgres", configs.PurrfectConfig.Database.Postgres.String())
 	if err != nil {
-		log.Fatalln(err)
+		return nil, err
 	}
 
-	pgConn, err = db.Conn(context.Background())
+	conn, err := db.Conn(context.Background())
 	if err != nil {
-		log.Fatalln(err)
+		return nil, err
 	}
 
-	if err = pgConn.PingContext(context.Background()); err != nil {
-		log.Fatalln(err)
+	if err = conn.PingContext(context.Background()); err != nil {
+		return nil, err
 	}
-	return pgConn
+	return conn, nil
 }
 
 func generateReadQuery(tableName string, queryParams map[string]interface{}) string {
@@ -59,7 +52,7 @@ func generateReadQuery(tableName string, queryParams map[string]interface{}) str
 	return query
 }
 
-func executeQuery(ctx context.Context, query string, conn *sql.Conn) ([]map[string]interface{}, error) {
+func executeQuery(ctx context.Context, query string, conn *sql.Conn, lim int64) ([]map[string]interface{}, error) {
 	// Execute query
 	rows, err := conn.QueryContext(ctx, query)
 	if err != nil {
@@ -90,11 +83,20 @@ func executeQuery(ctx context.Context, query string, conn *sql.Conn) ([]map[stri
 			record[col] = values[i]
 		}
 		records = append(records, record)
+
+		if lim > 0 && int64(len(records)) >= lim {
+			break
+		}
 	}
 
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
+
+	if lim == 1 && len(records) < 1 {
+		return nil, sql.ErrNoRows
+	}
+
 	return records, nil
 }
 

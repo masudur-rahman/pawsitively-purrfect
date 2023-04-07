@@ -43,11 +43,12 @@ func ProtoAnyToMap(in *anypb.Any) (map[string]interface{}, error) {
 }
 
 func MapToProtoAny(in map[string]interface{}) (*anypb.Any, error) {
-	out := structpb.Struct{}
-	data, err := json.Marshal(&out)
+	data, err := json.Marshal(in)
 	if err != nil {
 		return nil, err
 	}
+
+	out := structpb.Struct{}
 	if err = protojson.Unmarshal(data, &out); err != nil {
 		return nil, err
 	}

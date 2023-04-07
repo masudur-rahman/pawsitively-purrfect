@@ -1,16 +1,23 @@
 server:
     host: 0.0.0.0
-    port: 8888
+    port: 62783
     domain: pawsitively.purrfect
 
 database:
-    type: arangodb
+    type: postgres
     arangodb:
         host: "localhost"
         port: "8529"
         user: "root"
         password: "admin"
         name: "_system"
+    postgres:
+        host: localhost
+        port: 5432
+        user: postgres
+        password: postgres
+        name: paw
+        sslmode: disable
 
 session:
     name: pawsitively_purrfect
