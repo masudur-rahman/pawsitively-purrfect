@@ -7,17 +7,15 @@ type Database interface {
 
 	ID(id string) Database
 
-	SetFilter(filter string, args ...interface{}) Database
-
-	FindOne(document interface{}) (bool, error)
-	FindMany(documents interface{}) error
+	FindOne(document interface{}, filter ...interface{}) (bool, error)
+	FindMany(documents interface{}, filter interface{}) error
 
 	InsertOne(document interface{}) (id string, err error)
 	InsertMany(documents []interface{}) ([]string, error)
 
 	UpdateOne(document interface{}) error
 
-	DeleteOne() error
+	DeleteOne(filter ...interface{}) error
 
 	Query(query string, args ...interface{}) (*sql.Rows, error)
 	Exec(query string, args ...interface{}) (sql.Result, error)

@@ -27,7 +27,22 @@ func (p *PostgresDB) GetById(ctx context.Context, params *pb.IdParams) (*pb.Reco
 		"id": params.GetId(),
 	}
 	query := generateReadQuery(params.GetTable(), filter)
-	records, err := executeQuery(ctx, query, p.conn, 1)
+	records, err := executeReadQuery(ctx, query, p.conn, 1)
+	if err != nil {
+		return nil, err
+	}
+
+	return mapToRecord(records[0])
+}
+
+func (p *PostgresDB) Get(ctx context.Context, params *pb.FilterParams) (*pb.RecordResponse, error) {
+	filter, err := pkg.ProtoAnyToMap(params.GetFilter())
+	if err != nil {
+		return nil, err
+	}
+
+	query := generateReadQuery(params.GetTable(), filter)
+	records, err := executeReadQuery(ctx, query, p.conn, 1)
 	if err != nil {
 		return nil, err
 	}
@@ -37,8 +52,9 @@ func (p *PostgresDB) GetById(ctx context.Context, params *pb.IdParams) (*pb.Reco
 
 func (p *PostgresDB) Find(ctx context.Context, params *pb.FilterParams) (*pb.RecordsResponse, error) {
 	filter, err := pkg.ProtoAnyToMap(params.GetFilter())
+
 	query := generateReadQuery(params.GetTable(), filter)
-	records, err := executeQuery(ctx, query, p.conn, -1)
+	records, err := executeReadQuery(ctx, query, p.conn, -1)
 	if err != nil {
 		return nil, err
 	}
@@ -47,8 +63,25 @@ func (p *PostgresDB) Find(ctx context.Context, params *pb.FilterParams) (*pb.Rec
 }
 
 func (p *PostgresDB) Create(ctx context.Context, params *pb.CreateParams) (*pb.RecordResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	record, err := pkg.ProtoAnyToMap(params.GetRecord())
+	if err != nil {
+		return nil, err
+	}
+
+	query := generateInsertQuery(params.GetTable(), record)
+	res, err := executeWriteQuery(ctx, query, p.conn)
+	if err != nil {
+		return nil, err
+	}
+
+	lid, err := res.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println("Last Inserted ID: ", lid)
+
+	return nil, nil
 }
 
 func (p *PostgresDB) Update(ctx context.Context, params *pb.UpdateParams) (*pb.RecordResponse, error) {
@@ -69,6 +102,30 @@ func (p *PostgresDB) Query(ctx context.Context, params *pb.QueryParams) (*pb.Que
 func (p *PostgresDB) Exec(ctx context.Context, params *pb.ExecParams) (*pb.ExecResponse, error) {
 	//TODO implement me
 	panic("implement me")
+}
+
+func (p *PostgresDB) Sync(tables ...interface{}) error {
+	for _, table := range tables {
+		tableName := getTableName(table)
+		fields, err := getTableInfo(tableName)
+		if err != nil {
+			return err
+		}
+
+		if exist, err := tableExists(p.conn, tableName); err != nil {
+			return err
+		} else if !exist {
+			if err = createTable(p.conn, tableName, fields); err != nil {
+				return err
+			}
+		} else {
+			if err = addMissingColumns(); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }
 
 func StartPostgresServer(host, port string) error {

@@ -3,8 +3,6 @@ package pkg
 import (
 	"encoding/json"
 
-	_ "github.com/masudur-rahman/go-oneliners"
-
 	"github.com/graphql-go/graphql"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/anypb"
@@ -42,7 +40,7 @@ func ProtoAnyToMap(in *anypb.Any) (map[string]interface{}, error) {
 	return out.AsMap(), nil
 }
 
-func MapToProtoAny(in map[string]interface{}) (*anypb.Any, error) {
+func ToProtoAny(in any) (*anypb.Any, error) {
 	data, err := json.Marshal(in)
 	if err != nil {
 		return nil, err

@@ -37,13 +37,13 @@ message recordsResponse {
 
 message createParams {
   string table =1;
-  google.protobuf.Any bean = 2;
+  google.protobuf.Any record = 2;
 }
 
 message updateParams {
   string table =1;
   string id = 2;
-  google.protobuf.Any bean = 3;
+  google.protobuf.Any record = 3;
 }
 
 message deleteResponse {}

@@ -9,10 +9,15 @@ import (
 	"github.com/masudur-rahman/pawsitively-purrfect/configs"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/nosql"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/nosql/arangodb"
+	isql "github.com/masudur-rahman/pawsitively-purrfect/infra/database/sql"
+	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/sql/postgres"
+	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/sql/postgres/pb"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/logr"
 	"github.com/masudur-rahman/pawsitively-purrfect/pkg"
 	"github.com/masudur-rahman/pawsitively-purrfect/services/all"
 
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"gopkg.in/yaml.v3"
 )
 
@@ -56,5 +61,18 @@ func getServicesForArangoDB(ctx context.Context) *all.Services {
 }
 
 func getServicesForPostgres(ctx context.Context) *all.Services {
-	panic("return sql services")
+	serverAddr := "localhost:8080"
+	conn, err := grpc.Dial(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		panic(err)
+	}
+	//defer conn.Close()
+
+	client := pb.NewPostgresClient(conn)
+
+	var db isql.Database
+	db = postgres.NewDatabase(ctx, client)
+
+	logger := logr.DefaultLogger
+	return all.GetSQLServices(db, logger)
 }
