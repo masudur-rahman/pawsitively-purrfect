@@ -105,21 +105,22 @@ func (p *PostgresDB) Exec(ctx context.Context, params *pb.ExecParams) (*pb.ExecR
 }
 
 func (p *PostgresDB) Sync(tables ...interface{}) error {
+	ctx := context.Background()
 	for _, table := range tables {
 		tableName := getTableName(table)
-		fields, err := getTableInfo(tableName)
+		fields, err := getTableInfo(table)
 		if err != nil {
 			return err
 		}
 
-		if exist, err := tableExists(p.conn, tableName); err != nil {
+		if exist, err := tableExists(ctx, p.conn, tableName); err != nil {
 			return err
 		} else if !exist {
-			if err = createTable(p.conn, tableName, fields); err != nil {
+			if err = createTable(ctx, p.conn, tableName, fields); err != nil {
 				return err
 			}
 		} else {
-			if err = addMissingColumns(); err != nil {
+			if err = addMissingColumns(ctx, p.conn, tableName, fields); err != nil {
 				return err
 			}
 		}
@@ -136,6 +137,11 @@ func StartPostgresServer(host, port string) error {
 	}
 
 	postgres := NewPostgresDB(pgConn)
+
+	if err = postgres.Sync(getModels()...); err != nil {
+		return err
+	}
+
 	pb.RegisterPostgresServer(server, postgres)
 
 	address := fmt.Sprintf("%s:%s", host, port)
