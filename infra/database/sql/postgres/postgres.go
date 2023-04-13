@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 	"database/sql"
+	"errors"
 
 	isql "github.com/masudur-rahman/pawsitively-purrfect/infra/database/sql"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/sql/postgres/pb"
@@ -46,7 +47,9 @@ func (d Database) FindOne(document interface{}, filter ...interface{}) (bool, er
 			Table: d.table,
 			Id:    d.id,
 		})
-		if err != nil {
+		if errors.As(err, &sql.ErrNoRows) {
+			return false, nil
+		} else if err != nil {
 			return false, err
 		}
 	} else {
@@ -59,7 +62,9 @@ func (d Database) FindOne(document interface{}, filter ...interface{}) (bool, er
 			Table:  d.table,
 			Filter: af,
 		})
-		if err != nil {
+		if errors.As(err, &sql.ErrNoRows) {
+			return false, nil
+		} else if err != nil {
 			return false, err
 		}
 	}

@@ -41,7 +41,7 @@ func Routes(svc *all.Services) *flamego.Flame {
 		f.Combo("/login").Get(handlers.Login).
 			Post(binding.Form(gqtypes.LoginParams{}), handlers.LoginPost)
 		f.Combo("/register").Get(handlers.Register).
-			Post(handlers.RegisterPost)
+			Post(binding.Form(gqtypes.RegisterParams{}), handlers.RegisterPost)
 	}, middlewares.ReqSignedOut())
 
 	f.Get("/logout", middlewares.ReqAuth(), handlers.Logout)

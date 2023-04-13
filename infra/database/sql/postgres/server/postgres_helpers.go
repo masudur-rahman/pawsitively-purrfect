@@ -4,13 +4,16 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"reflect"
 	"strings"
 	"time"
 
 	"github.com/masudur-rahman/pawsitively-purrfect/configs"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/sql/postgres/pb"
+	"github.com/masudur-rahman/pawsitively-purrfect/infra/logr"
 	"github.com/masudur-rahman/pawsitively-purrfect/pkg"
 
+	"github.com/iancoleman/strcase"
 	_ "github.com/lib/pq"
 )
 
@@ -31,10 +34,30 @@ func getPostgresConnection() (*sql.Conn, error) {
 	return conn, nil
 }
 
-func generateReadQuery(tableName string, queryParams map[string]interface{}) string {
+func isDefaultValue(value interface{}) bool {
+	typ := reflect.TypeOf(value)
+	zero := reflect.Zero(typ).Interface()
+	return reflect.DeepEqual(value, zero)
+}
+
+func toDBCase(fieldName string) string {
+	return strcase.ToSnake(fieldName)
+}
+
+func fromDBCase(fieldName string) string {
+	return strcase.ToLowerCamel(fieldName)
+}
+
+func generateReadQuery(tableName string, filter map[string]interface{}) string {
 	var conditions []string
 
-	for key, value := range queryParams {
+	for key, value := range filter {
+		if isDefaultValue(value) {
+			// don't insert the default value checks into the condition array
+			continue
+		}
+
+		key = toDBCase(key)
 		condition := fmt.Sprintf("%s = ", key)
 
 		switch v := value.(type) {
@@ -48,34 +71,36 @@ func generateReadQuery(tableName string, queryParams map[string]interface{}) str
 	}
 
 	conditionString := strings.Join(conditions, " AND ")
-	query := fmt.Sprintf("SELECT * FROM %s WHERE %s", tableName, conditionString)
+	query := fmt.Sprintf("SELECT * FROM \"%s\" WHERE %s", tableName, conditionString)
 
 	return query
 }
 
 func scanSingleRecord(rows *sql.Rows) (map[string]interface{}, error) {
-	columns, err := rows.Columns()
+	fields, err := rows.Columns()
 	if err != nil {
 		return nil, err
 	}
-	values := make([]string, len(columns))
-	valuePtrs := make([]interface{}, len(columns))
-	for i := range columns {
-		valuePtrs[i] = &values[i]
-	}
+	scans := make([]interface{}, len(fields))
 
-	if err = rows.Scan(valuePtrs...); err != nil {
+	for i := range scans {
+		scans[i] = &scans[i]
+	}
+	if err = rows.Scan(scans...); err != nil {
 		return nil, err
 	}
+
 	record := make(map[string]interface{})
-	for i, col := range columns {
-		record[col] = values[i]
+	for i := range scans {
+		fieldName := fromDBCase(fields[i])
+		record[fieldName] = scans[i]
 	}
 
 	return record, nil
 }
 
 func executeReadQuery(ctx context.Context, query string, conn *sql.Conn, lim int64) ([]map[string]interface{}, error) {
+	logr.DefaultLogger.Infow("Read Query", "query", query)
 	rows, err := conn.QueryContext(ctx, query)
 	if err != nil {
 		return nil, err
@@ -109,26 +134,33 @@ func executeReadQuery(ctx context.Context, query string, conn *sql.Conn, lim int
 
 func generateInsertQuery(tableName string, record map[string]interface{}) string {
 	var cols []string
-	var vals []string
+	var values []string
 
 	for col, val := range record {
+		//if isDefaultValue(val) {
+		//	// don't need to insert the default values into the table
+		//	continue
+		//}
+
+		col = toDBCase(col)
 		cols = append(cols, col)
 		switch v := val.(type) {
 		case string:
-			vals = append(vals, fmt.Sprintf("'%s'", strings.ReplaceAll(v, "'", "''")))
+			values = append(values, fmt.Sprintf("'%s'", strings.ReplaceAll(v, "'", "''")))
 		case time.Time:
-			vals = append(vals, fmt.Sprintf("'%s'", v.Format("2006-01-02 15:04:05")))
+			values = append(values, fmt.Sprintf("'%s'", v.Format("2006-01-02 15:04:05")))
 		default:
-			vals = append(vals, fmt.Sprintf("%v", v))
+			values = append(values, fmt.Sprintf("%v", v))
 		}
 	}
 
-	query := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s)", tableName, strings.Join(cols, ", "), strings.Join(vals, ", "))
+	query := fmt.Sprintf("INSERT INTO \"%s\" (%s) VALUES (%s)", tableName, strings.Join(cols, ", "), strings.Join(values, ", "))
 
 	return query
 }
 
 func executeWriteQuery(ctx context.Context, query string, conn *sql.Conn) (sql.Result, error) {
+	logr.DefaultLogger.Infow("Write Query", "query", query)
 	result, err := conn.ExecContext(ctx, query)
 
 	return result, err

@@ -7,6 +7,7 @@ import (
 
 	"github.com/masudur-rahman/pawsitively-purrfect/api/http/middlewares"
 	"github.com/masudur-rahman/pawsitively-purrfect/configs"
+	"github.com/masudur-rahman/pawsitively-purrfect/infra/logr"
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
 	"github.com/masudur-rahman/pawsitively-purrfect/models/gqtypes"
 	"github.com/masudur-rahman/pawsitively-purrfect/pkg"
@@ -44,8 +45,18 @@ func Register(ctx *middlewares.PurrfectContext) {
 	ctx.HTML(http.StatusOK, "register")
 }
 
-func RegisterPost(ctx *middlewares.PurrfectContext) {
-	ctx.HTML(http.StatusOK, "register")
+func RegisterPost(ctx *middlewares.PurrfectContext, sess session.Session, svc *all.Services, registerParams gqtypes.RegisterParams) {
+	user, err := svc.User.CreateUser(registerParams)
+	if err != nil {
+		_, message := models.ParseStatusError(err)
+		ctx.Data["Error"] = message
+		ctx.HTML(http.StatusOK, "register")
+		logr.DefaultLogger.Errorw("Register User", "error", err.Error())
+		return
+	}
+
+	HandlePostLogin(ctx, sess, user.APIFormat())
+	ctx.Redirect(fmt.Sprintf("/%s", user.Username))
 }
 
 func Logout(ctx *middlewares.PurrfectContext, sess session.Session) {
