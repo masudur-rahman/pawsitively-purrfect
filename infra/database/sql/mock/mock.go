@@ -36,17 +36,21 @@ func (m *MockDatabase) EXPECT() *MockDatabaseMockRecorder {
 }
 
 // DeleteOne mocks base method.
-func (m *MockDatabase) DeleteOne() error {
+func (m *MockDatabase) DeleteOne(filter ...interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteOne")
+	varargs := []interface{}{}
+	for _, a := range filter {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteOne", varargs...)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // DeleteOne indicates an expected call of DeleteOne.
-func (mr *MockDatabaseMockRecorder) DeleteOne() *gomock.Call {
+func (mr *MockDatabaseMockRecorder) DeleteOne(filter ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteOne", reflect.TypeOf((*MockDatabase)(nil).DeleteOne))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteOne", reflect.TypeOf((*MockDatabase)(nil).DeleteOne), filter...)
 }
 
 // Exec mocks base method.
@@ -70,32 +74,37 @@ func (mr *MockDatabaseMockRecorder) Exec(query interface{}, args ...interface{})
 }
 
 // FindMany mocks base method.
-func (m *MockDatabase) FindMany(documents interface{}) error {
+func (m *MockDatabase) FindMany(documents, filter interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindMany", documents)
+	ret := m.ctrl.Call(m, "FindMany", documents, filter)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // FindMany indicates an expected call of FindMany.
-func (mr *MockDatabaseMockRecorder) FindMany(documents interface{}) *gomock.Call {
+func (mr *MockDatabaseMockRecorder) FindMany(documents, filter interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindMany", reflect.TypeOf((*MockDatabase)(nil).FindMany), documents)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindMany", reflect.TypeOf((*MockDatabase)(nil).FindMany), documents, filter)
 }
 
 // FindOne mocks base method.
-func (m *MockDatabase) FindOne(document interface{}) (bool, error) {
+func (m *MockDatabase) FindOne(document interface{}, filter ...interface{}) (bool, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindOne", document)
+	varargs := []interface{}{document}
+	for _, a := range filter {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "FindOne", varargs...)
 	ret0, _ := ret[0].(bool)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // FindOne indicates an expected call of FindOne.
-func (mr *MockDatabaseMockRecorder) FindOne(document interface{}) *gomock.Call {
+func (mr *MockDatabaseMockRecorder) FindOne(document interface{}, filter ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockDatabase)(nil).FindOne), document)
+	varargs := append([]interface{}{document}, filter...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockDatabase)(nil).FindOne), varargs...)
 }
 
 // ID mocks base method.
@@ -160,25 +169,6 @@ func (mr *MockDatabaseMockRecorder) Query(query interface{}, args ...interface{}
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{query}, args...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Query", reflect.TypeOf((*MockDatabase)(nil).Query), varargs...)
-}
-
-// SetFilter mocks base method.
-func (m *MockDatabase) SetFilter(filter string, args ...interface{}) sql0.Database {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{filter}
-	for _, a := range args {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "SetFilter", varargs...)
-	ret0, _ := ret[0].(sql0.Database)
-	return ret0
-}
-
-// SetFilter indicates an expected call of SetFilter.
-func (mr *MockDatabaseMockRecorder) SetFilter(filter interface{}, args ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{filter}, args...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetFilter", reflect.TypeOf((*MockDatabase)(nil).SetFilter), varargs...)
 }
 
 // Table mocks base method.
