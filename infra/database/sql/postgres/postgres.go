@@ -7,6 +7,7 @@ import (
 
 	isql "github.com/masudur-rahman/pawsitively-purrfect/infra/database/sql"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/sql/postgres/pb"
+	"github.com/masudur-rahman/pawsitively-purrfect/models"
 	"github.com/masudur-rahman/pawsitively-purrfect/pkg"
 )
 
@@ -47,11 +48,6 @@ func (d Database) FindOne(document interface{}, filter ...interface{}) (bool, er
 			Table: d.table,
 			Id:    d.id,
 		})
-		if errors.As(err, &sql.ErrNoRows) {
-			return false, nil
-		} else if err != nil {
-			return false, err
-		}
 	} else {
 		af, err := pkg.ToProtoAny(filter[0])
 		if err != nil {
@@ -62,19 +58,14 @@ func (d Database) FindOne(document interface{}, filter ...interface{}) (bool, er
 			Table:  d.table,
 			Filter: af,
 		})
-		if errors.As(err, &sql.ErrNoRows) {
-			return false, nil
-		} else if err != nil {
-			return false, err
-		}
 	}
-
-	rmap, err := pkg.ProtoAnyToMap(record.Record)
-	if err != nil {
+	if errors.As(err, &sql.ErrNoRows) {
+		return false, nil
+	} else if err != nil {
 		return false, err
 	}
 
-	if err = pkg.ParseInto(rmap, document); err != nil {
+	if err = pkg.ParseProtoAnyInto(record.Record, document); err != nil {
 		return false, err
 	}
 
@@ -113,7 +104,7 @@ func (d Database) InsertOne(document interface{}) (id string, err error) {
 		return "", err
 	}
 
-	_, err = d.client.Create(d.ctx, &pb.CreateParams{
+	record, err := d.client.Create(d.ctx, &pb.CreateParams{
 		Table:  d.table,
 		Record: df,
 	})
@@ -121,22 +112,78 @@ func (d Database) InsertOne(document interface{}) (id string, err error) {
 		return "", err
 	}
 
-	return "", nil
+	rmap, err := pkg.ProtoAnyToMap(record.Record)
+	if err != nil {
+		return "", err
+	}
+
+	if err = pkg.ParseInto(rmap, document); err != nil {
+		return "", err
+	}
+
+	return rmap[id].(string), nil
 }
 
+// TODO: Implement in a more efficient way
 func (d Database) InsertMany(documents []interface{}) ([]string, error) {
-	//TODO implement me
-	panic("implement me")
+	var ids []string
+
+	for idx := range documents {
+		id, err := d.InsertOne(documents[idx])
+		if err != nil {
+			return nil, err
+		}
+		ids = append(ids, id)
+	}
+
+	return ids, nil
 }
 
 func (d Database) UpdateOne(document interface{}) error {
-	//TODO implement me
-	panic("implement me")
+	if err := checkIDNonEmpty(d.id); err != nil {
+		return err
+	}
+
+	df, err := pkg.ToProtoAny(document)
+	if err != nil {
+		return err
+	}
+
+	record, err := d.client.Update(d.ctx, &pb.UpdateParams{
+		Table:  d.table,
+		Id:     d.id,
+		Record: df,
+	})
+	if err != nil {
+		return err
+	}
+
+	return pkg.ParseProtoAnyInto(record.Record, document)
 }
 
 func (d Database) DeleteOne(filter ...interface{}) error {
-	//TODO implement me
-	panic("implement me")
+	if err := checkIdOrFilterNonEmpty(d.id, filter); err != nil {
+		return err
+	}
+
+	if filter != nil {
+		doc := struct {
+			ID string `json:"id"`
+		}{}
+		found, err := d.FindOne(&doc, filter)
+		if err != nil {
+			return err
+		} else if !found {
+			return models.ErrUserNotFound{}
+		}
+		d.id = doc.ID
+	}
+
+	_, err := d.client.Delete(d.ctx, &pb.IdParams{
+		Table: d.table,
+		Id:    d.id,
+	})
+	return err
 }
 
 func (d Database) Query(query string, args ...interface{}) (*sql.Rows, error) {

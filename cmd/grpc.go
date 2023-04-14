@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
 package cmd
 
 import (
@@ -37,7 +38,7 @@ func runGRPCServer(cmd *cobra.Command, args []string) {
 		log.Fatalln("gRPC only enabled for postgres database")
 	}
 
-	if err := server.StartPostgresServer("", "8080"); err != nil {
+	if err := server.StartPostgresServer(configs.PurrfectConfig.GRPC.ServerHost, configs.PurrfectConfig.GRPC.Port); err != nil {
 		log.Fatalln(err)
 	}
 }

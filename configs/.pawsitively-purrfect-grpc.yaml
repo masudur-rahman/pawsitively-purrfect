@@ -2,22 +2,15 @@ server:
     host: 0.0.0.0
     port: 62783
     domain: pawsitively.purrfect
-
 grpc:
     serverHost: 0.0.0.0
-    clientHost: grpc
+    clientHost: postgres-grpc
     port: 8080
 
 database:
     type: postgres
-    arangodb:
-        host: "localhost"
-        port: "8529"
-        user: "root"
-        password: "admin"
-        name: "_system"
     postgres:
-        host: localhost
+        host: postgres
         port: 5432
         user: postgres
         password: postgres

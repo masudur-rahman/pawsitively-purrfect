@@ -40,33 +40,42 @@ func isDefaultValue(value interface{}) bool {
 	return reflect.DeepEqual(value, zero)
 }
 
-func toDBCase(fieldName string) string {
+func toDBFieldName(fieldName string) string {
 	return strcase.ToSnake(fieldName)
 }
 
-func fromDBCase(fieldName string) string {
+func fromDBFieldName(fieldName string) string {
 	return strcase.ToLowerCamel(fieldName)
+}
+
+func toColumnValue(key string, val interface{}) (string, string) {
+	key = toDBFieldName(key)
+	var value string
+	switch v := val.(type) {
+	case string:
+		value = fmt.Sprintf("'%s'", strings.ReplaceAll(v, "'", "''"))
+	case time.Time:
+		value = fmt.Sprintf("'%s'", v.Format("2006-01-02 15:04:05"))
+	default:
+		value = fmt.Sprintf("%v", v)
+	}
+
+	return key, value
 }
 
 func generateReadQuery(tableName string, filter map[string]interface{}) string {
 	var conditions []string
 
-	for key, value := range filter {
-		if isDefaultValue(value) {
+	for key, val := range filter {
+		// TODO: Add support for passing field_names to be included in query
+		if isDefaultValue(val) {
 			// don't insert the default value checks into the condition array
 			continue
 		}
 
-		key = toDBCase(key)
-		condition := fmt.Sprintf("%s = ", key)
+		col, value := toColumnValue(key, val)
 
-		switch v := value.(type) {
-		case string:
-			condition += fmt.Sprintf("'%s'", v)
-		default:
-			condition += fmt.Sprintf("%v", v)
-		}
-
+		condition := fmt.Sprintf("%s = %s", col, value)
 		conditions = append(conditions, condition)
 	}
 
@@ -92,7 +101,7 @@ func scanSingleRecord(rows *sql.Rows) (map[string]interface{}, error) {
 
 	record := make(map[string]interface{})
 	for i := range scans {
-		fieldName := fromDBCase(fields[i])
+		fieldName := fromDBFieldName(fields[i])
 		record[fieldName] = scans[i]
 	}
 
@@ -136,25 +145,20 @@ func generateInsertQuery(tableName string, record map[string]interface{}) string
 	var cols []string
 	var values []string
 
-	for col, val := range record {
+	for key, val := range record {
 		//if isDefaultValue(val) {
 		//	// don't need to insert the default values into the table
 		//	continue
 		//}
 
-		col = toDBCase(col)
+		col, value := toColumnValue(key, val)
 		cols = append(cols, col)
-		switch v := val.(type) {
-		case string:
-			values = append(values, fmt.Sprintf("'%s'", strings.ReplaceAll(v, "'", "''")))
-		case time.Time:
-			values = append(values, fmt.Sprintf("'%s'", v.Format("2006-01-02 15:04:05")))
-		default:
-			values = append(values, fmt.Sprintf("%v", v))
-		}
+		values = append(values, value)
 	}
 
-	query := fmt.Sprintf("INSERT INTO \"%s\" (%s) VALUES (%s)", tableName, strings.Join(cols, ", "), strings.Join(values, ", "))
+	colClause := strings.Join(cols, ", ")
+	valClause := strings.Join(values, ", ")
+	query := fmt.Sprintf("INSERT INTO \"%s\" (%s) VALUES (%s)", tableName, colClause, valClause)
 
 	return query
 }
@@ -164,6 +168,26 @@ func executeWriteQuery(ctx context.Context, query string, conn *sql.Conn) (sql.R
 	result, err := conn.ExecContext(ctx, query)
 
 	return result, err
+}
+
+func generateUpdateQuery(table string, id string, record map[string]interface{}) string {
+	var setValues []string
+
+	for key, val := range record {
+		col, value := toColumnValue(key, val)
+		setValue := fmt.Sprintf("%s = %s, ", col, value)
+		setValues = append(setValues, setValue)
+	}
+
+	setClause := strings.Join(setValues, ", ")
+
+	query := fmt.Sprintf("UPDATE %s SET %s WHERE id = %s", table, setClause, id)
+	return query
+}
+
+func generateDeleteQuery(table, id string) string {
+	query := fmt.Sprintf("DELETE FROM %s WHERE id = %d", table, id)
+	return query
 }
 
 func mapToRecord(record map[string]interface{}) (*pb.RecordResponse, error) {

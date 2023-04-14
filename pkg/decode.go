@@ -53,3 +53,12 @@ func ToProtoAny(in any) (*anypb.Any, error) {
 
 	return anypb.New(&out)
 }
+
+func ParseProtoAnyInto(src *anypb.Any, dst any) error {
+	mp, err := ProtoAnyToMap(src)
+	if err != nil {
+		return err
+	}
+
+	return ParseInto(mp, dst)
+}

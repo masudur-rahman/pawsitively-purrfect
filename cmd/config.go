@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -61,7 +62,7 @@ func getServicesForArangoDB(ctx context.Context) *all.Services {
 }
 
 func getServicesForPostgres(ctx context.Context) *all.Services {
-	serverAddr := "localhost:8080"
+	serverAddr := fmt.Sprintf("%s:%v", configs.PurrfectConfig.GRPC.ClientHost, configs.PurrfectConfig.GRPC.Port)
 	conn, err := grpc.Dial(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)

@@ -69,29 +69,48 @@ func (p *PostgresDB) Create(ctx context.Context, params *pb.CreateParams) (*pb.R
 	}
 
 	query := generateInsertQuery(params.GetTable(), record)
-	res, err := executeWriteQuery(ctx, query, p.conn)
+	_, err = executeWriteQuery(ctx, query, p.conn)
 	if err != nil {
 		return nil, err
 	}
 
-	lid, err := res.LastInsertId()
-	if err != nil {
-		return nil, err
+	lid, ok := record["id"].(string)
+	if !ok {
+		return nil, nil
 	}
 
-	fmt.Println("Last Inserted ID: ", lid)
-
-	return nil, nil
+	return p.GetById(ctx, &pb.IdParams{
+		Table: params.GetTable(),
+		Id:    lid,
+	})
 }
 
 func (p *PostgresDB) Update(ctx context.Context, params *pb.UpdateParams) (*pb.RecordResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	record, err := pkg.ProtoAnyToMap(params.GetRecord())
+	if err != nil {
+		return nil, err
+	}
+
+	query := generateUpdateQuery(params.GetTable(), params.GetId(), record)
+	_, err = executeWriteQuery(ctx, query, p.conn)
+	if err != nil {
+		return nil, err
+	}
+
+	return p.GetById(ctx, &pb.IdParams{
+		Table: params.GetTable(),
+		Id:    params.GetId(),
+	})
 }
 
 func (p *PostgresDB) Delete(ctx context.Context, params *pb.IdParams) (*pb.DeleteResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	query := generateDeleteQuery(params.GetTable(), params.GetId())
+	_, err := executeWriteQuery(ctx, query, p.conn)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
 }
 
 func (p *PostgresDB) Query(ctx context.Context, params *pb.QueryParams) (*pb.QueryResponse, error) {
@@ -129,7 +148,7 @@ func (p *PostgresDB) Sync(tables ...interface{}) error {
 	return nil
 }
 
-func StartPostgresServer(host, port string) error {
+func StartPostgresServer(host string, port int) error {
 	server := grpc.NewServer()
 	pgConn, err := getPostgresConnection()
 	if err != nil {
@@ -144,7 +163,7 @@ func StartPostgresServer(host, port string) error {
 
 	pb.RegisterPostgresServer(server, postgres)
 
-	address := fmt.Sprintf("%s:%s", host, port)
+	address := fmt.Sprintf("%s:%v", host, port)
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
 		return err

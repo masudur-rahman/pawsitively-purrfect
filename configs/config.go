@@ -6,6 +6,7 @@ var PurrfectConfig PawsitiveConfiguration
 
 type PawsitiveConfiguration struct {
 	Server   ServerConfig   `json:"server" yaml:"server"`
+	GRPC     GRPCConfig     `json:"grpc" yaml:"grpc"`
 	Database DatabaseConfig `json:"database" yaml:"database"`
 	Session  SessionConfig  `json:"session" yaml:"session"`
 }
@@ -14,6 +15,12 @@ type ServerConfig struct {
 	Host   string `json:"host" yaml:"host"`
 	Port   int    `json:"port" yaml:"port"`
 	Domain string `json:"domain" yaml:"domain"`
+}
+
+type GRPCConfig struct {
+	ServerHost string `json:"serverHost" yaml:"serverHost"`
+	ClientHost string `json:"clientHost" yaml:"clientHost"`
+	Port       int    `json:"port" yaml:"port"`
 }
 
 type DatabaseConfig struct {
