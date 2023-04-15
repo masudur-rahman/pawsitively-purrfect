@@ -231,7 +231,7 @@ verify-mockgen: mockgen
 
 modules: # @HELP Update module dependencies
 modules: $(BUILD_DIRS)
-	@echo "updating go dependencies"
+	@echo "Updating go dependencies"
 	@docker run                                                 \
 		-i                                                      \
 		--rm                                                    \
