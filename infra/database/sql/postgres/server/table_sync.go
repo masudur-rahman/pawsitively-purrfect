@@ -164,7 +164,7 @@ func createTableQuery(tableName string, fields []fieldInfo) string {
 }
 
 func generateAddColumnQuery(missingColumns []string) string {
-	alterQuery := fmt.Sprintf("ALTER TABLE %s ")
+	alterQuery := fmt.Sprintf("ALTER TABLE ")
 	var addColumns []string
 	for _, col := range missingColumns {
 		addColumns = append(addColumns, fmt.Sprintf("ADD COLUMN %s", col))

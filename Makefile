@@ -232,6 +232,7 @@ verify-mockgen: mockgen
 modules: # @HELP Update module dependencies
 modules: $(BUILD_DIRS)
 	@echo "Updating go dependencies"
+	@sudo chown -R $$(id -u):$$(id -g) $$(pwd)/.go
 	@docker run                                                 \
 		-i                                                      \
 		--rm                                                    \

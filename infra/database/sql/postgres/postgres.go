@@ -3,12 +3,14 @@ package postgres
 import (
 	"context"
 	"database/sql"
-	"errors"
+	"strings"
 
 	isql "github.com/masudur-rahman/pawsitively-purrfect/infra/database/sql"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/sql/postgres/pb"
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
 	"github.com/masudur-rahman/pawsitively-purrfect/pkg"
+
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 type Database struct {
@@ -49,7 +51,8 @@ func (d Database) FindOne(document interface{}, filter ...interface{}) (bool, er
 			Id:    d.id,
 		})
 	} else {
-		af, err := pkg.ToProtoAny(filter[0])
+		var af *anypb.Any
+		af, err = pkg.ToProtoAny(filter[0])
 		if err != nil {
 			return false, err
 		}
@@ -59,9 +62,10 @@ func (d Database) FindOne(document interface{}, filter ...interface{}) (bool, er
 			Filter: af,
 		})
 	}
-	if errors.As(err, &sql.ErrNoRows) {
-		return false, nil
-	} else if err != nil {
+	if err != nil {
+		if strings.Contains(err.Error(), sql.ErrNoRows.Error()) {
+			return false, nil
+		}
 		return false, err
 	}
 
