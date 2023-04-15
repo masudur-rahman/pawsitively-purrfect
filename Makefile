@@ -232,6 +232,7 @@ verify-mockgen: mockgen
 modules: # @HELP Update module dependencies
 modules: $(BUILD_DIRS)
 	@echo "Updating go dependencies"
+	@sudo chown -R $$(id -u):$$(id -g) $$(pwd)/.go
 	@docker run                                                 \
 		-i                                                      \
 		--rm                                                    \
@@ -241,7 +242,6 @@ modules: $(BUILD_DIRS)
 		-v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin                \
 		-v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin/$(OS)_$(ARCH)  \
 		-v $$(pwd)/.go/cache:/.cache                            \
-		-v $$(pwd)/.go/cache/go-build:/.cache/go-build          \
 		--env HTTP_PROXY=$(HTTP_PROXY)                          \
 		--env HTTPS_PROXY=$(HTTPS_PROXY)                        \
 		$(BUILD_IMAGE)                                          \
