@@ -154,6 +154,18 @@ go-build: | $(BUILD_DIRS)
 	    $(BUILD_IMAGE)                                          \
 	    ./hack/build.sh ./...
 
+
+run:
+	@docker compose up $(ARGS)
+run-with-build:
+	@docker compose up --build
+
+run-with-grpc:
+	@docker compose --file docker-compose-grpc.yml up $(ARGS)
+run-with-grpc-build:
+	@docker compose --file docker-compose-grpc.yml up --build
+
+
 fmt: # @HELP Formats project source codes
 fmt: $(BUILD_DIRS)
 	@docker run                                                 \
@@ -282,6 +294,15 @@ verify-proto-gen: proto-gen
 		echo "database protobuf codes are out of date";	exit 1; 		\
 	fi
 
+schema-gen: # @HELP Generate GraphQL schema from graphql server
+schema-gen:
+	@get-graphql-schema http://pawsitively.purrfect:62783/graphql > hack/graphql/schema-generated.graphql
+
+doc-gen: # @HELP Generate GraphQL docs based on generated schema
+doc-gen:
+	@npx spectaql hack/graphql/spectaql.yaml
+	@sed -i '' 's#"images/logo.png"#"https://lh5.googleusercontent.com/9ZQCJ7yj0nccSqTTk-euc5Q7qzc5uKrsoNBD0zJ6trV-GSs7t68f-ZlxqEeKyglihTA=w2400"#g' templates/index.html
+	@mv templates/index.html templates/docs.tmpl
 
 gen: proto-gen mockgen
 

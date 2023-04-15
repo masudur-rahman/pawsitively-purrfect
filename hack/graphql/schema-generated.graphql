@@ -1,0 +1,87 @@
+schema {
+  query: RootQuery
+  mutation: RootMutation
+}
+
+type Pet {
+  adoptionStatus: String
+  breed: String
+  currentOwnerID: ID
+  gender: String
+  id: ID
+  name: String
+  photo: String
+  shelterID: ID
+}
+
+type RootMutation {
+  """Add new pet to a shelter"""
+  addPet(shelterID: String!, name: String!, breed: String, gender: String): Pet
+
+  """Add new shelter to the system"""
+  addShelter(name: String!, description: String, website: String, location: String, contactInformation: String): Shelter
+
+  """Adopt pet from a shelter"""
+  adoptPet(petID: ID): Pet
+
+  """Login user to the system"""
+  login(username: String!, password: String!): User
+
+  """Register a new user to the system"""
+  register(email: String!, password: String!, username: String!): User
+
+  """Update pet information"""
+  updatePet(gender: String, id: String!, name: String!, breed: String): Pet
+
+  """Update user profile"""
+  updateProfile(id: String!, username: String!, email: String!, firstName: String, lastName: String, bio: String, location: String, avatar: String): User
+
+  """Update shelter information"""
+  updateShelter(location: String, contactInformation: String, id: String!, name: String!, description: String, website: String): Shelter
+}
+
+type RootQuery {
+  """List pets by shelter"""
+  listPets(shelterID: ID!): [Pet]
+
+  """List shelters by filter"""
+  listShelters(ownerID: ID, name: String, description: String, website: String, location: String): [Shelter]
+
+  """Get a pet by ID."""
+  pet(id: ID!): Pet
+
+  """Get logged-in user profile"""
+  profile: User
+
+  """Get a shelter by ID."""
+  shelter(id: ID!): Shelter
+
+  """Get a user by ID."""
+  user(id: ID, name: String): User
+}
+
+type Shelter {
+  contactInformation: String
+  description: String
+  id: ID
+  location: String
+  logo: String
+  name: String
+  numberOfPets: Int
+  ownerID: ID
+  website: String
+}
+
+type User {
+  avatar: String
+  bio: String
+  email: String
+  firstName: String
+  id: ID
+  isActive: Boolean
+  isAdmin: Boolean
+  lastName: String
+  location: String
+  username: String
+}
+

@@ -1,0 +1,39 @@
+spectaql:
+  targetDir: ./templates
+  oneFile: true
+  logoFile: ./templates/logo/logo.png
+#  faviconFile: ./logo/favicon.png
+  displayAllServers: true
+
+introspection:
+  removeTrailingPeriodFromDescriptions: false
+  schemaFile: ./hack/graphql/schema-generated.graphql
+#  metadataFile: ./examples/data/metadata.json
+#  dynamicExamplesProcessingModule: ./examples/customizations/examples
+  queryNameStrategy: capitalizeFirst
+  fieldExpansionDepth: 2
+
+  spectaqlDirective:
+    enable: true
+
+extensions:
+  graphqlScalarExamples: true
+
+info:
+  title: Pawsitively Purrfect GraphQL API Reference
+  description: Welcome to Pawsitively Purrfect..!
+#  termsOfService: https://www.example.com/terms
+  contact:
+    name: API Support
+#    url: http://www.example.com/support
+    email: masudjuly02@gmail.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+
+servers:
+  - url: http://pawsitively.purrfect:62783/graphql
+    description: Development
+  - url: http://pawsitively.purrfect:62783/graphql
+    description: Production
+    production: true

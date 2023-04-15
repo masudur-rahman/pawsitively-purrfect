@@ -24,6 +24,10 @@ func Home(ctx *middlewares.PurrfectContext) {
 	}
 }
 
+func Docs(ctx *middlewares.PurrfectContext) {
+	ctx.HTML(http.StatusOK, "docs")
+}
+
 func Login(ctx *middlewares.PurrfectContext) {
 	ctx.HTML(http.StatusOK, "login")
 }

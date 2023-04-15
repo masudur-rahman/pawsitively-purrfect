@@ -36,6 +36,7 @@ func Routes(svc *all.Services) *flamego.Flame {
 	f.Use(middlewares.ReqPurrfectContext())
 
 	f.Get("/", handlers.Home)
+	f.Get("/docs", handlers.Docs)
 
 	f.Group("/user", func() {
 		f.Combo("/login").Get(handlers.Login).

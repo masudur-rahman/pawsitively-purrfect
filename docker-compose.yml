@@ -3,7 +3,8 @@ version: '3.9'
 services:
     arangodb:
         container_name: arangodb
-        image: arangodb:3.8.4
+        image: arangodb:3.10
+#        platform: linux/arm64/v8
         environment:
             ARANGO_ROOT_PASSWORD: ${ARANGODB_ROOT_PASSWORD:-admin}
         volumes:
