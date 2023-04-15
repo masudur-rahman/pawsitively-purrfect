@@ -202,12 +202,27 @@ start-client:
 
 mockgen: # @HELP Generate mock implementations for repo & database interfaces
 mockgen:
-	$(foreach repo,$(REPO_PKGs), \
-		mockgen -source=repos/$(repo).go -destination=repos/$(repo)/$(repo)_mock.go -package=$(repo)${\n} \
-	)
-	$(foreach db,$(DB_TYPEs), \
-		mockgen -source=infra/database/$(db)/database.go -destination=infra/database/$(db)/mock/mock.go -package=mock${\n} \
-	)
+	@echo "Generating mock implementations for repo & database interfaces"
+	@docker run                                                 \
+		-i                                                      \
+		--rm                                                    \
+		-u $$(id -u):$$(id -g)                                  \
+		-v $$(pwd):/src                                         \
+		-w /src                                                 \
+		-v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin                \
+		-v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin/$(OS)_$(ARCH)  \
+		-v $$(pwd)/.go/cache:/.cache                            \
+		--env HTTP_PROXY=$(HTTP_PROXY)                          \
+		--env HTTPS_PROXY=$(HTTPS_PROXY)                        \
+		$(BUILD_IMAGE)                                          \
+		/bin/bash -c " \
+			$(foreach repo,$(REPO_PKGs), \
+				mockgen -source=repos/$(repo).go -destination=repos/$(repo)/$(repo)_mock.go -package=$(repo); \
+			) \
+			$(foreach db,$(DB_TYPEs), \
+				mockgen -source=infra/database/$(db)/database.go -destination=infra/database/$(db)/mock/mock.go -package=mock; \
+			) \
+		"
 
 verify-mockgen: mockgen
 	@if !(git diff --exit-code HEAD); then 						\
