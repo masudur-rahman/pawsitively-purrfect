@@ -186,7 +186,7 @@ func generateUpdateQuery(table string, id string, record map[string]interface{})
 }
 
 func generateDeleteQuery(table, id string) string {
-	query := fmt.Sprintf("DELETE FROM %s WHERE id = %d", table, id)
+	query := fmt.Sprintf("DELETE FROM %s WHERE id = %s", table, id)
 	return query
 }
 
