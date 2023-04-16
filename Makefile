@@ -165,6 +165,8 @@ run-with-grpc:
 run-with-grpc-build:
 	@docker compose --file docker-compose-grpc.yml up --build
 
+stop:
+	@docker compose down
 
 fmt: # @HELP Formats project source codes
 fmt: $(BUILD_DIRS)
