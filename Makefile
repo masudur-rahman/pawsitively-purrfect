@@ -303,6 +303,7 @@ doc-gen:
 	@npx spectaql hack/graphql/spectaql.yaml
 	@sed -i '' 's#"images/logo.png"#"https://lh5.googleusercontent.com/9ZQCJ7yj0nccSqTTk-euc5Q7qzc5uKrsoNBD0zJ6trV-GSs7t68f-ZlxqEeKyglihTA=w2400"#g' templates/index.html
 	@mv templates/index.html templates/docs.tmpl
+	@graphql-markdown http://pawsitively.purrfect:62783/graphql > graphql.md
 
 gen: proto-gen mockgen
 
