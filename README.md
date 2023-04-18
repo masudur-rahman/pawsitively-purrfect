@@ -1,8 +1,22 @@
-# pawsitively-purrfect
-Pawsitively Purrfect
+# Pawsitively Purrfect
 
+## Description
 
+## Prerequisites
+
+## Installation
+
+## Contributing
+
+## License
+
+## Contact
+
+<details>
+<summary>
 Project Structures:
+</summary>
+
 ```
 - .github/
     - workflows/
@@ -100,3 +114,4 @@ Project Structures:
 - Makefile
 - README.md
 ```
+</details>
