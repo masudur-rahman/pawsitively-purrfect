@@ -97,8 +97,13 @@ func (r *Resolver) UpdatePet(p graphql.ResolveParams) (interface{}, error) {
 		return nil, err
 	}
 
-	owner := pet.CurrentOwnerID
-	if pet.ShelterID != "" {
+	var owner string
+	if pet.AdoptionStatus == models.PetAdopted {
+		owner, err = r.svc.Pet.GetPetOwnerID(pet.ID)
+		if err != nil {
+			return nil, err
+		}
+	} else if pet.ShelterID != "" {
 		shelter, err := r.svc.Shelter.GetShelter(pet.ShelterID)
 		if err != nil {
 			return nil, err

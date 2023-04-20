@@ -206,49 +206,6 @@ func TestSQLPetRepository_FindByBreed(t *testing.T) {
 	})
 }
 
-func TestSQLPetRepository_FindByCurrentOwnerID(t *testing.T) {
-	ctl := gomock.NewController(t)
-	defer ctl.Finish()
-
-	db, pr := initializeSqlDatabaseAndPetRepo(ctl)
-
-	t.Run("pet should not exist", func(t *testing.T) {
-		ownerID := "123"
-
-		filter := models.Pet{CurrentOwnerID: ownerID}
-		gomock.InOrder(
-			db.EXPECT().FindMany(gomock.Any(), filter).Return(nil),
-		)
-
-		pets, err := pr.FindByCurrentOwnerID(ownerID)
-		assert.NoError(t, err)
-		assert.Len(t, pets, 0)
-	})
-
-	t.Run("pet must exist", func(t *testing.T) {
-		ownerID := "123"
-
-		filter := models.Pet{CurrentOwnerID: ownerID}
-		pf := models.Pet{
-			Name:           "Cathy",
-			Gender:         "Male",
-			CurrentOwnerID: ownerID,
-		}
-
-		gomock.InOrder(
-			db.EXPECT().FindMany(gomock.Any(), filter).DoAndReturn(func(pets *[]*models.Pet, filter interface{}) error {
-				*pets = []*models.Pet{&pf}
-				return nil
-			}),
-		)
-
-		pets, err := pr.FindByCurrentOwnerID(ownerID)
-		assert.NoError(t, err)
-		assert.NotNil(t, pets)
-		assert.EqualValues(t, []*models.Pet{&pf}, pets)
-	})
-}
-
 func TestSQLPetRepository_FindByGender(t *testing.T) {
 	ctl := gomock.NewController(t)
 	defer ctl.Finish()
@@ -285,49 +242,6 @@ func TestSQLPetRepository_FindByGender(t *testing.T) {
 		)
 
 		pets, err := pr.FindByGender(gender)
-		assert.NoError(t, err)
-		assert.NotNil(t, pets)
-		assert.EqualValues(t, []*models.Pet{&pf}, pets)
-	})
-}
-
-func TestSQLPetRepository_FindByOriginShelterID(t *testing.T) {
-	ctl := gomock.NewController(t)
-	defer ctl.Finish()
-
-	db, pr := initializeSqlDatabaseAndPetRepo(ctl)
-
-	t.Run("pet should not exist", func(t *testing.T) {
-		originShelterID := "123"
-
-		filter := models.Pet{OriginShelterID: originShelterID}
-		gomock.InOrder(
-			db.EXPECT().FindMany(gomock.Any(), filter).Return(nil),
-		)
-
-		pets, err := pr.FindByOriginShelterID(originShelterID)
-		assert.NoError(t, err)
-		assert.Len(t, pets, 0)
-	})
-
-	t.Run("pet must exist", func(t *testing.T) {
-		originShelterID := "123"
-
-		filter := models.Pet{OriginShelterID: originShelterID}
-		pf := models.Pet{
-			Name:            "Cathy",
-			Gender:          "Male",
-			OriginShelterID: originShelterID,
-		}
-
-		gomock.InOrder(
-			db.EXPECT().FindMany(gomock.Any(), filter).DoAndReturn(func(pets *[]*models.Pet, filter interface{}) error {
-				*pets = []*models.Pet{&pf}
-				return nil
-			}),
-		)
-
-		pets, err := pr.FindByOriginShelterID(originShelterID)
 		assert.NoError(t, err)
 		assert.NotNil(t, pets)
 		assert.EqualValues(t, []*models.Pet{&pf}, pets)

@@ -107,6 +107,17 @@ func (err ErrPetNotFound) Error() string {
 	}.Error()
 }
 
+type ErrPetAdoptionNotFound struct {
+	PetID string
+}
+
+func (err ErrPetAdoptionNotFound) Error() string {
+	return StatusError{
+		Status:  http.StatusNotFound,
+		Message: fmt.Sprintf("pet adoption status not found for pet: %v", err.PetID),
+	}.Error()
+}
+
 func IsErrNotFound(err error) bool {
 	switch err.(type) {
 	case ErrUserNotFound:
@@ -114,6 +125,8 @@ func IsErrNotFound(err error) bool {
 	case ErrShelterNotFound:
 		return true
 	case ErrPetNotFound:
+		return true
+	case ErrPetAdoptionNotFound:
 		return true
 	default:
 		return false

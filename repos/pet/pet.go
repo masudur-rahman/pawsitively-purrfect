@@ -7,6 +7,7 @@ import (
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/database/nosql"
 	"github.com/masudur-rahman/pawsitively-purrfect/infra/logr"
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
+	"github.com/masudur-rahman/pawsitively-purrfect/pkg"
 
 	"github.com/rs/xid"
 )
@@ -21,6 +22,44 @@ func NewNoSQLPetRepository(db nosql.Database, logger logr.Logger) *NoSQLPetRepos
 		db:     db.Collection("pet"),
 		logger: logger,
 	}
+}
+
+func (p *NoSQLPetRepository) FindByID(id string) (*models.Pet, error) {
+	var pet models.Pet
+	found, err := p.db.ID(id).FindOne(&pet)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, models.ErrPetNotFound{ID: id}
+	}
+	return &pet, nil
+}
+
+func (p *NoSQLPetRepository) FindByIDs(ids []string) ([]*models.Pet, error) {
+	query := "FOR doc in pet FILTER doc.id IN @ids RETURN doc"
+	bindParams := map[string]interface{}{
+		"ids": ids,
+	}
+	results, err := p.db.Query(query, bindParams)
+	if err != nil {
+		return nil, err
+	}
+	var pets []*models.Pet
+	if err = pkg.ParseInto(results, &pets); err != nil {
+		return nil, err
+	}
+
+	return pets, err
+}
+
+func (p *NoSQLPetRepository) FindByType(typ models.PetType) ([]*models.Pet, error) {
+	filter := models.Pet{
+		Type: typ,
+	}
+	var pets []*models.Pet
+	err := p.db.FindMany(&pets, filter)
+	return pets, err
 }
 
 func (p *NoSQLPetRepository) FindByBreed(breed string) ([]*models.Pet, error) {
@@ -57,57 +96,6 @@ func (p *NoSQLPetRepository) FindByShelterID(id string) ([]*models.Pet, error) {
 	var pets []*models.Pet
 	err := p.db.FindMany(&pets, filter)
 	return pets, err
-}
-
-func (p *NoSQLPetRepository) FindByID(id string) (*models.Pet, error) {
-	var pet models.Pet
-	found, err := p.db.ID(id).FindOne(&pet)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, models.ErrPetNotFound{ID: id}
-	}
-	return &pet, nil
-}
-
-func (p *NoSQLPetRepository) FindByName(name string) (*models.Pet, error) {
-	filter := models.Pet{
-		Name: name,
-	}
-	var pet models.Pet
-	found, err := p.db.FindOne(&pet, filter)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, models.ErrPetNotFound{Name: name}
-	}
-	return &pet, nil
-}
-
-func (p *NoSQLPetRepository) FindByCurrentOwnerID(ownerID string) ([]*models.Pet, error) {
-	filter := models.Pet{
-		CurrentOwnerID: ownerID,
-	}
-	var pets []*models.Pet
-	err := p.db.FindMany(&pets, filter)
-	if err != nil {
-		return nil, err
-	}
-	return pets, nil
-}
-
-func (p *NoSQLPetRepository) FindByOriginShelterID(id string) ([]*models.Pet, error) {
-	filter := models.Pet{
-		OriginShelterID: id,
-	}
-	var pets []*models.Pet
-	err := p.db.FindMany(&pets, filter)
-	if err != nil {
-		return nil, err
-	}
-	return pets, nil
 }
 
 func (p *NoSQLPetRepository) FindPets(filter models.Pet) ([]*models.Pet, error) {

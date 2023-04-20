@@ -10,6 +10,7 @@ type PetService interface {
 	AddPetToShelter(params gqtypes.PetParams) (*models.Pet, error)
 	GetPetByID(id string) (*models.Pet, error)
 	ListShelterPets(shelterID string) ([]*models.Pet, error)
+	GetPetOwnerID(petID string) (string, error)
 	UpdatePet(params gqtypes.PetParams) (*models.Pet, error)
 	DeletePet(id string) error
 }

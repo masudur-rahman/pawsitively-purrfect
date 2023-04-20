@@ -56,6 +56,8 @@ func toColumnValue(key string, val interface{}) (string, string) {
 		value = fmt.Sprintf("'%s'", strings.ReplaceAll(v, "'", "''"))
 	case time.Time:
 		value = fmt.Sprintf("'%s'", v.Format("2006-01-02 15:04:05"))
+	case []string:
+		value = fmt.Sprintf("('%s')", strings.Join(v, "', '"))
 	default:
 		value = fmt.Sprintf("%v", v)
 	}
@@ -75,7 +77,11 @@ func generateReadQuery(tableName string, filter map[string]interface{}) string {
 
 		col, value := toColumnValue(key, val)
 
-		condition := fmt.Sprintf("%s = %s", col, value)
+		operator := " = "
+		if value[0] == '(' {
+			operator = " IN "
+		}
+		condition := strings.Join([]string{col, value}, operator)
 		conditions = append(conditions, condition)
 	}
 

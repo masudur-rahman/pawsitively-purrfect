@@ -11,14 +11,15 @@ import (
 )
 
 type petService struct {
-	petRepo  repos.PetRepository
-	userRepo repos.UserRepository
+	petRepo         repos.PetRepository
+	userRepo        repos.UserRepository
+	petAdoptionRepo repos.PetAdoptionRepository
 }
 
 var _ services.PetService = &petService{}
 
-func NewPetService(petRepo repos.PetRepository, userRepo repos.UserRepository) *petService {
-	return &petService{petRepo: petRepo, userRepo: userRepo}
+func NewPetService(petRepo repos.PetRepository, userRepo repos.UserRepository, paRepo repos.PetAdoptionRepository) *petService {
+	return &petService{petRepo: petRepo, userRepo: userRepo, petAdoptionRepo: paRepo}
 }
 
 func (p *petService) AdoptPet(userID string, petID string) error {
@@ -40,8 +41,10 @@ func (p *petService) AdoptPet(userID string, petID string) error {
 	}
 
 	pet.AdoptionStatus = models.PetAdopted
-	pet.CurrentOwnerID = userID
-	pet.OriginShelterID, pet.ShelterID = pet.ShelterID, ""
+	if err = p.petAdoptionRepo.AddPetAdoption(petID, userID); err != nil {
+		return err
+	}
+
 	err = p.petRepo.Update(pet)
 	if err != nil {
 		return models.StatusError{
@@ -49,6 +52,7 @@ func (p *petService) AdoptPet(userID string, petID string) error {
 			Message: fmt.Sprintf("error while updating the pet: %v", err),
 		}
 	}
+
 	return nil
 }
 
@@ -82,6 +86,21 @@ func (p *petService) GetPetByID(id string) (*models.Pet, error) {
 
 func (p *petService) ListShelterPets(shelterID string) ([]*models.Pet, error) {
 	return p.petRepo.FindByShelterID(shelterID)
+}
+
+func (p *petService) GetPetOwnerID(petID string) (string, error) {
+	pet, err := p.petRepo.FindByID(petID)
+	if err != nil {
+		return "", err
+	}
+	if pet.AdoptionStatus != models.PetAdopted {
+		return "", models.StatusError{
+			Status:  http.StatusBadRequest,
+			Message: "pet doesn't have an owner",
+		}
+	}
+
+	return p.petAdoptionRepo.GetPetOwner(petID)
 }
 
 func (p *petService) UpdatePet(params gqtypes.PetParams) (*models.Pet, error) {
