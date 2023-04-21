@@ -49,8 +49,38 @@ var updateShelterFieldArgs = graphql.FieldConfigArgument{
 	"contactInformation": &graphql.ArgumentConfig{Type: graphql.String},
 }
 
+var adoptionStatusEnum = graphql.NewEnum(graphql.EnumConfig{
+	Name: "AdoptionStatus",
+	Values: graphql.EnumValueConfigMap{
+		"Available": &graphql.EnumValueConfig{
+			Value: "Available",
+		},
+		"Adopted": &graphql.EnumValueConfig{
+			Value: "Adopted",
+		},
+	},
+})
+
+var listShelterPetFieldArgs = graphql.FieldConfigArgument{
+	"shelterID":      &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.ID}},
+	"adoptionStatus": &graphql.ArgumentConfig{Type: adoptionStatusEnum},
+}
+
+var petTypeEnum = graphql.NewEnum(graphql.EnumConfig{
+	Name: "PetType",
+	Values: graphql.EnumValueConfigMap{
+		"Cat": &graphql.EnumValueConfig{
+			Value: "Cat",
+		},
+		"Dog": &graphql.EnumValueConfig{
+			Value: "Dog",
+		},
+	},
+})
+
 var addPetFieldArgs = graphql.FieldConfigArgument{
 	"name":      &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
+	"type":      &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: petTypeEnum}},
 	"breed":     &graphql.ArgumentConfig{Type: graphql.String},
 	"gender":    &graphql.ArgumentConfig{Type: graphql.String},
 	"shelterID": &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
@@ -59,6 +89,7 @@ var addPetFieldArgs = graphql.FieldConfigArgument{
 var updatePetFieldArgs = graphql.FieldConfigArgument{
 	"id":     &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
 	"name":   &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
+	"type":   &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: petTypeEnum}},
 	"breed":  &graphql.ArgumentConfig{Type: graphql.String},
 	"gender": &graphql.ArgumentConfig{Type: graphql.String},
 	//"shelterID": &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},

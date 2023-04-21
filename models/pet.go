@@ -45,6 +45,7 @@ func (pet *Pet) APIFormat() gqtypes.Pet {
 	return gqtypes.Pet{
 		ID:             pet.ID,
 		Name:           pet.Name,
+		Type:           string(pet.Type),
 		Breed:          pet.Breed,
 		Gender:         pet.Gender,
 		Photo:          pet.Photo,

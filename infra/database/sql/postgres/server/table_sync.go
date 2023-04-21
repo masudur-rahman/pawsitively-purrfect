@@ -222,6 +222,6 @@ func contains(slice []string, val string) bool {
 
 func getModels() []interface{} {
 	mds := make([]interface{}, 0)
-	mds = append(mds, models.User{}, models.Shelter{}, models.Pet{})
+	mds = append(mds, models.User{}, models.Shelter{}, models.Pet{}, models.PetAdoption{})
 	return mds
 }

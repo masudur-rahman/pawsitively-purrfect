@@ -21,3 +21,8 @@ type ShelterParams struct {
 	ContactInformation string `json:"contactInformation"`
 	OwnerID            string `json:"-"`
 }
+
+type ShelterPetParams struct {
+	ShelterID      string `json:"shelterID"`
+	AdoptionStatus string `json:"adoptionStatus"`
+}

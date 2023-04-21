@@ -1,4 +1,4 @@
-FROM golang:1.20
+FROM ghcr.io/masudur-rahman/golang:1.20
 
 WORKDIR /pawsitively-purrfect
 

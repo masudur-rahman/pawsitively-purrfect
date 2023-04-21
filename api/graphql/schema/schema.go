@@ -27,6 +27,7 @@ var petType = graphql.NewObject(graphql.ObjectConfig{
 	Fields: graphql.Fields{
 		"id":             &graphql.Field{Type: graphql.ID},
 		"name":           &graphql.Field{Type: graphql.String},
+		"type":           &graphql.Field{Type: graphql.String},
 		"breed":          &graphql.Field{Type: graphql.String},
 		"gender":         &graphql.Field{Type: graphql.String},
 		"photo":          &graphql.Field{Type: graphql.String},
@@ -95,11 +96,14 @@ func rootQuery(resolver *resolvers.Resolver) *graphql.Object {
 			},
 			"listPets": &graphql.Field{
 				Type:        graphql.NewList(petType),
+				Description: "List all pets owned by logged-in user",
+				Resolve:     resolver.ListPets,
+			},
+			"listShelterPets": &graphql.Field{
+				Type:        graphql.NewList(petType),
 				Description: "List pets by shelter",
-				Args: graphql.FieldConfigArgument{
-					"shelterID": &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.ID}},
-				},
-				Resolve: resolver.ListPets,
+				Args:        listShelterPetFieldArgs,
+				Resolve:     resolver.ListShelterPets,
 			},
 		},
 	})

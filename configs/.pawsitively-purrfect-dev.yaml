@@ -9,7 +9,7 @@ grpc:
     port: 8080
 
 database:
-    type: postgres
+    type: arangodb
     arangodb:
         host: "localhost"
         port: "8529"
