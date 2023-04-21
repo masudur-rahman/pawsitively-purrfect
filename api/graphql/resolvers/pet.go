@@ -78,7 +78,7 @@ func (r *Resolver) ListShelterPets(p graphql.ResolveParams) (interface{}, error)
 	return apiPets, nil
 }
 
-func (r *Resolver) AddPetNewPet(p graphql.ResolveParams) (interface{}, error) {
+func (r *Resolver) AddNewPet(p graphql.ResolveParams) (interface{}, error) {
 	if !r.ctx.IsAuthenticated() {
 		return nil, models.ErrUserNotAuthenticated{}
 	}

@@ -125,7 +125,7 @@ func (d Database) InsertOne(document interface{}) (id string, err error) {
 		return "", err
 	}
 
-	return rmap[id].(string), nil
+	return rmap["id"].(string), nil
 }
 
 // TODO: Implement in a more efficient way

@@ -6,6 +6,10 @@
 
 ## Installation
 
+## Future Works
+Add support for adding must columns in sql db implementations.
+It's needed if we want to update column with zero value.
+
 ## Contributing
 
 ## License

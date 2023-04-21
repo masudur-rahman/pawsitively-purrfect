@@ -156,7 +156,7 @@ func rootMutation(resolver *resolvers.Resolver) *graphql.Object {
 				Type:        petType,
 				Description: "Add new pet to a shelter",
 				Args:        addPetFieldArgs,
-				Resolve:     resolver.AddPetNewPet,
+				Resolve:     resolver.AddNewPet,
 			},
 
 			"updatePet": &graphql.Field{

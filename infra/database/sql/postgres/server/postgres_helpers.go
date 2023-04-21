@@ -85,8 +85,15 @@ func generateReadQuery(tableName string, filter map[string]interface{}) string {
 		conditions = append(conditions, condition)
 	}
 
-	conditionString := strings.Join(conditions, " AND ")
-	query := fmt.Sprintf("SELECT * FROM \"%s\" WHERE %s", tableName, conditionString)
+	var conditionString string
+	query := fmt.Sprintf("SELECT * FROM \"%s\"", tableName)
+
+	if len(conditions) > 0 {
+		conditionString = " WHERE "
+		conditionString += strings.Join(conditions, " AND ")
+	}
+
+	query += conditionString
 
 	return query
 }
@@ -180,19 +187,23 @@ func generateUpdateQuery(table string, id string, record map[string]interface{})
 	var setValues []string
 
 	for key, val := range record {
+		if isDefaultValue(val) {
+			// don't add the default values into the set query
+			continue
+		}
 		col, value := toColumnValue(key, val)
-		setValue := fmt.Sprintf("%s = %s, ", col, value)
+		setValue := fmt.Sprintf("%s = %s", col, value)
 		setValues = append(setValues, setValue)
 	}
 
 	setClause := strings.Join(setValues, ", ")
 
-	query := fmt.Sprintf("UPDATE %s SET %s WHERE id = %s", table, setClause, id)
+	query := fmt.Sprintf("UPDATE %s SET %s WHERE id = '%s'", table, setClause, id)
 	return query
 }
 
 func generateDeleteQuery(table, id string) string {
-	query := fmt.Sprintf("DELETE FROM %s WHERE id = %s", table, id)
+	query := fmt.Sprintf("DELETE FROM %s WHERE id = '%s'", table, id)
 	return query
 }
 
