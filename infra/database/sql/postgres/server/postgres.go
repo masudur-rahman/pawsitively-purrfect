@@ -110,7 +110,7 @@ func (p *PostgresDB) Delete(ctx context.Context, params *pb.IdParams) (*pb.Delet
 		return nil, err
 	}
 
-	return nil, nil
+	return &pb.DeleteResponse{}, nil
 }
 
 func (p *PostgresDB) Query(ctx context.Context, params *pb.QueryParams) (*pb.QueryResponse, error) {

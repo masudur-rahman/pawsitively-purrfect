@@ -52,6 +52,8 @@ var shelterType = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
+var emptyType = graphql.Boolean
+
 func rootQuery(resolver *resolvers.Resolver) *graphql.Object {
 	query := graphql.NewObject(graphql.ObjectConfig{
 		Name: "RootQuery",
@@ -149,6 +151,14 @@ func rootMutation(resolver *resolvers.Resolver) *graphql.Object {
 				Description: "Update shelter information",
 				Args:        updateShelterFieldArgs,
 				Resolve:     resolver.UpdateShelter,
+			},
+			"deleteShelter": &graphql.Field{
+				Type:        emptyType,
+				Description: "Delete a shelter",
+				Args: graphql.FieldConfigArgument{
+					"id": &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.ID}},
+				},
+				Resolve: resolver.DeleteShelter,
 			},
 
 			// pet

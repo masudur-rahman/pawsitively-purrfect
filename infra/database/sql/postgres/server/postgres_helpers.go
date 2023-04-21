@@ -58,11 +58,34 @@ func toColumnValue(key string, val interface{}) (string, string) {
 		value = fmt.Sprintf("'%s'", v.Format("2006-01-02 15:04:05"))
 	case []string:
 		value = fmt.Sprintf("('%s')", strings.Join(v, "', '"))
+	case []any:
+		value = handleSliceAny(v)
 	default:
 		value = fmt.Sprintf("%v", v)
 	}
 
 	return key, value
+}
+
+func handleSliceAny(v []any) string {
+	var value string
+	var vals []string
+	typ := reflect.String.String()
+	for _, elem := range v {
+		if str, ok := elem.(string); ok {
+			vals = append(vals, str)
+		} else {
+			typ = reflect.Interface.String()
+			vals = append(vals, fmt.Sprintf("%v", elem))
+		}
+	}
+
+	if typ == reflect.String.String() {
+		value = fmt.Sprintf("('%s')", strings.Join(vals, "', '"))
+	} else {
+		value = fmt.Sprintf("(%s)", strings.Join(vals, ", "))
+	}
+	return value
 }
 
 func generateReadQuery(tableName string, filter map[string]interface{}) string {
