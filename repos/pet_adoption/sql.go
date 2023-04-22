@@ -47,7 +47,7 @@ func (pa *SQLPetAdoptionRepository) GetPetOwner(petID string) (string, error) {
 	if err != nil {
 		return "", err
 	} else if !has {
-		return "", models.ErrPetAdoptionNotFound{petID}
+		return "", models.ErrPetAdoptionNotFound{PetID: petID}
 	}
 
 	return adopt.UserID, nil

@@ -76,46 +76,56 @@ func TestSQLPetRepository_FindByID(t *testing.T) {
 	})
 }
 
-func TestSQLPetRepository_FindByName(t *testing.T) {
+func TestSQLPetRepository_FindByIDs(t *testing.T) {
 	ctl := gomock.NewController(t)
 	defer ctl.Finish()
 
 	db, pr := initializeSqlDatabaseAndPetRepo(ctl)
 
-	t.Run("pet should not exist", func(t *testing.T) {
-		name := "random-name"
-		filter := models.Pet{Name: name}
+	t.Run("pets of zero length", func(t *testing.T) {
+		ids := []string{"1", "2"}
 		gomock.InOrder(
-			db.EXPECT().FindOne(gomock.Any(), filter).Return(false, models.ErrPetNotFound{Name: name}),
+			db.EXPECT().FindMany(gomock.Any(), gomock.Any()).Return(nil),
 		)
 
-		pet, err := pr.FindByName(name)
-		assert.Error(t, err)
-		assert.ErrorIs(t, err, models.ErrPetNotFound{Name: name})
-		assert.Nil(t, pet)
+		pets, err := pr.FindByIDs(ids)
+		assert.NoError(t, err)
+		assert.Len(t, pets, 0)
+		assert.Nil(t, pets)
 	})
 
-	t.Run("pet must exist", func(t *testing.T) {
-		name := "Cathy"
+	t.Run("pets of non-zero length", func(t *testing.T) {
+		ids := []string{"1", "2"}
 
-		filter := models.Pet{Name: name}
-		pf := models.Pet{
-			Name:   name,
-			Breed:  "Cat",
-			Gender: "Male",
+		filter := map[string]interface{}{
+			"id": ids,
+		}
+		pf := []*models.Pet{
+			{
+				ID:     "1",
+				Name:   "Cathy",
+				Type:   models.PetCat,
+				Gender: "Female",
+			},
+			{
+				ID:     "2",
+				Name:   "Jack",
+				Type:   models.PetDog,
+				Gender: "Male",
+			},
 		}
 
 		gomock.InOrder(
-			db.EXPECT().FindOne(gomock.Any(), filter).DoAndReturn(func(pet *models.Pet, _ ...interface{}) (bool, error) {
-				*pet = pf
-				return true, nil
+			db.EXPECT().FindMany(gomock.Any(), filter).DoAndReturn(func(docs *[]*models.Pet, filter interface{}) error {
+				*docs = pf
+				return nil
 			}),
 		)
 
-		pet, err := pr.FindByName(name)
+		pets, err := pr.FindByIDs(ids)
 		assert.NoError(t, err)
-		assert.NotNil(t, pet)
-		assert.EqualValues(t, &pf, pet)
+		assert.Len(t, pets, 2)
+		assert.Equal(t, pf, pets)
 	})
 }
 

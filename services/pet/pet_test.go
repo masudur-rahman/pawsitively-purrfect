@@ -6,6 +6,7 @@ import (
 	"github.com/masudur-rahman/pawsitively-purrfect/models"
 	"github.com/masudur-rahman/pawsitively-purrfect/models/gqtypes"
 	petRepo "github.com/masudur-rahman/pawsitively-purrfect/repos/pet"
+	paRepo "github.com/masudur-rahman/pawsitively-purrfect/repos/pet_adoption"
 	userRepo "github.com/masudur-rahman/pawsitively-purrfect/repos/user"
 
 	"github.com/golang/mock/gomock"
@@ -17,7 +18,7 @@ func Test_petService_GetPetByID(t *testing.T) {
 	defer ctl.Finish()
 
 	pr := petRepo.NewMockPetRepository(ctl)
-	ps := NewPetService(pr, nil)
+	ps := NewPetService(pr, nil, nil)
 
 	t.Run("pet should not exist", func(t *testing.T) {
 		id := "random-id"
@@ -58,7 +59,7 @@ func Test_petService_ListShelterPets(t *testing.T) {
 	defer ctl.Finish()
 
 	pr := petRepo.NewMockPetRepository(ctl)
-	ps := NewPetService(pr, nil)
+	ps := NewPetService(pr, nil, nil)
 
 	t.Run("pet should not exist", func(t *testing.T) {
 		shelterID := "random-shelterID"
@@ -110,7 +111,7 @@ func Test_petService_UpdatePet(t *testing.T) {
 	defer ctl.Finish()
 
 	pr := petRepo.NewMockPetRepository(ctl)
-	ps := NewPetService(pr, nil)
+	ps := NewPetService(pr, nil, nil)
 
 	t.Run("update pet gender", func(t *testing.T) {
 		id := "abc-xyz"
@@ -145,9 +146,9 @@ func Test_petService_AddPetToShelter(t *testing.T) {
 	defer ctl.Finish()
 
 	pr := petRepo.NewMockPetRepository(ctl)
-	ps := NewPetService(pr, nil)
+	ps := NewPetService(pr, nil, nil)
 
-	t.Run("update pet gender", func(t *testing.T) {
+	t.Run("add pet to shelter", func(t *testing.T) {
 		params := gqtypes.PetParams{
 			Name:      "Cathy",
 			Breed:     "Cat",
@@ -172,15 +173,17 @@ func Test_petService_AdoptPet(t *testing.T) {
 
 	ur := userRepo.NewMockUserRepository(ctl)
 	pr := petRepo.NewMockPetRepository(ctl)
-	ps := NewPetService(pr, ur)
+	par := paRepo.NewMockPetAdoptionRepository(ctl)
+	ps := NewPetService(pr, ur, par)
 
-	t.Run("update pet gender", func(t *testing.T) {
+	t.Run("adopt pet", func(t *testing.T) {
 		userID := "abc-xyz"
 		petID := "xyz-abc"
 
 		gomock.InOrder(
 			pr.EXPECT().FindByID(petID).Return(&models.Pet{}, nil),
 			ur.EXPECT().FindByID(userID).Return(&models.User{}, nil),
+			par.EXPECT().AddPetAdoption(petID, userID).Return(nil),
 			pr.EXPECT().Update(gomock.Any()).Return(nil),
 		)
 
@@ -195,7 +198,7 @@ func Test_petService_DeletePet(t *testing.T) {
 
 	ur := userRepo.NewMockUserRepository(ctl)
 	pr := petRepo.NewMockPetRepository(ctl)
-	ps := NewPetService(pr, ur)
+	ps := NewPetService(pr, ur, nil)
 
 	t.Run("update pet gender", func(t *testing.T) {
 		id := "abc-xyz"
