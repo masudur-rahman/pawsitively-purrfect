@@ -66,6 +66,15 @@ var listShelterPetFieldArgs = graphql.FieldConfigArgument{
 	"adoptionStatus": &graphql.ArgumentConfig{Type: adoptionStatusEnum},
 }
 
+var findPetsFieldArgs = graphql.FieldConfigArgument{
+	"name":           &graphql.ArgumentConfig{Type: graphql.String},
+	"type":           &graphql.ArgumentConfig{Type: petTypeEnum},
+	"breed":          &graphql.ArgumentConfig{Type: graphql.String},
+	"gender":         &graphql.ArgumentConfig{Type: genderEnum},
+	"shelterID":      &graphql.ArgumentConfig{Type: graphql.String},
+	"adoptionStatus": &graphql.ArgumentConfig{Type: adoptionStatusEnum},
+}
+
 var petTypeEnum = graphql.NewEnum(graphql.EnumConfig{
 	Name: "PetType",
 	Values: graphql.EnumValueConfigMap{
@@ -78,11 +87,23 @@ var petTypeEnum = graphql.NewEnum(graphql.EnumConfig{
 	},
 })
 
+var genderEnum = graphql.NewEnum(graphql.EnumConfig{
+	Name: "Gender",
+	Values: graphql.EnumValueConfigMap{
+		"Male": &graphql.EnumValueConfig{
+			Value: "Male",
+		},
+		"Female": &graphql.EnumValueConfig{
+			Value: "Female",
+		},
+	},
+})
+
 var addPetFieldArgs = graphql.FieldConfigArgument{
 	"name":      &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
 	"type":      &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: petTypeEnum}},
 	"breed":     &graphql.ArgumentConfig{Type: graphql.String},
-	"gender":    &graphql.ArgumentConfig{Type: graphql.String},
+	"gender":    &graphql.ArgumentConfig{Type: genderEnum},
 	"shelterID": &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
 }
 
@@ -91,6 +112,6 @@ var updatePetFieldArgs = graphql.FieldConfigArgument{
 	"name":   &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
 	"type":   &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: petTypeEnum}},
 	"breed":  &graphql.ArgumentConfig{Type: graphql.String},
-	"gender": &graphql.ArgumentConfig{Type: graphql.String},
+	"gender": &graphql.ArgumentConfig{Type: genderEnum},
 	//"shelterID": &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
 }

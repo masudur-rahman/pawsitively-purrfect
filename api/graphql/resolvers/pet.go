@@ -78,6 +78,33 @@ func (r *Resolver) ListShelterPets(p graphql.ResolveParams) (interface{}, error)
 	return apiPets, nil
 }
 
+func (r *Resolver) FindPets(p graphql.ResolveParams) (interface{}, error) {
+	if !r.ctx.IsAuthenticated() {
+		return nil, models.ErrUserNotAuthenticated{}
+	}
+
+	params := gqtypes.PetParams{}
+	if err := pkg.ParseInto(p.Args, &params); err != nil {
+		return nil, err
+	}
+
+	pets, err := r.svc.Pet.FindPets(params)
+	if err != nil {
+		return nil, err
+	}
+
+	apiPets := make([]gqtypes.Pet, 0, len(pets))
+	for _, pet := range pets {
+		apiPet := pet.APIFormat()
+		if params.AdoptionStatus != "" && apiPet.AdoptionStatus != params.AdoptionStatus {
+			continue
+		}
+		apiPets = append(apiPets, pet.APIFormat())
+	}
+
+	return apiPets, nil
+}
+
 func (r *Resolver) AddNewPet(p graphql.ResolveParams) (interface{}, error) {
 	if !r.ctx.IsAuthenticated() {
 		return nil, models.ErrUserNotAuthenticated{}

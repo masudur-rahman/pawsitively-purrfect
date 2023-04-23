@@ -85,6 +85,18 @@ func (p *petService) GetPetByID(id string) (*models.Pet, error) {
 	return p.petRepo.FindByID(id)
 }
 
+func (p *petService) FindPets(params gqtypes.PetParams) ([]*models.Pet, error) {
+	filter := models.Pet{
+		Name:   params.Name,
+		Type:   models.PetType(params.Type),
+		Breed:  params.Breed,
+		Gender: params.Gender,
+		//AdoptionStatus: models.PetAdoptionStatus(params.AdoptionStatus),
+		ShelterID: params.ShelterID,
+	}
+	return p.petRepo.FindPets(filter)
+}
+
 func (p *petService) ListPetsOwnedByUser(userID string) ([]*models.Pet, error) {
 	ids, err := p.petAdoptionRepo.ListPetsAdoptedByUser(userID)
 	if err != nil {

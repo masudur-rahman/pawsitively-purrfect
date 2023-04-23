@@ -12,8 +12,8 @@ const (
 type PetType string
 
 const (
-	PetCat PetType = "cat"
-	PetDog PetType = "dog"
+	PetCat PetType = "Cat"
+	PetDog PetType = "Dog"
 )
 
 type Pet struct {

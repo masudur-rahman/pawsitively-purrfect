@@ -12,10 +12,11 @@ type Pet struct {
 }
 
 type PetParams struct {
-	ID        string `json:"id"`
-	Name      string `json:"name"`
-	Type      string `json:"type"`
-	Breed     string `json:"breed"`
-	Gender    string `json:"gender"`
-	ShelterID string `json:"shelterID"`
+	ID             string `json:"id"`
+	Name           string `json:"name"`
+	Type           string `json:"type"`
+	Breed          string `json:"breed"`
+	Gender         string `json:"gender"`
+	ShelterID      string `json:"shelterID"`
+	AdoptionStatus string `json:"adoptionStatus"`
 }

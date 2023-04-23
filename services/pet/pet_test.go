@@ -211,3 +211,42 @@ func Test_petService_DeletePet(t *testing.T) {
 		assert.NoError(t, err)
 	})
 }
+
+func Test_petService_FindPets(t *testing.T) {
+	ctl := gomock.NewController(t)
+	defer ctl.Finish()
+
+	ur := userRepo.NewMockUserRepository(ctl)
+	pr := petRepo.NewMockPetRepository(ctl)
+	ps := NewPetService(pr, ur, nil)
+
+	t.Run("find pets by filter", func(t *testing.T) {
+		params := gqtypes.PetParams{
+			Type:           string(models.PetCat),
+			Gender:         "Female",
+			AdoptionStatus: models.PetAvailable.String(),
+		}
+
+		pf := []*models.Pet{
+			{
+				ID:             "ch1b0ipjr92fh92ach2g",
+				Name:           "Cathy",
+				Type:           "Cat",
+				Gender:         "Female",
+				ShelterID:      "ch197i9jr92cbmop8g2g",
+				AdoptionStatus: models.PetAvailable,
+			},
+		}
+
+		gomock.InOrder(
+			pr.EXPECT().FindPets(gomock.Any()).DoAndReturn(func(filter models.Pet) ([]*models.Pet, error) {
+				return pf, nil
+			}),
+		)
+
+		pets, err := ps.FindPets(params)
+		assert.NoError(t, err)
+		assert.Len(t, pets, 1)
+		assert.Equal(t, pf, pets)
+	})
+}

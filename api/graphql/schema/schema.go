@@ -107,6 +107,12 @@ func rootQuery(resolver *resolvers.Resolver) *graphql.Object {
 				Args:        listShelterPetFieldArgs,
 				Resolve:     resolver.ListShelterPets,
 			},
+			"findPets": &graphql.Field{
+				Type:        graphql.NewList(petType),
+				Description: "Find pets accross platform based on search criteria",
+				Args:        findPetsFieldArgs,
+				Resolve:     resolver.FindPets,
+			},
 		},
 	})
 
