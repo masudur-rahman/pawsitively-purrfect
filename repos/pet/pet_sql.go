@@ -23,6 +23,36 @@ func NewSQLPetRepository(db isql.Database, logger logr.Logger) *SQLPetRepository
 	}
 }
 
+func (p *SQLPetRepository) FindByID(id string) (*models.Pet, error) {
+	var pet models.Pet
+	found, err := p.db.ID(id).FindOne(&pet)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, models.ErrPetNotFound{ID: id}
+	}
+	return &pet, nil
+}
+
+func (p *SQLPetRepository) FindByIDs(ids []string) ([]*models.Pet, error) {
+	filter := map[string]interface{}{
+		"id": ids,
+	}
+	var pets []*models.Pet
+	err := p.db.FindMany(&pets, filter)
+	return pets, err
+}
+
+func (p *SQLPetRepository) FindByType(typ models.PetType) ([]*models.Pet, error) {
+	filter := models.Pet{
+		Type: typ,
+	}
+	var pets []*models.Pet
+	err := p.db.FindMany(&pets, filter)
+	return pets, err
+}
+
 func (p *SQLPetRepository) FindByBreed(breed string) ([]*models.Pet, error) {
 	filter := models.Pet{
 		Breed: breed,
@@ -57,57 +87,6 @@ func (p *SQLPetRepository) FindByShelterID(id string) ([]*models.Pet, error) {
 	var pets []*models.Pet
 	err := p.db.FindMany(&pets, filter)
 	return pets, err
-}
-
-func (p *SQLPetRepository) FindByID(id string) (*models.Pet, error) {
-	var pet models.Pet
-	found, err := p.db.ID(id).FindOne(&pet)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, models.ErrPetNotFound{ID: id}
-	}
-	return &pet, nil
-}
-
-func (p *SQLPetRepository) FindByName(name string) (*models.Pet, error) {
-	filter := models.Pet{
-		Name: name,
-	}
-	var pet models.Pet
-	found, err := p.db.FindOne(&pet, filter)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, models.ErrPetNotFound{Name: name}
-	}
-	return &pet, nil
-}
-
-func (p *SQLPetRepository) FindByCurrentOwnerID(ownerID string) ([]*models.Pet, error) {
-	filter := models.Pet{
-		CurrentOwnerID: ownerID,
-	}
-	var pets []*models.Pet
-	err := p.db.FindMany(&pets, filter)
-	if err != nil {
-		return nil, err
-	}
-	return pets, nil
-}
-
-func (p *SQLPetRepository) FindByOriginShelterID(id string) ([]*models.Pet, error) {
-	filter := models.Pet{
-		OriginShelterID: id,
-	}
-	var pets []*models.Pet
-	err := p.db.FindMany(&pets, filter)
-	if err != nil {
-		return nil, err
-	}
-	return pets, nil
 }
 
 func (p *SQLPetRepository) FindPets(filter models.Pet) ([]*models.Pet, error) {

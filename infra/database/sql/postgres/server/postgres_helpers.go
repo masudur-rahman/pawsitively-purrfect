@@ -56,11 +56,36 @@ func toColumnValue(key string, val interface{}) (string, string) {
 		value = fmt.Sprintf("'%s'", strings.ReplaceAll(v, "'", "''"))
 	case time.Time:
 		value = fmt.Sprintf("'%s'", v.Format("2006-01-02 15:04:05"))
+	case []string:
+		value = fmt.Sprintf("('%s')", strings.Join(v, "', '"))
+	case []any:
+		value = handleSliceAny(v)
 	default:
 		value = fmt.Sprintf("%v", v)
 	}
 
 	return key, value
+}
+
+func handleSliceAny(v []any) string {
+	var value string
+	var vals []string
+	typ := reflect.String.String()
+	for _, elem := range v {
+		if str, ok := elem.(string); ok {
+			vals = append(vals, str)
+		} else {
+			typ = reflect.Interface.String()
+			vals = append(vals, fmt.Sprintf("%v", elem))
+		}
+	}
+
+	if typ == reflect.String.String() {
+		value = fmt.Sprintf("('%s')", strings.Join(vals, "', '"))
+	} else {
+		value = fmt.Sprintf("(%s)", strings.Join(vals, ", "))
+	}
+	return value
 }
 
 func generateReadQuery(tableName string, filter map[string]interface{}) string {
@@ -75,12 +100,23 @@ func generateReadQuery(tableName string, filter map[string]interface{}) string {
 
 		col, value := toColumnValue(key, val)
 
-		condition := fmt.Sprintf("%s = %s", col, value)
+		operator := " = "
+		if value[0] == '(' {
+			operator = " IN "
+		}
+		condition := strings.Join([]string{col, value}, operator)
 		conditions = append(conditions, condition)
 	}
 
-	conditionString := strings.Join(conditions, " AND ")
-	query := fmt.Sprintf("SELECT * FROM \"%s\" WHERE %s", tableName, conditionString)
+	var conditionString string
+	query := fmt.Sprintf("SELECT * FROM \"%s\"", tableName)
+
+	if len(conditions) > 0 {
+		conditionString = " WHERE "
+		conditionString += strings.Join(conditions, " AND ")
+	}
+
+	query += conditionString
 
 	return query
 }
@@ -174,19 +210,23 @@ func generateUpdateQuery(table string, id string, record map[string]interface{})
 	var setValues []string
 
 	for key, val := range record {
+		if isDefaultValue(val) {
+			// don't add the default values into the set query
+			continue
+		}
 		col, value := toColumnValue(key, val)
-		setValue := fmt.Sprintf("%s = %s, ", col, value)
+		setValue := fmt.Sprintf("%s = %s", col, value)
 		setValues = append(setValues, setValue)
 	}
 
 	setClause := strings.Join(setValues, ", ")
 
-	query := fmt.Sprintf("UPDATE %s SET %s WHERE id = %s", table, setClause, id)
+	query := fmt.Sprintf("UPDATE %s SET %s WHERE id = '%s'", table, setClause, id)
 	return query
 }
 
 func generateDeleteQuery(table, id string) string {
-	query := fmt.Sprintf("DELETE FROM %s WHERE id = %s", table, id)
+	query := fmt.Sprintf("DELETE FROM %s WHERE id = '%s'", table, id)
 	return query
 }
 

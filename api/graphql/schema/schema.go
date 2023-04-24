@@ -27,6 +27,7 @@ var petType = graphql.NewObject(graphql.ObjectConfig{
 	Fields: graphql.Fields{
 		"id":             &graphql.Field{Type: graphql.ID},
 		"name":           &graphql.Field{Type: graphql.String},
+		"type":           &graphql.Field{Type: graphql.String},
 		"breed":          &graphql.Field{Type: graphql.String},
 		"gender":         &graphql.Field{Type: graphql.String},
 		"photo":          &graphql.Field{Type: graphql.String},
@@ -50,6 +51,8 @@ var shelterType = graphql.NewObject(graphql.ObjectConfig{
 		"ownerID":            &graphql.Field{Type: graphql.ID},
 	},
 })
+
+var emptyType = graphql.Boolean
 
 func rootQuery(resolver *resolvers.Resolver) *graphql.Object {
 	query := graphql.NewObject(graphql.ObjectConfig{
@@ -95,11 +98,20 @@ func rootQuery(resolver *resolvers.Resolver) *graphql.Object {
 			},
 			"listPets": &graphql.Field{
 				Type:        graphql.NewList(petType),
+				Description: "List all pets owned by logged-in user",
+				Resolve:     resolver.ListPets,
+			},
+			"listShelterPets": &graphql.Field{
+				Type:        graphql.NewList(petType),
 				Description: "List pets by shelter",
-				Args: graphql.FieldConfigArgument{
-					"shelterID": &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.ID}},
-				},
-				Resolve: resolver.ListPets,
+				Args:        listShelterPetFieldArgs,
+				Resolve:     resolver.ListShelterPets,
+			},
+			"findPets": &graphql.Field{
+				Type:        graphql.NewList(petType),
+				Description: "Find pets accross platform based on search criteria",
+				Args:        findPetsFieldArgs,
+				Resolve:     resolver.FindPets,
 			},
 		},
 	})
@@ -146,13 +158,21 @@ func rootMutation(resolver *resolvers.Resolver) *graphql.Object {
 				Args:        updateShelterFieldArgs,
 				Resolve:     resolver.UpdateShelter,
 			},
+			"deleteShelter": &graphql.Field{
+				Type:        emptyType,
+				Description: "Delete a shelter",
+				Args: graphql.FieldConfigArgument{
+					"id": &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.ID}},
+				},
+				Resolve: resolver.DeleteShelter,
+			},
 
 			// pet
 			"addPet": &graphql.Field{
 				Type:        petType,
 				Description: "Add new pet to a shelter",
 				Args:        addPetFieldArgs,
-				Resolve:     resolver.AddPetNewPet,
+				Resolve:     resolver.AddNewPet,
 			},
 
 			"updatePet": &graphql.Field{

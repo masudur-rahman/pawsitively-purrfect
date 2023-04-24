@@ -1,8 +1,26 @@
-# pawsitively-purrfect
-Pawsitively Purrfect
+# Pawsitively Purrfect
 
+## Description
 
+## Prerequisites
+
+## Installation
+
+## Future Works
+Add support for adding must columns in sql db implementations.
+It's needed if we want to update column with zero value.
+
+## Contributing
+
+## License
+
+## Contact
+
+<details>
+<summary>
 Project Structures:
+</summary>
+
 ```
 - .github/
     - workflows/
@@ -100,3 +118,4 @@ Project Structures:
 - Makefile
 - README.md
 ```
+</details>

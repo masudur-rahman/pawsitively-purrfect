@@ -52,7 +52,7 @@ ifeq ($(OS), windows)
 endif
 
 
-REPO_PKGs := user shelter pet
+REPO_PKGs := user shelter pet pet_adoption
 DB_TYPEs  := nosql sql
 
 define \n

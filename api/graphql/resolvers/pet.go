@@ -33,17 +33,7 @@ func (r *Resolver) ListPets(p graphql.ResolveParams) (interface{}, error) {
 		return nil, models.ErrUserNotAuthenticated{}
 	}
 
-	shelterID, ok := p.Args["shelterID"].(string)
-	if !ok {
-		return nil, errors.New("invalid argument")
-	}
-
-	_, err := r.svc.Shelter.GetShelter(shelterID)
-	if err != nil {
-		return nil, err
-	}
-
-	pets, err := r.svc.Pet.ListShelterPets(shelterID)
+	pets, err := r.svc.Pet.ListPetsOwnedByUser(r.ctx.GetLoggedInUserID())
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +46,66 @@ func (r *Resolver) ListPets(p graphql.ResolveParams) (interface{}, error) {
 	return apiPets, nil
 }
 
-func (r *Resolver) AddPetNewPet(p graphql.ResolveParams) (interface{}, error) {
+func (r *Resolver) ListShelterPets(p graphql.ResolveParams) (interface{}, error) {
+	if !r.ctx.IsAuthenticated() {
+		return nil, models.ErrUserNotAuthenticated{}
+	}
+
+	params := gqtypes.ShelterPetParams{}
+	if err := pkg.ParseInto(p.Args, &params); err != nil {
+		return nil, err
+	}
+
+	_, err := r.svc.Shelter.GetShelter(params.ShelterID)
+	if err != nil {
+		return nil, err
+	}
+
+	pets, err := r.svc.Pet.ListShelterPets(params.ShelterID)
+	if err != nil {
+		return nil, err
+	}
+
+	apiPets := make([]gqtypes.Pet, 0, len(pets))
+	for _, pet := range pets {
+		apiPet := pet.APIFormat()
+		if params.AdoptionStatus != "" && apiPet.AdoptionStatus != params.AdoptionStatus {
+			continue
+		}
+		apiPets = append(apiPets, pet.APIFormat())
+	}
+
+	return apiPets, nil
+}
+
+func (r *Resolver) FindPets(p graphql.ResolveParams) (interface{}, error) {
+	if !r.ctx.IsAuthenticated() {
+		return nil, models.ErrUserNotAuthenticated{}
+	}
+
+	params := gqtypes.PetParams{}
+	if err := pkg.ParseInto(p.Args, &params); err != nil {
+		return nil, err
+	}
+
+	pets, err := r.svc.Pet.FindPets(params)
+	if err != nil {
+		return nil, err
+	}
+
+	apiPets := make([]gqtypes.Pet, 0, len(pets))
+	for _, pet := range pets {
+		apiPet := pet.APIFormat()
+		if params.AdoptionStatus != "" && apiPet.AdoptionStatus != params.AdoptionStatus {
+			continue
+		}
+		apiPets = append(apiPets, pet.APIFormat())
+	}
+
+	return apiPets, nil
+}
+
+func (r *Resolver) AddNewPet(p graphql.ResolveParams) (interface{}, error) {
 	if !r.ctx.IsAuthenticated() {
 		return nil, models.ErrUserNotAuthenticated{}
 	}
@@ -97,8 +146,13 @@ func (r *Resolver) UpdatePet(p graphql.ResolveParams) (interface{}, error) {
 		return nil, err
 	}
 
-	owner := pet.CurrentOwnerID
-	if pet.ShelterID != "" {
+	var owner string
+	if pet.AdoptionStatus == models.PetAdopted {
+		owner, err = r.svc.Pet.GetPetOwnerID(pet.ID)
+		if err != nil {
+			return nil, err
+		}
+	} else if pet.ShelterID != "" {
 		shelter, err := r.svc.Shelter.GetShelter(pet.ShelterID)
 		if err != nil {
 			return nil, err

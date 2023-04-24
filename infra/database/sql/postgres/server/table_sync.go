@@ -80,7 +80,7 @@ func addMissingColumns(ctx context.Context, conn *sql.Conn, tableName string, fi
 
 	missingColumns := getMissingColumns(fields, columns)
 	if len(missingColumns) > 0 {
-		alterQuery := generateAddColumnQuery(missingColumns)
+		alterQuery := generateAddColumnQuery(tableName, missingColumns)
 		_, err = executeWriteQuery(ctx, alterQuery, conn)
 		if err != nil {
 			return err
@@ -163,8 +163,8 @@ func createTableQuery(tableName string, fields []fieldInfo) string {
 	return fmt.Sprintf("CREATE TABLE \"%s\" (%s);", tableName, strings.Join(fieldsStr, ", "))
 }
 
-func generateAddColumnQuery(missingColumns []string) string {
-	alterQuery := fmt.Sprintf("ALTER TABLE ")
+func generateAddColumnQuery(tableName string, missingColumns []string) string {
+	alterQuery := fmt.Sprintf("ALTER TABLE %s ", tableName)
 	var addColumns []string
 	for _, col := range missingColumns {
 		addColumns = append(addColumns, fmt.Sprintf("ADD COLUMN %s", col))
@@ -222,6 +222,6 @@ func contains(slice []string, val string) bool {
 
 func getModels() []interface{} {
 	mds := make([]interface{}, 0)
-	mds = append(mds, models.User{}, models.Shelter{}, models.Pet{})
+	mds = append(mds, models.User{}, models.Shelter{}, models.Pet{}, models.PetAdoption{})
 	return mds
 }

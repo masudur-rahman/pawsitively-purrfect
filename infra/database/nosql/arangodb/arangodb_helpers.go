@@ -14,6 +14,7 @@ import (
 
 	arango "github.com/arangodb/go-driver"
 	ahttp "github.com/arangodb/go-driver/http"
+	"github.com/iancoleman/strcase"
 )
 
 func InitializeArangoDB(ctx context.Context) (arango.Database, error) {
@@ -72,6 +73,9 @@ func generateArangoQuery(collection string, filter interface{}, removeQuery bool
 		}
 
 		fieldName := field.Tag.Get("json")
+		if fieldName == "" {
+			fieldName = strcase.ToLowerCamel(field.Name)
+		}
 		filters = append(filters, fmt.Sprintf("doc.%s == @%s", fieldName, fieldName))
 		bindVars[fieldName] = val.Field(idx).Interface()
 	}

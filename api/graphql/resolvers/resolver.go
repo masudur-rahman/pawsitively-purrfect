@@ -13,3 +13,5 @@ type Resolver struct {
 func NewResolver(ctx *middlewares.PurrfectContext, svc *all.Services) *Resolver {
 	return &Resolver{ctx: ctx, svc: svc}
 }
+
+type EmptyResponse struct{}

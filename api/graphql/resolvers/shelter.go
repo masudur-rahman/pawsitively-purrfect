@@ -25,7 +25,7 @@ func (r *Resolver) GetShelter(p graphql.ResolveParams) (interface{}, error) {
 }
 
 func (r *Resolver) ListShelters(p graphql.ResolveParams) (interface{}, error) {
-	if r.ctx.IsAuthenticated() {
+	if !r.ctx.IsAuthenticated() {
 		return nil, models.ErrUserNotAuthenticated{}
 	}
 
@@ -97,4 +97,33 @@ func (r *Resolver) UpdateShelter(p graphql.ResolveParams) (interface{}, error) {
 	}
 
 	return shelter.APIFormat(), nil
+}
+
+func (r *Resolver) DeleteShelter(p graphql.ResolveParams) (interface{}, error) {
+	if !r.ctx.IsAuthenticated() {
+		return nil, models.ErrUserNotAuthenticated{}
+	}
+
+	id, ok := p.Args["id"].(string)
+	if !ok {
+		return nil, errors.New("invalid argument")
+	}
+
+	shelter, err := r.svc.Shelter.GetShelter(id)
+	if err != nil {
+		return nil, err
+	}
+	if shelter.OwnerID != r.ctx.GetLoggedInUserID() {
+		return nil, models.StatusError{
+			Status:  http.StatusBadRequest,
+			Message: "user don't own the shelter",
+		}
+	}
+
+	err = r.svc.Shelter.DeleteShelter(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return EmptyResponse{}, nil
 }

@@ -78,21 +78,6 @@ func (mr *MockPetRepositoryMockRecorder) FindByBreed(breed interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByBreed", reflect.TypeOf((*MockPetRepository)(nil).FindByBreed), breed)
 }
 
-// FindByCurrentOwnerID mocks base method.
-func (m *MockPetRepository) FindByCurrentOwnerID(id string) ([]*models.Pet, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindByCurrentOwnerID", id)
-	ret0, _ := ret[0].([]*models.Pet)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// FindByCurrentOwnerID indicates an expected call of FindByCurrentOwnerID.
-func (mr *MockPetRepositoryMockRecorder) FindByCurrentOwnerID(id interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByCurrentOwnerID", reflect.TypeOf((*MockPetRepository)(nil).FindByCurrentOwnerID), id)
-}
-
 // FindByGender mocks base method.
 func (m *MockPetRepository) FindByGender(gender string) ([]*models.Pet, error) {
 	m.ctrl.T.Helper()
@@ -123,19 +108,19 @@ func (mr *MockPetRepositoryMockRecorder) FindByID(id interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByID", reflect.TypeOf((*MockPetRepository)(nil).FindByID), id)
 }
 
-// FindByOriginShelterID mocks base method.
-func (m *MockPetRepository) FindByOriginShelterID(id string) ([]*models.Pet, error) {
+// FindByIDs mocks base method.
+func (m *MockPetRepository) FindByIDs(ids []string) ([]*models.Pet, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindByOriginShelterID", id)
+	ret := m.ctrl.Call(m, "FindByIDs", ids)
 	ret0, _ := ret[0].([]*models.Pet)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// FindByOriginShelterID indicates an expected call of FindByOriginShelterID.
-func (mr *MockPetRepositoryMockRecorder) FindByOriginShelterID(id interface{}) *gomock.Call {
+// FindByIDs indicates an expected call of FindByIDs.
+func (mr *MockPetRepositoryMockRecorder) FindByIDs(ids interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByOriginShelterID", reflect.TypeOf((*MockPetRepository)(nil).FindByOriginShelterID), id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByIDs", reflect.TypeOf((*MockPetRepository)(nil).FindByIDs), ids)
 }
 
 // FindByShelterID mocks base method.
@@ -151,6 +136,21 @@ func (m *MockPetRepository) FindByShelterID(id string) ([]*models.Pet, error) {
 func (mr *MockPetRepositoryMockRecorder) FindByShelterID(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByShelterID", reflect.TypeOf((*MockPetRepository)(nil).FindByShelterID), id)
+}
+
+// FindByType mocks base method.
+func (m *MockPetRepository) FindByType(typ models.PetType) ([]*models.Pet, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByType", typ)
+	ret0, _ := ret[0].([]*models.Pet)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByType indicates an expected call of FindByType.
+func (mr *MockPetRepositoryMockRecorder) FindByType(typ interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByType", reflect.TypeOf((*MockPetRepository)(nil).FindByType), typ)
 }
 
 // FindPets mocks base method.

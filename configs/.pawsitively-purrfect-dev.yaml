@@ -5,10 +5,11 @@ server:
 
 grpc:
     serverHost: 0.0.0.0
-    clientHost: grpc
+    clientHost: localhost
     port: 8080
 
 database:
+#    type: arangodb
     type: postgres
     arangodb:
         host: "localhost"

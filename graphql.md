@@ -9,6 +9,9 @@
     * [Pet](#pet)
     * [Shelter](#shelter)
     * [User](#user)
+  * [Enums](#enums)
+    * [AdoptionStatus](#adoptionstatus)
+    * [PetType](#pettype)
   * [Scalars](#scalars)
     * [Boolean](#boolean)
     * [ID](#id)
@@ -33,9 +36,23 @@
 <td valign="top">[<a href="#pet">Pet</a>]</td>
 <td>
 
+List all pets owned by logged-in user
+
+</td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>listShelterPets</strong></td>
+<td valign="top">[<a href="#pet">Pet</a>]</td>
+<td>
+
 List pets by shelter
 
 </td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">adoptionStatus</td>
+<td valign="top"><a href="#adoptionstatus">AdoptionStatus</a></td>
+<td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">shelterID</td>
@@ -52,6 +69,16 @@ List shelters by filter
 </td>
 </tr>
 <tr>
+<td colspan="2" align="right" valign="top">location</td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">ownerID</td>
+<td valign="top"><a href="#id">ID</a></td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" align="right" valign="top">name</td>
 <td valign="top"><a href="#string">String</a></td>
 <td></td>
@@ -64,16 +91,6 @@ List shelters by filter
 <tr>
 <td colspan="2" align="right" valign="top">website</td>
 <td valign="top"><a href="#string">String</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">location</td>
-<td valign="top"><a href="#string">String</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">ownerID</td>
-<td valign="top"><a href="#id">ID</a></td>
 <td></td>
 </tr>
 <tr>
@@ -161,6 +178,11 @@ Add new pet to a shelter
 <td></td>
 </tr>
 <tr>
+<td colspan="2" align="right" valign="top">type</td>
+<td valign="top"><a href="#pettype">PetType</a>!</td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" align="right" valign="top">breed</td>
 <td valign="top"><a href="#string">String</a></td>
 <td></td>
@@ -185,16 +207,6 @@ Add new shelter to the system
 </td>
 </tr>
 <tr>
-<td colspan="2" align="right" valign="top">contactInformation</td>
-<td valign="top"><a href="#string">String</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">name</td>
-<td valign="top"><a href="#string">String</a>!</td>
-<td></td>
-</tr>
-<tr>
 <td colspan="2" align="right" valign="top">description</td>
 <td valign="top"><a href="#string">String</a></td>
 <td></td>
@@ -207,6 +219,16 @@ Add new shelter to the system
 <tr>
 <td colspan="2" align="right" valign="top">location</td>
 <td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">contactInformation</td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">name</td>
+<td valign="top"><a href="#string">String</a>!</td>
 <td></td>
 </tr>
 <tr>
@@ -233,12 +255,12 @@ Login user to the system
 </td>
 </tr>
 <tr>
-<td colspan="2" align="right" valign="top">username</td>
+<td colspan="2" align="right" valign="top">password</td>
 <td valign="top"><a href="#string">String</a>!</td>
 <td></td>
 </tr>
 <tr>
-<td colspan="2" align="right" valign="top">password</td>
+<td colspan="2" align="right" valign="top">username</td>
 <td valign="top"><a href="#string">String</a>!</td>
 <td></td>
 </tr>
@@ -252,17 +274,17 @@ Register a new user to the system
 </td>
 </tr>
 <tr>
-<td colspan="2" align="right" valign="top">username</td>
-<td valign="top"><a href="#string">String</a>!</td>
-<td></td>
-</tr>
-<tr>
 <td colspan="2" align="right" valign="top">email</td>
 <td valign="top"><a href="#string">String</a>!</td>
 <td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">password</td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">username</td>
 <td valign="top"><a href="#string">String</a>!</td>
 <td></td>
 </tr>
@@ -276,11 +298,6 @@ Update pet information
 </td>
 </tr>
 <tr>
-<td colspan="2" align="right" valign="top">gender</td>
-<td valign="top"><a href="#string">String</a></td>
-<td></td>
-</tr>
-<tr>
 <td colspan="2" align="right" valign="top">id</td>
 <td valign="top"><a href="#string">String</a>!</td>
 <td></td>
@@ -291,7 +308,17 @@ Update pet information
 <td></td>
 </tr>
 <tr>
+<td colspan="2" align="right" valign="top">type</td>
+<td valign="top"><a href="#pettype">PetType</a>!</td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" align="right" valign="top">breed</td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">gender</td>
 <td valign="top"><a href="#string">String</a></td>
 <td></td>
 </tr>
@@ -303,6 +330,11 @@ Update pet information
 Update user profile
 
 </td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">lastName</td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">bio</td>
@@ -340,11 +372,6 @@ Update user profile
 <td></td>
 </tr>
 <tr>
-<td colspan="2" align="right" valign="top">lastName</td>
-<td valign="top"><a href="#string">String</a></td>
-<td></td>
-</tr>
-<tr>
 <td colspan="2" valign="top"><strong>updateShelter</strong></td>
 <td valign="top"><a href="#shelter">Shelter</a></td>
 <td>
@@ -352,6 +379,16 @@ Update user profile
 Update shelter information
 
 </td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">id</td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">name</td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">description</td>
@@ -371,16 +408,6 @@ Update shelter information
 <tr>
 <td colspan="2" align="right" valign="top">contactInformation</td>
 <td valign="top"><a href="#string">String</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">id</td>
-<td valign="top"><a href="#string">String</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">name</td>
-<td valign="top"><a href="#string">String</a>!</td>
 <td></td>
 </tr>
 </tbody>
@@ -438,6 +465,11 @@ Update shelter information
 <tr>
 <td colspan="2" valign="top"><strong>shelterID</strong></td>
 <td valign="top"><a href="#id">ID</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>type</strong></td>
+<td valign="top"><a href="#string">String</a></td>
 <td></td>
 </tr>
 </tbody>
@@ -563,6 +595,46 @@ Update shelter information
 <tr>
 <td colspan="2" valign="top"><strong>username</strong></td>
 <td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+## Enums
+
+### AdoptionStatus
+
+<table>
+<thead>
+<th align="left">Value</th>
+<th align="left">Description</th>
+</thead>
+<tbody>
+<tr>
+<td valign="top"><strong>Available</strong></td>
+<td></td>
+</tr>
+<tr>
+<td valign="top"><strong>Adopted</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+### PetType
+
+<table>
+<thead>
+<th align="left">Value</th>
+<th align="left">Description</th>
+</thead>
+<tbody>
+<tr>
+<td valign="top"><strong>Cat</strong></td>
+<td></td>
+</tr>
+<tr>
+<td valign="top"><strong>Dog</strong></td>
 <td></td>
 </tr>
 </tbody>
