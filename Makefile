@@ -365,6 +365,10 @@ docker-manifest:
 #	docker manifest push $(IMAGE):$(VERSION_$*)
 
 
+.PHONY: release
+release:
+	@$(MAKE) all-push docker-manifest --no-print-directory
+
 version: # @HELP outputs the version string
 version:
 	@echo $(VERSION)

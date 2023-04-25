@@ -39,14 +39,14 @@ jobs:
                   tar -xvzf binaries-manifest-tool-2.0.8.tar.gz -C manifest-tool
                   sudo mv manifest-tool/manifest-tool-linux-amd64 /usr/local/bin/manifest-tool
 
-#            - name: Publish Docker image to GitHub Container Registry
-#              env:
-#                  REGISTRY: ghcr.io/masudur-rahman
-#                  DOCKER_TOKEN: ${{ secrets.GH_TOKEN }}
-#                  USERNAME: masudur-rahman
-#              run: |
-#                  docker login ghcr.io --username ${USERNAME} --password ${DOCKER_TOKEN}
-#                  make all-container docker-manifest
+            - name: Publish Docker image to GitHub Container Registry
+              env:
+                  REGISTRY: ghcr.io/masudur-rahman
+                  DOCKER_TOKEN: ${{ secrets.GH_TOKEN }}
+                  USERNAME: masudur-rahman
+              run: |
+                  docker login ghcr.io --username ${USERNAME} --password ${DOCKER_TOKEN}
+                  make release
 
             - name: Publish Docker image to Docker Container Registry
               env:
@@ -56,4 +56,4 @@ jobs:
                   USERNAME: masudjuly02
               run: |
                   docker login --username ${USERNAME} --password ${DOCKER_TOKEN}
-                  make manifest-list
+                  make release
