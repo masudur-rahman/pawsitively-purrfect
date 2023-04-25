@@ -4,7 +4,7 @@ services:
     arangodb:
         container_name: arangodb
         image: arangodb:3.10
-#        platform: linux/arm64/v8
+        # platform: linux/arm64/v8
         environment:
             ARANGO_ROOT_PASSWORD: ${ARANGODB_ROOT_PASSWORD:-admin}
         volumes:
@@ -18,7 +18,7 @@ services:
     pawsitively-purrfect:
         build: .
         container_name: pawsitively-purrfect
-        image: pawsitively-purrfect:latest
+        image: ghcr.io/masudur-rahman/pawsitively-purrfect:latest
         command:
             - 'serve'
             - --config=/etc/pawsitively-purrfect/configs/.pawsitively-purrfect.yaml

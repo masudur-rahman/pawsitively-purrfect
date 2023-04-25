@@ -1,5 +1,7 @@
 FROM {ARG_FROM}
 
+LABEL org.opencontainers.image.source "https://github.com/masudur-rahman/pawsitively-purrfect"
+
 # When building, we can pass a unique value (e.g. `date +%s`) for this arg,
 # which will force a rebuild from here (by invalidating docker's cache).
 ARG FORCE_REBUILD=0
