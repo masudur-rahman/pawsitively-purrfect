@@ -18,7 +18,7 @@ services:
     postgres-grpc:
         build: .
         container_name: postgres-grpc
-        image: pawsitively-purrfect:latest
+        image: ghcr.io/masudur-rahman/pawsitively-purrfect:latest
         command:
             - 'grpc-serve'
             - --config=/etc/pawsitively-purrfect/configs/.pawsitively-purrfect.yaml
@@ -36,7 +36,7 @@ services:
     pawsitively-purrfect:
         build: .
         container_name: pawsitively-purrfect
-        image: pawsitively-purrfect:latest
+        image: ghcr.io/masudur-rahman/pawsitively-purrfect:latest
         command:
             - 'serve'
             - --config=/etc/pawsitively-purrfect/configs/.pawsitively-purrfect.yaml
