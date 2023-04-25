@@ -11,6 +11,7 @@ import (
 	"github.com/masudur-rahman/pawsitively-purrfect/pkg"
 
 	"google.golang.org/grpc"
+	health "google.golang.org/grpc/health/grpc_health_v1"
 )
 
 type PostgresDB struct {
@@ -150,6 +151,10 @@ func (p *PostgresDB) Sync(tables ...interface{}) error {
 
 func StartPostgresServer(host string, port int) error {
 	server := grpc.NewServer()
+
+	hs := NewHealthChecker()
+	health.RegisterHealthServer(server, hs)
+
 	pgConn, err := getPostgresConnection()
 	if err != nil {
 		return err
@@ -169,6 +174,7 @@ func StartPostgresServer(host string, port int) error {
 		return err
 	}
 
+	hs.setDatabaseReady()
 	logr.DefaultLogger.Infow("gRPC for Postgres server started", "address", address)
 	return server.Serve(listener)
 }
