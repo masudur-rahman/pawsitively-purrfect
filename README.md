@@ -11,23 +11,23 @@ In addition to helping pets find their forever homes, "Pawsitively Purrfect" als
 ### System Components
 The System consists of three major Components mainly.
 
-1. Backend Server: The backend server is built using Golang and GraphQL, with the Flamego web framework. It consists of multiple layers, including:
-    - Resolver: Handles incoming GraphQL queries and mutations, and maps them to specific service functions.
-    - Service: Implements business logic and interacts with repositories.
-    - Repository: Provides an abstraction layer between the service layer and the database layer.
-2. Databases: The system uses both NoSQL and SQL databases. ArangoDB is used as a NoSQL database, and Postgres is used as a SQL database, implemented using gRPC.
-3. Frontend: The frontend is built using Tailwind CSS and includes basic pages such as login, register, and profile pages.
+1. **_Backend Server_**: The backend server is built using Golang and GraphQL, with the Flamego web framework. It consists of multiple layers, including:
+    - **_Resolver_**: Handles incoming GraphQL queries and mutations, and maps them to specific service functions.
+    - **_Service_**: Implements business logic and interacts with repositories.
+    - **_Repository_**: Provides an abstraction layer between the service layer and the database layer.
+2. **_Databases_**: The system uses both NoSQL and SQL databases. ArangoDB is used as a NoSQL database, and Postgres is used as a SQL database, implemented using gRPC.
+3. **_Frontend_**: The frontend is built using Tailwind CSS and includes basic pages such as login, register, and profile pages.
 
 ### System Design
 
 The system uses a layered architecture that separates concerns and ensures loose coupling between the different components. It includes the following layers:
 
-- Frontend: The frontend layer provides the user interface for the system and the main interface is yet to be built.
-- GraphQL API: The GraphQL API layer handles incoming requests from the frontend and translates them into queries and mutations that can be executed by the backend.
-- Resolver: The resolver layer maps the incoming GraphQL requests to their corresponding service methods.
-- Service: The service layer contains the business logic of the system and performs the necessary operations on the data.
-- Repository: The repository layer provides an abstraction layer over the database and handles the storage and retrieval of data.
-- Database: The database layer stores the data used by the system and is responsible for ensuring its consistency and integrity.
+- **_Frontend_**: The frontend layer provides the user interface for the system and the main interface is yet to be built.
+- **_GraphQL API_**: The GraphQL API layer handles incoming requests from the frontend and translates them into queries and mutations that can be executed by the backend.
+- **_Resolver_**: The resolver layer maps the incoming GraphQL requests to their corresponding service methods.
+- **_Service_**: The service layer contains the business logic of the system and performs the necessary operations on the data.
+- **_Repository_**: The repository layer provides an abstraction layer over the database and handles the storage and retrieval of data.
+- **_Database_**: The database layer stores the data used by the system and is responsible for ensuring its consistency and integrity.
 
 This layered architecture enables the system to be easily extensible and maintainable, as changes to one layer do not affect the others.
 
@@ -45,33 +45,158 @@ Data flows through our system as follows:
 9. The resolver layer maps the response to the GraphQL schema and returns it to the GraphQL API layer.
 10. The GraphQL API layer sends the response back to the frontend client.
 
-### Data Model
-- Description of the data model used in the project
-- Explanation of the different entities and their relationships
-- Schema and sample data for each entity
+## Data Model
+The "Pawsitively Purrfect" project uses a relational data model to store information about users, pets, shelters, and pet adoptions. There's also option to use NoSQL type database instead of SQL type database.
 
-### API Documentation
+### Entities and Relationships
+There are four main entities in the data model: User, Pet, Shelter, and Pet Adoption. The entities have various attributes that define them, and have different relationships between them.
+
+Here's a breakdown of the different entities and their relationships:
+
+- User Entity:
+    The User entity represents the users of the platform. User has various attributes such as their full name, email, username, location etc. Each User can adopt multiple Pets from a Shelter which is also owned by a User.
+
+- Shelter Entity:
+    The Shelter entity represents the shelters on the platform. Shelter has various attributes such as its name, description, contact information etc. Each shelter can have only one owner, represented by the OwnerID attribute. Each shelter can own multiple pets.
+
+- Pet Entity:
+    The Pet entity represents the pets on the platform. Pet has various attributes such as its name, type, breed, adoption status etc. The AdoptionStatus attribute represents whether the pet is available for adoption or has already been adopted. Each pet belongs to one shelter, represented by the ShelterID attribute. However, a pet can be adopted by a user, which is represented by a PetAdoption record.
+
+- PetAdoption Entity:
+
+    The PetAdoption entity represents the adoption of pets by users. Each PetAdoption record has a unique ID and is associated with a specific pet and a specific user.
+
+### Schema and Sample Data
+JSON Schemas for the entities used in the "Pawsitively Purrfect" project:
+
+User:
+```json
+{
+  "type": "object",
+  "properties": {
+    "id": {"type": "string"},
+    "firstName": {"type": "string"},
+    "lastName": {"type": "string"},
+    "bio": {"type": "string"},
+    "location": {"type": "string"},
+    "avatar": {"type": "string"},
+    "username": {"type": "string"},
+    "email": {"type": "string"},
+    "passwordHash": {"type": "string"},
+    "isActive": {"type": "boolean"},
+    "isAdmin": {"type": "boolean"},
+    "createdUnix": {"type": "integer"},
+    "updatedUnix": {"type": "integer"},
+    "lastLoginUnix": {"type": "integer"}
+  }
+}
+```
+
+Shelter:
+```json
+{
+  "type": "object",
+  "properties": {
+    "id": {"type": "string"},
+    "name": {"type": "string"},
+    "description": {"type": "string"},
+    "website": {"type": "string"},
+    "location": {"type": "string"},
+    "contactInformation": {"type": "string"},
+    "logo": {"type": "string"},
+    "numberOfPets": {"type": "integer"},
+    "ownerID": {"type": "string"}
+  }
+}
+```
+
+Pet:
+```json
+{
+  "type": "object",
+  "properties": {
+    "id": {"type": "string"},
+    "name": {"type": "string"},
+    "type": {"type": "string"},
+    "breed": {"type": "string"},
+    "gender": {"type": "string"},
+    "photo": {"type": "string"},
+    "adoptionStatus": {"type": "string"},
+    "shelterID": {"type": "string"}
+  }
+}
+```
+
+PetAdoption:
+```json
+{
+  "type": "object",
+  "properties": {
+    "id": {"type": "string"},
+    "petID": {"type": "string"},
+    "userID": {"type": "string"}
+  }
+}
+```
+
+And here's an example of some sample data that could be inserted into these tables:
+
+User:
+| ID | FirstName | LastName | Bio | Location      | Avatar | Username | Email                | PasswordHash | IsActive | IsAdmin | CreatedUnix | UpdatedUnix | LastLoginUnix |
+|----|-----------|----------|-----|---------------|--------|----------|----------------------|--------------|----------|---------|-------------|-------------|---------------|
+| 1  | John      | Doe      | I love dogs! | New York, NY | john.jpg | johnd  | john@pawsshelter.com | 1234567890   | true     | false   | 1620187800  | 1620187800  | 1620187800    |
+| 2  | Jane      | Smith    | I am a cat lover! | Los Angeles, CA | jane.jpg | janes  | jane@furryfriends.org | 0987654321   | true     | false   | 1620187800  | 1620187800  | 1620187800    |
+| 3  | Bob       | Johnson  | I love all animals! | Seattle, WA | bob.jpg  | bobj   | bob@happytailsrescue.org | 1357908642 | true     | true    | 1620187800  | 1620187800  | 1620187800    |
+
+
+Shelter:
+| ID | Name  | Description | Website | Location | ContactInformation | Logo | NumberOfPets | OwnerID |
+|----|-------|-------------|---------|----------|--------------------|------|--------------|---------|
+| 1  | PAWS  | Animal rescue organization | www.pawsshelter.com | New York, NY | contact@pawsshelter.com | pawsshelterlogo.jpg | 100 | 1 |
+| 2  | Furry Friends | Purrfect home for your furry friends | www.furryfriends.org | Los Angeles, CA | contact@furryfriends.org | furryfriendslogo.jpg | 75 | 2 |
+| 3  | Happy Tails  | Helping pets find their forever homes | www.happytailsrescue.org | Seattle, WA | contact@happytailsrescue.org | happytailslogo.jpg | 50 | 3 |
+
+
+Pet:
+| ID | Name | Type | Breed | Gender | Photo | AdoptionStatus | ShelterID |
+|----|------|------|-------|--------|-------|----------------|----------|
+| 1  | Max  | Dog  | Labrador Retriever | Male   | maxphoto.jpg  | Available    | 1 |
+| 2  | Bella | Cat  | Siamese           | Female | bellaphoto.jpg | Adopted        | 1 |
+| 3  | Lucy | Dog   | Bulldog          | Female | lucyphoto.jpg  | Available    | 2 |
+| 4  | Simba | Cat  | Maine Coon       | Male   | simbaphoto.jpg | Available    | 2 |
+| 5  | Charlie | Dog  | Golden Retriever | Male  | charliephoto.jpg | Adopted     | 3 |
+
+
+PetAdoption:
+| ID | PetID | UserID |
+|----|-------|--------|
+| 1  | 2     | 1      |
+| 2  | 5     | 2      |
+| 3  | 3     | 1      |
+
+
+## API Documentation
 - Overview of the API
 - Description of the different API endpoints
 - Parameters, query strings, and headers required for each endpoint
 - Sample requests and responses for each endpoint
 
-### Codebase
+## Codebase
 - Overview of the codebase
 - Description of the different modules and packages used in the project
 - Explanation of the different functions and their roles in the system
 - Explanation of any notable design patterns or frameworks used in the project
 
-### Deployment
+## Deployment
 - Explanation of how to deploy the project to a production environment
 - Description of the hosting and infrastructure requirements
 
-### Maintenance and Support
+## Maintenance and Support
 - Explanation of how to maintain and support the project in a production environment
 - Information on how to debug and troubleshoot common issues
 - Contact information for support and feedback
 
-### Conclusion
+## Conclusion
 - Summary of the project
 - Future plans and enhancements
 
