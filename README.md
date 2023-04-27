@@ -9,12 +9,41 @@ In addition to helping pets find their forever homes, "Pawsitively Purrfect" als
 
 ## Architecture
 ### System Components
+The System consists of three major Components mainly.
 
+1. Backend Server: The backend server is built using Golang and GraphQL, with the Flamego web framework. It consists of multiple layers, including:
+    - Resolver: Handles incoming GraphQL queries and mutations, and maps them to specific service functions.
+    - Service: Implements business logic and interacts with repositories.
+    - Repository: Provides an abstraction layer between the service layer and the database layer.
+2. Databases: The system uses both NoSQL and SQL databases. ArangoDB is used as a NoSQL database, and Postgres is used as a SQL database, implemented using gRPC.
+3. Frontend: The frontend is built using Tailwind CSS and includes basic pages such as login, register, and profile pages.
 
 ### System Design
 
+The system uses a layered architecture that separates concerns and ensures loose coupling between the different components. It includes the following layers:
+
+- Frontend: The frontend layer provides the user interface for the system and the main interface is yet to be built.
+- GraphQL API: The GraphQL API layer handles incoming requests from the frontend and translates them into queries and mutations that can be executed by the backend.
+- Resolver: The resolver layer maps the incoming GraphQL requests to their corresponding service methods.
+- Service: The service layer contains the business logic of the system and performs the necessary operations on the data.
+- Repository: The repository layer provides an abstraction layer over the database and handles the storage and retrieval of data.
+- Database: The database layer stores the data used by the system and is responsible for ensuring its consistency and integrity.
+
+This layered architecture enables the system to be easily extensible and maintainable, as changes to one layer do not affect the others.
 
 ### Data Flow
+Data flows through our system as follows:
+
+1. The frontend client sends a request to the backend server using GraphQL.
+2. The request is received by the GraphQL API layer, which validates and parses the request.
+3. The request is then passed to the resolver layer, which maps the request to the corresponding service methods.
+4. The service layer contains the business logic of the system and performs the necessary operations on the data.
+5. The repository layer provides an abstraction layer over the database and handles the storage and retrieval of data.
+6. The database layer stores the data used by the system and is responsible for ensuring its consistency and integrity.
+7. The requested data is retrieved from the database and returned to the service layer.
+8. The service layer processes the data and returns the response to the resolver layer.
+9. The resolver layer maps the response to the GraphQL schema and returns it to the GraphQL API layer.
+10. The GraphQL API layer sends the response back to the frontend client.
 
 ### Data Model
 - Description of the data model used in the project
