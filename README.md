@@ -197,26 +197,12 @@ The  server some Rest APIs to view the website documentation, login, register an
 - **_You can find the full GraphQL documentation in_** <a href="https://pawsitively-purrfect.tiiny.site" target="_blank">**_pawsitively-purrfect.tiiny.site_**</a>.
 
 ## Codebase
+<!--
 - Overview of the codebase
 - Description of the different modules and packages used in the project
 - Explanation of the different functions and their roles in the system
 - Explanation of any notable design patterns or frameworks used in the project
-
-## Deployment
-- Explanation of how to deploy the project to a production environment
-- Description of the hosting and infrastructure requirements
-
-## Maintenance and Support
-- Explanation of how to maintain and support the project in a production environment
-- Information on how to debug and troubleshoot common issues
-- Contact information for support and feedback
-
-## Conclusion
-- Summary of the project
-- Future plans and enhancements
-
-( Add support for adding must columns in sql db implementations.
-It's needed if we want to update column with zero value. )
+-->
 
 <details>
 <summary>
@@ -252,6 +238,7 @@ Project Structures:
     - config.go
     - root.go
     - serve.go
+    - grpc.go
 - configs/
     - .pawsitively-purrfect.yaml
     - config.go
@@ -266,6 +253,13 @@ Project Structures:
             - database.go
         - sql/
             - postgres/
+                - pb/
+                    - postgres_grpc.pb.go
+                    - posgres.pb.go
+                - server/
+                    - postgres.go
+                    - health.go
+                    - table_sync.go
             - database.go
     - logr/
         - logger.go
@@ -275,14 +269,19 @@ Project Structures:
         - shelter.go
         - types.go
         - user.go
+        - pet_adoption.go
     - errors.go
     - pet.go
     - shelter.go
     - user.go
+    - pet_adoption.go
 - pkg/
     - decode.go
     - hash.go
     - path.go
+- proto/
+    - database/
+        - postgres.proto
 - repos/
     - pet/
         - pet.go
@@ -293,9 +292,13 @@ Project Structures:
     - user/
         - user.go
         - user_mock.go
+    - pet_adoption/
+        - pet_adoption.go
+        - pet_adoption_mock.go
     - pet.go
     - shelter.go
     - user.go
+    - pet_adoption.go
 - services/
     - all/
         - all.go
@@ -309,6 +312,10 @@ Project Structures:
     - shelter.go
     - user.go
 - templates/
+    - images/
+    - logo/
+
+    - docs.tmpl
     - login.tmpl
     - register.tmpl
     - profile.tmpl
@@ -321,3 +328,77 @@ Project Structures:
 - README.md
 ```
 </details>
+
+
+## Deployment
+We can use either ArangoDB (NoSQL) or Postgres (SQL) as database backend for the `Pawsitively Purrfect` Application.
+
+The postgres database layer is served with gRPC server. So, if we wish to use Postgres as our database, we will have to run an extra gRPC server to serve the Postgres db.
+
+### Local Development
+For local development mode, we first have to clone the repository from Github.
+- Clone the repository
+    ```bash
+    $ mkdir -p $HOME/go/src/github.com/masudur-rahman
+    $ git clone git@github.com:masudur-rahman/pawsitively-purrfect.git
+
+    $ cd pawsitively-purrfect
+    ```
+- To get the best experience with the login consistency, Run the following command
+    ```bash
+    $ sudo echo '127.0.0.1 pawsitively.purrfect' >> /etc/hosts
+    ```
+- Run the `Pawsitively Purrfect` Application <br/>
+    We can start the server following either of the following processes.
+    - Running without gRPC server
+        ```bash
+        $ make run
+        $ # It actually runs `docker compose up` command
+        $ # ArangoDB is used as the database
+        ```
+    - Running with gRPC server
+        ```bash
+        $ make run-with-grpc
+        $ # It actually runs `docker compose up --file docker-compose-grpc.yml
+        $ # Postgres is used as thye database but the postgres is served through a gRPC server
+        ```
+    The `Pawsitively Purrfect` application should be up and running. To access it head out to http://pawsitively.purrfect:62783
+
+### Production Environment
+To deploy `Pawsitively Purrfect` applicaiton in production environment, the preferred way is through Helm Chart.
+
+First you need to add the repo for the helm chart.
+```bash
+$ helm repo add masud https://masudur-rahman.github.io/helm-charts/stable
+$ helm repo update
+
+$ helm search repo masud/pawsitively-purrfect
+```
+
+Just like running application in local environment, we have two installation procedures here too.
+- Installing without gRPC server
+    ```bash
+    $ helm upgrade --install pawsitively-purrfect masud/pawsitively-purrfect -n purrfect --create-namespace
+    ```
+
+- Installing with gRPC server
+    ```bash
+    $ helm upgrade --install pawsitively-purrfect masud/pawsitively-purrfect -n purrfect \
+        --create-namespace  --set grpc.enabled=true
+    ```
+
+- Verify Installation
+To check if `Pawsitively Purrfect` is installed, run the following command:
+    ```bash
+    $ kubectl get pods -n purrfect -l "app.kubernetes.io/instance=pawsitively-purrfect"
+
+    NAME                                             READY   STATUS    RESTARTS   AGE
+    pawsitively-purrfect-698f968b44-d5mt6            1/1     Running   0          15s
+    pawsitively-purrfect-arangodb-78db5b45bf-2wklw   1/1     Running   0          10s
+    ```
+
+To see the detailed configuration options, visit [here](https://github.com/masudur-rahman/helm-charts/tree/main/charts/pawsitively-purrfect).
+
+<!--
+- Description of the hosting and infrastructure requirements
+-->
