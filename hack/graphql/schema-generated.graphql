@@ -3,49 +3,74 @@ schema {
   mutation: RootMutation
 }
 
+enum AdoptionStatus {
+  Available
+  Adopted
+}
+
+enum Gender {
+  Male
+  Female
+}
+
 type Pet {
-  adoptionStatus: String
+  adoptionStatus: AdoptionStatus
   breed: String
   currentOwnerID: ID
-  gender: String
+  gender: Gender
   id: ID
   name: String
   photo: String
   shelterID: ID
+  type: PetType
+}
+
+enum PetType {
+  Cat
+  Dog
 }
 
 type RootMutation {
   """Add new pet to a shelter"""
-  addPet(shelterID: String!, name: String!, breed: String, gender: String): Pet
+  addPet(gender: Gender, shelterID: ID!, name: String!, type: PetType!, breed: String): Pet
 
   """Add new shelter to the system"""
-  addShelter(name: String!, description: String, website: String, location: String, contactInformation: String): Shelter
+  addShelter(contactInformation: String, name: String!, description: String, website: String, location: String): Shelter
 
   """Adopt pet from a shelter"""
   adoptPet(petID: ID): Pet
 
+  """Delete a shelter"""
+  deleteShelter(id: ID!): Boolean
+
   """Login user to the system"""
-  login(username: String!, password: String!): User
+  login(password: String!, username: String!): User
 
   """Register a new user to the system"""
-  register(email: String!, password: String!, username: String!): User
+  register(username: String!, email: String!, password: String!): User
 
   """Update pet information"""
-  updatePet(gender: String, id: String!, name: String!, breed: String): Pet
+  updatePet(name: String!, type: PetType!, breed: String, gender: Gender, id: ID!): Pet
 
   """Update user profile"""
-  updateProfile(id: String!, username: String!, email: String!, firstName: String, lastName: String, bio: String, location: String, avatar: String): User
+  updateProfile(email: String!, firstName: String, lastName: String, bio: String, location: String, avatar: String, id: ID!, username: String!): User
 
   """Update shelter information"""
-  updateShelter(location: String, contactInformation: String, id: String!, name: String!, description: String, website: String): Shelter
+  updateShelter(location: String, contactInformation: String, id: ID!, name: String!, description: String, website: String): Shelter
 }
 
 type RootQuery {
+  """Find pets accross platform based on search criteria"""
+  findPets(breed: String, gender: Gender, shelterID: ID, adoptionStatus: AdoptionStatus, name: String, type: PetType): [Pet]
+
+  """List all pets owned by logged-in user"""
+  listPets: [Pet]
+
   """List pets by shelter"""
-  listPets(shelterID: ID!): [Pet]
+  listShelterPets(shelterID: ID!, adoptionStatus: AdoptionStatus): [Pet]
 
   """List shelters by filter"""
-  listShelters(ownerID: ID, name: String, description: String, website: String, location: String): [Shelter]
+  listShelters(description: String, website: String, location: String, ownerID: ID, name: String): [Shelter]
 
   """Get a pet by ID."""
   pet(id: ID!): Pet

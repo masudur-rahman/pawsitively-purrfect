@@ -14,7 +14,7 @@ var loginParams = graphql.FieldConfigArgument{
 }
 
 var updateProfileFieldArgs = graphql.FieldConfigArgument{
-	"id":        &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
+	"id":        &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.ID}},
 	"username":  &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
 	"email":     &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
 	"firstName": &graphql.ArgumentConfig{Type: graphql.String},
@@ -41,7 +41,7 @@ var addShelterFieldArgs = graphql.FieldConfigArgument{
 }
 
 var updateShelterFieldArgs = graphql.FieldConfigArgument{
-	"id":                 &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
+	"id":                 &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.ID}},
 	"name":               &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
 	"description":        &graphql.ArgumentConfig{Type: graphql.String},
 	"website":            &graphql.ArgumentConfig{Type: graphql.String},
@@ -71,7 +71,7 @@ var findPetsFieldArgs = graphql.FieldConfigArgument{
 	"type":           &graphql.ArgumentConfig{Type: petTypeEnum},
 	"breed":          &graphql.ArgumentConfig{Type: graphql.String},
 	"gender":         &graphql.ArgumentConfig{Type: genderEnum},
-	"shelterID":      &graphql.ArgumentConfig{Type: graphql.String},
+	"shelterID":      &graphql.ArgumentConfig{Type: graphql.ID},
 	"adoptionStatus": &graphql.ArgumentConfig{Type: adoptionStatusEnum},
 }
 
@@ -104,11 +104,11 @@ var addPetFieldArgs = graphql.FieldConfigArgument{
 	"type":      &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: petTypeEnum}},
 	"breed":     &graphql.ArgumentConfig{Type: graphql.String},
 	"gender":    &graphql.ArgumentConfig{Type: genderEnum},
-	"shelterID": &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
+	"shelterID": &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.ID}},
 }
 
 var updatePetFieldArgs = graphql.FieldConfigArgument{
-	"id":     &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
+	"id":     &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.ID}},
 	"name":   &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: graphql.String}},
 	"type":   &graphql.ArgumentConfig{Type: &graphql.NonNull{OfType: petTypeEnum}},
 	"breed":  &graphql.ArgumentConfig{Type: graphql.String},
