@@ -303,6 +303,7 @@ schema-gen:
 doc-gen: # @HELP Generate GraphQL docs based on generated schema
 doc-gen:
 	@npx spectaql hack/graphql/spectaql.yaml
+	@sed -i '' 's#"images/favicon.png"#"https://lh3.googleusercontent.com/drive-viewer/AFGJ81oMoDuXwVfg4bTCqg0Q71sBPHDpHiTxOk6T2hlIJuUfHRCpdA-xeTmWQ6H58-wa8l6imLvASyQJfEEU0l3vgjFiLCwnNQ=s2560"#g' templates/index.html
 	@sed -i '' 's#"images/logo.png"#"https://lh5.googleusercontent.com/9ZQCJ7yj0nccSqTTk-euc5Q7qzc5uKrsoNBD0zJ6trV-GSs7t68f-ZlxqEeKyglihTA=w2400"#g' templates/index.html
 	@mv templates/index.html templates/docs.tmpl
 	@graphql-markdown http://pawsitively.purrfect:62783/graphql > graphql.md

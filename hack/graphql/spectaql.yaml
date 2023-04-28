@@ -2,7 +2,7 @@ spectaql:
   targetDir: ./templates
   oneFile: true
   logoFile: ./templates/logo/logo.png
-#  faviconFile: ./logo/favicon.png
+  faviconFile: ./templates/logo/favicon.png
   displayAllServers: true
 
 introspection:
