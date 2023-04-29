@@ -34,23 +34,26 @@ In addition to helping pets find their forever homes, "Pawsitively Purrfect" als
 ### System Components
 The System consists of three major Components mainly.
 
-1. **_Backend Server_**: The backend server is built using Golang and GraphQL, with the Flamego web framework. It consists of multiple layers, including:
-    - **_Resolver_**: Handles incoming GraphQL queries and mutations, and maps them to specific service functions.
-    - **_Service_**: Implements business logic and interacts with repositories.
-    - **_Repository_**: Provides an abstraction layer between the service layer and the database layer.
-2. **_Databases_**: The system uses both NoSQL and SQL databases. ArangoDB is used as a NoSQL database, and Postgres is used as a SQL database, implemented using gRPC.
-3. **_Frontend_**: The frontend is built using Tailwind CSS and includes basic pages such as login, register, and profile pages.
+1. **_Backend Server:_** The backend server is built using Golang and GraphQL, with the Flamego web framework. It consists of multiple layers, including:
+    - **_Resolver:_** Handles incoming GraphQL queries and mutations, and maps them to specific service functions.
+    - **_Service:_** Implements business logic and interacts with repositories.
+    - **_Repository:_**: Provides an abstraction layer between the service layer and the database layer.
+2. **_Databases:_** The system uses both NoSQL and SQL databases. ArangoDB is used as a NoSQL database, and Postgres is used as a SQL database, implemented using gRPC.
+3. **_Frontend:_** The frontend is built using Tailwind CSS and includes basic pages such as login, register, and profile pages.
 
 ### System Design
 
 The system uses a layered architecture that separates concerns and ensures loose coupling between the different components. It includes the following layers:
 
-- **_Frontend_**: The frontend layer provides the user interface for the system and the main interface is yet to be built.
-- **_GraphQL API_**: The GraphQL API layer handles incoming requests from the frontend and translates them into queries and mutations that can be executed by the backend.
-- **_Resolver_**: The resolver layer maps the incoming GraphQL requests to their corresponding service methods.
-- **_Service_**: The service layer contains the business logic of the system and performs the necessary operations on the data.
-- **_Repository_**: The repository layer provides an abstraction layer over the database and handles the storage and retrieval of data.
-- **_Database_**: The database layer stores the data used by the system and is responsible for ensuring its consistency and integrity.
+- **_Frontend:_** The frontend layer provides the user interface for the system and the main interface is yet to be built.
+- **_GraphQL API:_** The GraphQL API layer handles incoming requests from the frontend and translates them into queries and mutations that can be executed by the backend.
+- **_Resolver:_** The resolver layer maps the incoming GraphQL requests to their corresponding service methods.
+- **_Service:_** The service layer contains the business logic of the system and performs the necessary operations on the data.
+- **_Repository:_** The repository layer provides an abstraction layer over the database and handles the storage and retrieval of data.
+- **_Database:_** The database layer stores the data used by the system and is responsible for ensuring its consistency and integrity.
+
+<!-- ![System Architecture Diagram](./templates/images/Flowchart.png) -->
+<div style="text-align:center"><img src="./templates/images/Flowchart.png" alt="System Architecture Diagram" height=600px/></div>
 
 This layered architecture enables the system to be easily extensible and maintainable, as changes to one layer do not affect the others.
 
