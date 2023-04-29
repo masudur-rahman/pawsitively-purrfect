@@ -1,5 +1,28 @@
 # Pawsitively Purrfect
 
+## Table of Contents
+
+1. [Introduction](#introduction)
+2. [Architecture](#architecture)
+    1. [System Components](#system-components)
+    2. [System Design](#system-design)
+    3. [Data Flow](#data-flow)
+3. [Data Model](#data-model)
+    1. [Entities and Relationships](#entities-and-relationships)
+    2. [Schema and Sample Data](#schema-and-sample-data)
+4. [API Documentation](#api-documentation)
+    1. [Endpoints](#endpoints)
+    2. [Rest APIs](#rest-apis)
+    3. [GraphQL API](#graphql-api)
+5. [Codebase](#codebase)
+6. [Deployment / Installation](#deployment--installation)
+   1. [Local Development](#local-development)
+   2. [Production Environment](#production-environment)
+7. [Conclusion](#conclusion)
+   1. [Summary](#summary)
+   2. [Future Plans and Enhancements](#future-plans-and-enhancements)
+
+
 ## Introduction
 **_Pawsitively Purrfect_** is a project aimed at providing an online platform for pet adoption. This platform is designed to help pet lovers find their perfect furry companions while also providing a way for animal shelters and rescue organizations to showcase their available pets.
 
@@ -330,7 +353,7 @@ Project Structures:
 </details>
 
 
-## Deployment
+## Deployment / Installation
 We can use either ArangoDB (NoSQL) or Postgres (SQL) as database backend for the `Pawsitively Purrfect` Application.
 
 The postgres database layer is served with gRPC server. So, if we wish to use Postgres as our database, we will have to run an extra gRPC server to serve the Postgres db.
