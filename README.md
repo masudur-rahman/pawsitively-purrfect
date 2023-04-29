@@ -402,3 +402,19 @@ To see the detailed configuration options, visit [here](https://github.com/masud
 <!--
 - Description of the hosting and infrastructure requirements
 -->
+
+<!--
+## Maintenance and Support
+- Explanation of how to maintain and support the project in a production environment
+- Information on how to debug and troubleshoot common issues
+- Contact information for support and feedback
+-->
+
+## Conclusion
+### Summary
+The `Pawsitively Purrfect` is a GraphQL API written in Go that provides pet adoption functionalities such as creating and updating pet profiles, managing pet adoption applications, and enabling communication between adopters and shelter staff.
+
+The API uses either ArangoDB or Postgres as its database backend and can be run with or without a gRPC server.
+
+### Future Plans and Enhancements:
+In the future, the application can be further improved by adding support for must columns in SQL database implementations, which will allow updating columns with zero values. Additionally, more queries and mutations can be added to the API to enhance its functionalities further. Finally, a frontend can be developed to provide a user-friendly interface for interacting with the API.
