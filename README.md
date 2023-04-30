@@ -52,8 +52,14 @@ The system uses a layered architecture that separates concerns and ensures loose
 - **_Repository:_** The repository layer provides an abstraction layer over the database and handles the storage and retrieval of data.
 - **_Database:_** The database layer stores the data used by the system and is responsible for ensuring its consistency and integrity.
 
-<!-- ![System Architecture Diagram](./templates/images/Flowchart.png) -->
-<div style="text-align:center"><img src="./templates/images/Flowchart.png" alt="System Architecture Diagram" height=600px/></div>
+<!--
+Mermaid code (base64 encoded):
+
+YGBgbWVybWFpZApmbG93Y2hhcnQgTFIKICAgIHN1YmdyYXBoIEZyb250ZW5kCiAgICAgICAgRkVbRnJvbnRlbmRdCiAgICBlbmQKICAgIHN1YmdyYXBoIEJhY2tlbmQKICAgICAgICBzdWJncmFwaCBSZXNvbHZlcgogICAgICAgICAgICBSR1tHcmFwaFFMIEFQSV0KICAgICAgICBlbmQKICAgICAgICBzdWJncmFwaCBTZXJ2aWNlCiAgICAgICAgICAgIFNSVltTZXJ2aWNlXQogICAgICAgIGVuZAogICAgICAgIHN1YmdyYXBoIFJlcG9zaXRvcnkKICAgICAgICAgICAgUlBbUmVzcG9zaXRvcnldCiAgICAgICAgZW5kCiAgICAgICAgc3ViZ3JhcGggRGF0YWJhc2UKICAgICAgICAgICAgc3ViZ3JhcGggQXJhbmdvREIKICAgICAgICAgICAgICAgIEFSW0FyYW5nb0RCXQogICAgICAgICAgICBlbmQKICAgICAgICAgICAgc3ViZ3JhcGggUG9zdGdyZXMKICAgICAgICAgICAgICAgIFBHW0dSUEMgTGF5ZXJdCiAgICAgICAgICAgICAgICBQU1tQb3N0Z3Jlc10KICAgICAgICAgICAgZW5kCiAgICAgICAgZW5kCiAgICBlbmQKICAgIEZFIC0tPiBSRwogICAgUkcgLS0+IFNSVgogICAgU1JWIC0tPiBSUAogICAgUlAgLS0+IEFSCiAgICBSUCAtLT4gUEcKICAgIFBHIC0tPiBQUwogICAgUFMgLS0+IEJhY2tlbmQKICAgIEFSIC0tPiBCYWNrZW5kCmBgYAoK
+
+echo x | base64 -d
+-->
+[![](https://mermaid.ink/img/pako:eNqFk9uOmzAQhl8F-ZolgMPxolK2OahSKrkg9aKQCwfMQQWMjElLo7x7bUiI2K66c-V_Ps_vwWauIKEpAT7IKvorKTDjyjGIG0VE159zhttC2TPacNKkU1rGfhc9kqcpO-O56hUnPxdFMwlIR6sLYU8kIzhEB4m_HZUN-nJ6wvdNQsIuZUKWHmHwPbqDDw0C0tKu5JQNb_pAkWjwwT602WKOz7h708iMNww3Od2-LrGMTRA94GlJFwct3BDteM5I968bErcXoM_KEQ-End7hYfQo_t9ps5gX-53y8vJJvM4kg8MoxUVPWiwmju4cjXITLCS6V6OpGoV3GY5y8adsgmUOqKAmrMZlKn7Sq9wTA16QmsTAF8uUZLiveAzi5ia24p7TcGgS4HPWExX0bYo52ZZY3F8N_AxX3ZzdpfKF52RFcUqEvAI-tHIi8rLjwjKhTVbmMt-zSqQLztvOX60k1vKSF_1ZS2i96spUjk9x8eyVbdouNiGxHYgtCNPkbHhuZq6NLHV0w8TgdlNBi5sflD67Elqe8hv4nrHWPGjYnuka1lo3VDAAH-pQcz3LMnULOiY0hcOfsVzXHGiYOoSOY65t17JtFZDx275Ooz1O-O0vQWIbcQ?type=png)](https://mermaid.live/edit#pako:eNqFk9uOmzAQhl8F-ZolgMPxolK2OahSKrkg9aKQCwfMQQWMjElLo7x7bUiI2K66c-V_Ps_vwWauIKEpAT7IKvorKTDjyjGIG0VE159zhttC2TPacNKkU1rGfhc9kqcpO-O56hUnPxdFMwlIR6sLYU8kIzhEB4m_HZUN-nJ6wvdNQsIuZUKWHmHwPbqDDw0C0tKu5JQNb_pAkWjwwT602WKOz7h708iMNww3Od2-LrGMTRA94GlJFwct3BDteM5I968bErcXoM_KEQ-End7hYfQo_t9ps5gX-53y8vJJvM4kg8MoxUVPWiwmju4cjXITLCS6V6OpGoV3GY5y8adsgmUOqKAmrMZlKn7Sq9wTA16QmsTAF8uUZLiveAzi5ia24p7TcGgS4HPWExX0bYo52ZZY3F8N_AxX3ZzdpfKF52RFcUqEvAI-tHIi8rLjwjKhTVbmMt-zSqQLztvOX60k1vKSF_1ZS2i96spUjk9x8eyVbdouNiGxHYgtCNPkbHhuZq6NLHV0w8TgdlNBi5sflD67Elqe8hv4nrHWPGjYnuka1lo3VDAAH-pQcz3LMnULOiY0hcOfsVzXHGiYOoSOY65t17JtFZDx275Ooz1O-O0vQWIbcQ)
 
 This layered architecture enables the system to be easily extensible and maintainable, as changes to one layer do not affect the others.
 
@@ -199,6 +205,8 @@ PetAdoption:
 | 2  | 5     | 2      |
 | 3  | 3     | 1      |
 
+
+![Data Model](./templates/images/model.png)
 
 ## API Documentation
 
